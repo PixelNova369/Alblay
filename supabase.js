@@ -8,7 +8,9 @@ export const supabase = createClient(supabaseUrl, supabaseKey)
 
 // LOGIN
 export async function login(email) {
-  return await supabase.auth.signInWithOtp({ email })
+  const res = await supabase.auth.signInWithOtp({ email })
+  console.log(res)
+  return res
 }
 
 // LOGOUT
