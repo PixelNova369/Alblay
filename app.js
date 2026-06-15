@@ -1,12 +1,9 @@
-import { supabase, saveAlbum, login, logout, getUser, loadAlbums } from './supabase.js'
+import { supabase, saveAlbum, logout, getUser, loadAlbums } from './supabase.js'
 
-// LOGIN
+// LOGIN BUTTON
 document.getElementById("loginBtn").addEventListener("click", async () => {
   const email = document.getElementById("email").value
-  const { error } = await login(email)
-
-  document.getElementById("auth-status").innerText =
-    error ? error.message : "Login link sent!"
+  await supabase.auth.signInWithOtp({ email })
 })
 
 // SAVE ALBUM
@@ -14,8 +11,9 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   const title = document.getElementById("title").value
   const genre = document.getElementById("genre").value
   const era = document.getElementById("era").value
+  const image = document.getElementById("image").value
 
-  await saveAlbum({ title, genre, era })
+  await saveAlbum({ title, genre, era, image })
   loadAlbums()
 })
 
@@ -25,11 +23,11 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
   location.reload()
 })
 
-// AUTH CHECK ON LOAD
+// SESSION CHECK ON LOAD
 async function init() {
-  const user = await getUser()
+  const { data } = await supabase.auth.getSession()
 
-  if (user) {
+  if (data.session) {
     document.getElementById("auth-section").style.display = "none"
     document.getElementById("app-section").style.display = "block"
     loadAlbums()
@@ -37,9 +35,3 @@ async function init() {
 }
 
 init()
-supabase.auth.onAuthStateChange((event, session) => {
-  if (session) {
-    document.getElementById("auth-section").style.display = "none"
-    document.getElementById("app-section").style.display = "block"
-  }
-})
