@@ -1,20 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Alblay App</title>
+</head>
+
 <body style="margin:0; font-family:Arial; background:#111; color:white;">
 
   <h2>Dashboard</h2>
 
-  <div>
-    <h3>Create Album</h3>
+  <input id="title" placeholder="Title" />
+  <input id="genre" placeholder="Genre" />
+  <input id="era" placeholder="Era" />
+  <input id="image" placeholder="Image URL" />
+  <input id="spotify" placeholder="Spotify link" />
 
-    <input id="title" placeholder="Title" />
-    <input id="genre" placeholder="Genre" />
-    <input id="era" placeholder="Era" />
-    <input id="image" placeholder="Image URL" />
-    <input id="spotify" placeholder="Spotify link" />
-
-    <button id="saveBtn" style="background:#1DB954;">
-      Save Album
-    </button>
-  </div>
+  <button id="saveBtn" style="background:#1DB954;">
+    Save Album
+  </button>
 
   <h3>Your Albums</h3>
   <div id="albumWall"></div>
@@ -23,3 +25,4 @@
 
   <script type="module" src="app.js"></script>
 </body>
+</html>
