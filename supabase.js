@@ -21,3 +21,4 @@ export async function saveAlbum() {
 
   console.log(data, error)
 }
+<button id="saveBtn">Save Album</button>
