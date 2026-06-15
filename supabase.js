@@ -7,21 +7,16 @@ export const supabase = createClient(supabaseUrl, supabaseKey)
 async function testSupabase() {
 export async function saveAlbum() {
   const { data: { user } } = await supabase.auth.getUser()
-
-  const { data, error } = await supabase
-    .from('albums')
-    .insert({
-      user_id: user.id,
-      title: "Test Album",
-      genre: "Rock",
-      era: "2000s",
-      length: "Short",
-      image_url: "test.jpg"
-    })
+.insert({
+  title: "Test Album"
+})
+ 
 
   console.log(data, error)
 }
 <button id="saveBtn">Save Album</button>
  import { saveAlbum } from './supabase.js'
 
-document.getElementById("saveBtn").addEventListener("click", saveAlbum)
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("saveBtn").addEventListener("click", saveAlbum)
+})
