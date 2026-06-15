@@ -7,7 +7,33 @@
 
   <h1>Album Wall</h1>
 
-  <button id="saveBtn">Save Album</button>
+  <!-- LOGIN SECTION -->
+  <div id="auth-section">
+    <h2>Login</h2>
+
+    <input id="email" type="email" placeholder="Enter email" />
+    <button id="loginBtn">Send Login Link</button>
+
+    <p id="auth-status"></p>
+  </div>
+
+  <hr>
+
+  <!-- APP SECTION -->
+  <div id="app-section" style="display:none;">
+    <h2>Create Album</h2>
+
+    <input id="title" placeholder="Title" />
+    <input id="genre" placeholder="Genre" />
+    <input id="era" placeholder="Era" />
+
+    <button id="saveBtn">Save Album</button>
+
+    <h3>Your Albums</h3>
+    <div id="albumWall"></div>
+
+    <button id="logoutBtn">Logout</button>
+  </div>
 
   <script type="module" src="app.js"></script>
 
