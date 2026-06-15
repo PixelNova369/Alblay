@@ -5,12 +5,19 @@ const supabaseKey = "sb_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF
 
 export const supabase = createClient(supabaseUrl, supabaseKey)
 async function testSupabase() {
+export async function saveAlbum() {
+  const { data: { user } } = await supabase.auth.getUser()
+
   const { data, error } = await supabase
     .from('albums')
-    .select('*')
+    .insert({
+      user_id: user.id,
+      title: "Test Album",
+      genre: "Rock",
+      era: "2000s",
+      length: "Short",
+      image_url: "test.jpg"
+    })
 
-  console.log("DATA:", data)
-  console.log("ERROR:", error)
+  console.log(data, error)
 }
-
-testSupabase()
