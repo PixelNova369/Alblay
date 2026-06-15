@@ -1,5 +1,1 @@
-import { saveAlbum } from './supabase.js'
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("saveBtn").addEventListener("click", saveAlbum)
-})
+alert("APP.JS LOADED")
