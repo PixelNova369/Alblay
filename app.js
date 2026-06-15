@@ -29,13 +29,14 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
 async function init() {
   const { data } = await supabase.auth.getSession()
 
-  if (data.session) {
-    document.getElementById("auth-section").style.display = "none"
-    document.getElementById("app-section").style.display = "block"
+  const onAppPage = window.location.pathname.includes("app.html")
+
+  if (data.session && onAppPage) {
     loadAlbums()
-  } else {
-    document.getElementById("auth-section").style.display = "flex"
-    document.getElementById("app-section").style.display = "none"
+  }
+
+  if (!data.session && onAppPage) {
+    window.location.href = "/"
   }
 }
 
