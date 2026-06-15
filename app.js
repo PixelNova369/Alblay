@@ -1,35 +1,55 @@
-import { supabase, saveAlbum, logout, getUser, loadAlbums } from './supabase.js'
+import { supabase, saveAlbum, logout, loadAlbums } from './supabase.js'
 
-// LOGIN BUTTON
-document.getElementById("loginBtn").addEventListener("click", async () => {
-  const email = document.getElementById("email").value
+window.addEventListener("DOMContentLoaded", () => {
 
-  await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: "https://pixelnova369.github.io/Alblay/app.html"
-    }
-  })
+  // LOGIN
+  const loginBtn = document.getElementById("loginBtn")
+  if (loginBtn) {
+    loginBtn.addEventListener("click", async () => {
+      const email = document.getElementById("email").value
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: "https://pixelnova369.github.io/Alblay/app.html"
+        }
+      })
+
+      if (error) {
+        alert(error.message)
+      } else {
+        alert("Check your email")
+      }
+    })
+  }
+
+  // SAVE ALBUM
+  const saveBtn = document.getElementById("saveBtn")
+  if (saveBtn) {
+    saveBtn.addEventListener("click", async () => {
+      const title = document.getElementById("title").value
+      const genre = document.getElementById("genre").value
+      const era = document.getElementById("era").value
+      const image = document.getElementById("image").value
+
+      await saveAlbum({ title, genre, era, image })
+      loadAlbums()
+    })
+  }
+
+  // LOGOUT
+  const logoutBtn = document.getElementById("logoutBtn")
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      await logout()
+      location.href = "/"
+    })
+  }
+
+  // SESSION CHECK
+  init()
 })
 
-// SAVE ALBUM
-document.getElementById("saveBtn").addEventListener("click", async () => {
-  const title = document.getElementById("title").value
-  const genre = document.getElementById("genre").value
-  const era = document.getElementById("era").value
-  const image = document.getElementById("image").value
-
-  await saveAlbum({ title, genre, era, image })
-  loadAlbums()
-})
-
-// LOGOUT
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-  await logout()
-  location.reload()
-})
-
-// SESSION CHECK ON LOAD
 async function init() {
   const { data } = await supabase.auth.getSession()
 
@@ -43,5 +63,3 @@ async function init() {
     window.location.href = "/"
   }
 }
-
-init()
