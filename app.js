@@ -1,9 +1,11 @@
 import { supabase, saveAlbum, logout, getUser, loadAlbums } from './supabase.js'
 
 // LOGIN BUTTON
-document.getElementById("loginBtn").addEventListener("click", async () => {
-  const email = document.getElementById("email").value
-  await supabase.auth.signInWithOtp({ email })
+await supabase.auth.signInWithOtp({
+  email,
+  options: {
+    emailRedirectTo: "https://pixelnova369.github.io/Alblay/app.html"
+  }
 })
 
 // SAVE ALBUM
