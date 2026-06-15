@@ -22,3 +22,6 @@ export async function saveAlbum() {
   console.log(data, error)
 }
 <button id="saveBtn">Save Album</button>
+ import { saveAlbum } from './supabase.js'
+
+document.getElementById("saveBtn").addEventListener("click", saveAlbum)
