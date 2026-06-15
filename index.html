@@ -1,9 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Album App</title>
+  <title>Alblay</title>
 </head>
-<body>
+<body style="margin:0; font-family: Arial; background:#000; color:white;">
+
+  <!-- AUTH ONLY -->
+  <div id="auth-section" style="
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    text-align:center;
+  ">
+
+    <h1 style="font-size:32px; margin-bottom:20px;">Album Wall</h1>
+
+    <input id="email" type="email" placeholder="Enter email"
+      style="padding:12px; width:250px; margin-bottom:10px; border-radius:6px; border:none;" />
+
+    <button id="loginBtn"
+      style="padding:12px 20px; background:#1DB954; border:none; color:black; font-weight:bold; border-radius:6px; cursor:pointer;">
+      Send Login Link
+    </button>
+
+    <p id="auth-status"></p>
+  </div>
+
+  <!-- APP -->
+  <div id="app-section" style="display:none; padding:20px;">
+
+    <h2>Create Album</h2>
+
+    <input id="title" placeholder="Title" />
+    <input id="genre" placeholder="Genre" />
+    <input id="era" placeholder="Era" />
+    <input id="image" placeholder="Image URL" />
+    <input id="spotify" placeholder="Spotify link" />
+
+    <button id="saveBtn"
+      style="background:#1DB954; padding:10px; border:none; border-radius:6px; margin-top:10px;">
+      Save Album
+    </button>
+
+    <h3>Your Albums</h3>
+    <div id="albumWall"></div>
+
+    <button id="logoutBtn">Logout</button>
+
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+  
 
   <h1>Album Wall</h1>
 
