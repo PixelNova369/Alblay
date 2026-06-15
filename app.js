@@ -45,7 +45,19 @@ window.addEventListener("DOMContentLoaded", () => {
       location.href = "/"
     })
   }
-
+document.getElementById("menuBtn").addEventListener("click", () => {
+  const panel = document.getElementById("filterPanel")
+  panel.style.display = panel.style.display === "none" ? "flex" : "none"
+})
+const hasListened = false
+ {
+  title,
+  genre,
+  era,
+  image,
+  spotify,
+  has_listened: false
+} 
   // SESSION CHECK
   init()
 })
