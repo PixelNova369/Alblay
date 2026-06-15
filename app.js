@@ -37,3 +37,9 @@ async function init() {
 }
 
 init()
+supabase.auth.onAuthStateChange((event, session) => {
+  if (session) {
+    document.getElementById("auth-section").style.display = "none"
+    document.getElementById("app-section").style.display = "block"
+  }
+})
