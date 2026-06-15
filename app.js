@@ -31,6 +31,9 @@ async function init() {
     document.getElementById("auth-section").style.display = "none"
     document.getElementById("app-section").style.display = "block"
     loadAlbums()
+  } else {
+    document.getElementById("auth-section").style.display = "flex"
+    document.getElementById("app-section").style.display = "none"
   }
 }
 
