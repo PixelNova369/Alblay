@@ -3,18 +3,74 @@
 <head>
   <title>Alblay App</title>
 </head>
+<body style="margin:0; font-family:Arial; background:#0f0f0f; color:white;">
 
-<body style="margin:0; font-family:Arial; background:#111; color:white;">
+  <!-- TOP BAR -->
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 40px;
+    background:#111;
+    border-bottom:1px solid #222;
+  ">
+    <h2 style="margin:0; font-size:28px;">Alblay</h2>
+    <button id="logoutBtn" style="
+      background:#1DB954;
+      border:none;
+      padding:10px 16px;
+      border-radius:6px;
+      font-weight:bold;
+    ">
+      Logout
+    </button>
+  </div>
 
-  <h2>Dashboard</h2>
+  <!-- MAIN CONTENT -->
+  <div style="
+    display:grid;
+    grid-template-columns: 1fr 2fr;
+    gap:30px;
+    padding:30px;
+  ">
 
-  <input id="title" placeholder="Title" />
-  <input id="genre" placeholder="Genre" />
-  <input id="era" placeholder="Era" />
-  <input id="image" placeholder="Image URL" />
-  <input id="spotify" placeholder="Spotify link" />
+    <!-- GENERATOR -->
+    <div style="background:#151515; padding:20px; border-radius:10px;">
+      <h3>Create Album</h3>
 
-  <button id="saveBtn" style="background:#1DB954;">
+      <input id="title" placeholder="Title" style="width:100%; margin:5px 0; padding:10px;" />
+      <input id="genre" placeholder="Genre" style="width:100%; margin:5px 0; padding:10px;" />
+      <input id="era" placeholder="Era" style="width:100%; margin:5px 0; padding:10px;" />
+      <input id="image" placeholder="Image URL" style="width:100%; margin:5px 0; padding:10px;" />
+      <input id="spotify" placeholder="Spotify link" style="width:100%; margin:5px 0; padding:10px;" />
+
+      <button id="saveBtn" style="
+        width:100%;
+        margin-top:10px;
+        background:#1DB954;
+        border:none;
+        padding:12px;
+        font-weight:bold;
+      ">
+        Save Album
+      </button>
+    </div>
+
+    <!-- ALBUM WALL -->
+    <div>
+      <h3>Your Albums</h3>
+      <div id="albumWall" style="
+        display:grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap:20px;
+      "></div>
+    </div>
+
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+
     Save Album
   </button>
 
