@@ -33,7 +33,8 @@ export async function saveAlbum(album) {
       user_id: user.id,
       title: album.title,
       genre: album.genre,
-      era: album.era
+      era: album.era,
+      image_url: album.image
     }
   ])
 }
@@ -49,11 +50,19 @@ export async function loadAlbums() {
 
   data.forEach(a => {
     const div = document.createElement("div")
+
+    div.style.border = "1px solid #ccc"
+    div.style.padding = "10px"
+    div.style.margin = "10px"
+    div.style.borderRadius = "8px"
+    div.style.maxWidth = "250px"
+
     div.innerHTML = `
-      <p><b>${a.title}</b></p>
-      <p>${a.genre} - ${a.era}</p>
-      <hr>
+      <img src="${a.image_url}" style="width:100%; border-radius:6px;" />
+      <h3>${a.title}</h3>
+      <p>${a.genre} • ${a.era}</p>
     `
+
     wall.appendChild(div)
   })
 }
