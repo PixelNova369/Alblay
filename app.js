@@ -3,9 +3,18 @@ import { supabase, saveAlbum, logout, loadAlbums } from './supabase.js'
 window.addEventListener("DOMContentLoaded", () => {
 
   // =====================
-  // STATE
+  // STATE (QUEUE SYSTEM)
   // =====================
+  let albumQueue = []
+  let currentIndex = -1
   let currentAlbum = null
+  let isAnimating = false
+
+  const card = document.getElementById("albumCard")
+  const titleEl = document.getElementById("albumTitle")
+  const artistEl = document.getElementById("albumArtist")
+  const metaEl = document.getElementById("albumMeta")
+  const coverEl = document.getElementById("albumCover")
 
   // =====================
   // MENU TOGGLE
@@ -23,7 +32,6 @@ window.addEventListener("DOMContentLoaded", () => {
   // GENERATE ALBUM
   // =====================
   const generateBtn = document.getElementById("generateBtn")
-  const result = document.getElementById("result")
 
   if (generateBtn) {
     generateBtn.addEventListener("click", () => {
@@ -32,20 +40,17 @@ window.addEventListener("DOMContentLoaded", () => {
       const era = document.getElementById("era").value
       const length = document.getElementById("length").value
 
-      currentAlbum = generateAlbum(genre, era, length)
+      const album = generateAlbum(genre, era, length)
 
-      result.innerHTML = `
-        <div style="padding:20px; background:#1a1a1a; border-radius:12px;">
-          <h2>${currentAlbum.title}</h2>
-          <p>${currentAlbum.artist}</p>
-          <p>${currentAlbum.genre} • ${currentAlbum.era}</p>
-        </div>
-      `
+      albumQueue.push(album)
+      currentIndex = albumQueue.length - 1
+
+      renderAlbum(true)
     })
   }
 
   // =====================
-  // SAVE TO SUPABASE
+  // SAVE ALBUM
   // =====================
   const saveBtn = document.getElementById("saveBtn")
 
@@ -75,8 +80,7 @@ window.addEventListener("DOMContentLoaded", () => {
             genre: currentAlbum.genre,
             era: currentAlbum.era,
             image_url: currentAlbum.image || "",
-            spotify_url: currentAlbum.spotify || "",
-            has_listened: false
+            spotify_url: currentAlbum.spotify || ""
           }
         ])
 
@@ -88,6 +92,29 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     })
   }
+
+  // =====================
+  // NAVIGATION
+  // =====================
+  document.getElementById("nextBtn").addEventListener("click", () => {
+    if (isAnimating || albumQueue.length === 0) return
+
+    if (currentIndex < albumQueue.length - 1) {
+      currentIndex++
+      animateTransition("right")
+      setTimeout(() => renderAlbum(), 180)
+    }
+  })
+
+  document.getElementById("prevBtn").addEventListener("click", () => {
+    if (isAnimating || albumQueue.length === 0) return
+
+    if (currentIndex > 0) {
+      currentIndex--
+      animateTransition("left")
+      setTimeout(() => renderAlbum(), 180)
+    }
+  })
 
   // =====================
   // LOGOUT
@@ -102,30 +129,82 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // =====================
-  // SESSION CHECK
+  // INIT
   // =====================
   init()
 
   async function init() {
     const { data } = await supabase.auth.getSession()
 
-    const onAppPage = window.location.pathname.includes("app.html")
-
-    if (!data.session && onAppPage) {
+    if (!data.session) {
       window.location.href = "/"
       return
     }
 
-    if (data.session && onAppPage) {
-      loadAlbums()
+    loadAlbums()
+  }
+
+  // =====================
+  // RENDER FUNCTION (SPOTIFY STYLE)
+  // =====================
+  function renderAlbum(animateIn = false) {
+
+    if (albumQueue.length === 0) return
+
+    currentAlbum = albumQueue[currentIndex]
+
+    if (animateIn && card) {
+      card.style.opacity = "0"
+      card.style.transform = "translateX(40px)"
     }
+
+    setTimeout(() => {
+
+      titleEl.textContent = currentAlbum.title
+      artistEl.textContent = currentAlbum.artist
+      metaEl.textContent = `${currentAlbum.genre} • ${currentAlbum.era}`
+
+      coverEl.style.background = "#222"
+
+      if (animateIn && card) {
+        card.style.opacity = "1"
+        card.style.transform = "translateX(0)"
+      }
+
+    }, animateIn ? 120 : 0)
+  }
+
+  // =====================
+  // TRANSITION ANIMATION
+  // =====================
+  function animateTransition(direction) {
+    if (!card) return
+
+    isAnimating = true
+
+    card.style.transition = "all 0.18s ease"
+
+    if (direction === "right") {
+      card.style.transform = "translateX(-60px)"
+      card.style.opacity = "0"
+    } else {
+      card.style.transform = "translateX(60px)"
+      card.style.opacity = "0"
+    }
+
+    setTimeout(() => {
+      card.style.transition = "all 0.35s ease"
+      card.style.transform = "translateX(0)"
+      card.style.opacity = "1"
+      isAnimating = false
+    }, 180)
   }
 
 })
 
 
 // =====================
-// ALBUM GENERATOR
+// GENERATOR (SMART FILL)
 // =====================
 function generateAlbum(genre, era, length) {
 
