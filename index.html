@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Alblay</title>
+  <title>Alblay Login</title>
 </head>
 
 <body style="margin:0; background:black; color:white; font-family:Arial;">
@@ -12,40 +13,27 @@
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    text-align:center;
+    gap:12px;
   ">
 
-    <div style="
-      font-size:90px;
-      font-weight:600;
-      letter-spacing:-2px;
-      font-family:'SF Pro Display', Arial, sans-serif;
-      display:flex;
-      justify-content:center;
-      margin-bottom:30px;
-    ">
+    <h1 style="font-size:60px;">
       <span style="color:#FF3B30;">a</span>
       <span style="color:#FF9500;">l</span>
       <span style="color:#FFCC00;">b</span>
       <span style="color:#34C759;">l</span>
       <span style="color:#0A84FF;">a</span>
       <span style="color:#AF52DE;">y</span>
-    </div>
+    </h1>
 
     <input id="email" type="email" placeholder="Email"
-      style="padding:16px; width:320px; font-size:16px; margin-bottom:10px;" />
+      style="padding:14px; width:280px;" />
 
     <input id="password" type="password" placeholder="Password"
-      style="padding:16px; width:320px; font-size:16px; margin-bottom:15px;" />
+      style="padding:14px; width:280px;" />
 
     <button id="loginBtn"
-      style="padding:16px 26px; font-size:16px; margin-bottom:10px;">
+      style="padding:14px 24px; background:#1DB954; border:none; color:white;">
       Login
-    </button>
-
-    <button id="signupBtn"
-      style="padding:12px 20px; font-size:14px; background:#222; color:white; border:1px solid #444;">
-      Sign Up
     </button>
 
     <p id="auth-status"></p>
@@ -54,4 +42,5 @@
 
   <script type="module" src="app.js"></script>
 </body>
+
 </html>
