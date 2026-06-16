@@ -16,7 +16,7 @@
     gap:12px;
   ">
 
-    <h1 style="font-size:60px;">
+    <h1 style="font-size:60px; margin-bottom:20px;">
       <span style="color:#FF3B30;">a</span>
       <span style="color:#FF9500;">l</span>
       <span style="color:#FFCC00;">b</span>
@@ -32,15 +32,22 @@
       style="padding:14px; width:280px;" />
 
     <button id="loginBtn"
-      style="padding:14px 24px; background:#1DB954; border:none; color:white;">
+      style="padding:14px 24px; width:280px; background:#1DB954; border:none; color:white;">
       Login
+    </button>
+
+    <button id="signupBtn"
+      style="padding:14px 24px; width:280px; background:#0A84FF; border:none; color:white;">
+      Sign Up
     </button>
 
     <p id="auth-status"></p>
 
   </div>
 
-<script type="module" src="auth.js"></script>
+  <!-- IMPORTANT: ONLY AUTH SCRIPT HERE -->
+  <script type="module" src="auth.js"></script>
+
 </body>
 
 </html>
