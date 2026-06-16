@@ -2,247 +2,113 @@ import { supabase, logout } from './supabase.js'
 
 const LASTFM_API_KEY = "47339b6a3625cb91d909eedbf7fda6ad"
 
+let currentAlbum = null
+let canSave = true
+
 window.addEventListener("DOMContentLoaded", () => {
 
-  // =====================
-  // STATE
-  // =====================
-  let albumQueue = []
-  let currentIndex = -1
-  let currentAlbum = null
-
-  let canSave = true
-  let listenTimer = null
-  const LISTEN_DURATION = 180
-
-  const card = document.getElementById("albumCard")
   const titleEl = document.getElementById("albumTitle")
   const artistEl = document.getElementById("albumArtist")
   const metaEl = document.getElementById("albumMeta")
   const coverEl = document.getElementById("albumCover")
 
-  const playBtn = document.getElementById("playBtn")
   const saveBtn = document.getElementById("saveBtn")
 
-  // =====================
-  // MENU
-  // =====================
-  document.getElementById("menuBtn").addEventListener("click", () => {
-    const panel = document.getElementById("filterPanel")
-    panel.style.display = panel.style.display === "flex" ? "none" : "flex"
-  })
+  // LOGIN (FIXED)
+  const loginBtn = document.getElementById("loginBtn")
+  if (loginBtn) {
+    loginBtn.addEventListener("click", async () => {
 
-  // =====================
+      const email = document.getElementById("email").value
+      const password = document.getElementById("password").value
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+
+      if (error) alert(error.message)
+      else window.location.href = "app.html"
+    })
+  }
+
+  // LOGOUT
+  const logoutBtn = document.getElementById("logoutBtn")
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      await logout()
+      window.location.href = "index.html"
+    })
+  }
+
   // GENERATE
-  // =====================
   document.getElementById("generateBtn").addEventListener("click", async () => {
-
-    const genre = document.getElementById("genre").value
-    const era = document.getElementById("era").value
-    const length = document.getElementById("length").value
-
-    const album = await generateAlbum(genre, era, length)
-
-    albumQueue.push(album)
-    currentIndex = albumQueue.length - 1
-
+    currentAlbum = await generateAlbum()
     renderAlbum()
-    animate()
   })
 
-  // =====================
+  // PLAY
+  document.getElementById("playBtn").addEventListener("click", () => {
+
+    if (!currentAlbum) return
+
+    const q = encodeURIComponent(`${currentAlbum.artist} ${currentAlbum.title}`)
+    window.open(`https://open.spotify.com/search/${q}`, "_blank")
+
+    startTimer()
+  })
+
   // SAVE
-  // =====================
   saveBtn.addEventListener("click", async () => {
 
-    if (!currentAlbum) return alert("Generate an album first")
-
-    if (!canSave) return alert("Finish listening first")
+    if (!currentAlbum) return
+    if (!canSave) return alert("Wait until listening finishes")
 
     const { data } = await supabase.auth.getSession()
     const user = data.session?.user
 
     if (!user) return alert("Not logged in")
 
-    const { error } = await supabase
-      .from("album_walls")
-      .insert([
-        {
-          user_id: user.id,
-          title: currentAlbum.title,
-          artist: currentAlbum.artist,
-          genre: currentAlbum.genre,
-          era: currentAlbum.era,
-          image_url: currentAlbum.image
-        }
-      ])
-
-    if (error) alert(error.message)
-    else alert("Saved")
-  })
-
-  // =====================
-  // PLAY (SPOTIFY SEARCH + TIMER START)
-  // =====================
-  playBtn.addEventListener("click", () => {
-
-    if (!currentAlbum) return
-
-    const query = encodeURIComponent(`${currentAlbum.artist} ${currentAlbum.title}`)
-
-    window.open(`https://open.spotify.com/search/${query}`, "_blank")
-
-    startListening()
-  })
-
-  // =====================
-  // NAV
-  // =====================
-  document.getElementById("nextBtn").addEventListener("click", () => {
-    if (currentIndex < albumQueue.length - 1) {
-      currentIndex++
-      renderAlbum()
-      animate()
-    }
-  })
-
-  document.getElementById("prevBtn").addEventListener("click", () => {
-    if (currentIndex > 0) {
-      currentIndex--
-      renderAlbum()
-      animate()
-    }
-  })
-
-  // =====================
-  // LOGOUT
-  // =====================
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await logout()
-    window.location.href = "/"
-  })
-
-  // =====================
-  // INIT
-  // =====================
-  init()
-
-  async function init() {
-    const { data } = await supabase.auth.getSession()
-    if (!data.session) window.location.href = "/"
-  }
-
-  // =====================
-  // RENDER
-  // =====================
-  function renderAlbum() {
-
-    currentAlbum = albumQueue[currentIndex]
-
-    titleEl.textContent = currentAlbum.title
-    artistEl.textContent = currentAlbum.artist
-    metaEl.textContent = `${currentAlbum.genre} • ${currentAlbum.era}`
-
-    if (currentAlbum.image) {
-      coverEl.style.backgroundImage = `url(${currentAlbum.image})`
-      coverEl.style.backgroundSize = "cover"
-      coverEl.style.backgroundPosition = "center"
-    } else {
-      coverEl.style.background = "#222"
-      coverEl.style.backgroundImage = "none"
-    }
-  }
-
-  // =====================
-  // ANIMATION
-  // =====================
-  function animate() {
-    card.style.opacity = "0"
-    card.style.transform = "translateX(40px)"
-
-    setTimeout(() => {
-      card.style.opacity = "1"
-      card.style.transform = "translateX(0)"
-    }, 150)
-  }
-
-  // =====================
-  // LISTENING TIMER
-  // =====================
-  function startListening() {
-
-    canSave = false
-    saveBtn.style.opacity = "0.4"
-    saveBtn.style.pointerEvents = "none"
-
-    clearInterval(listenTimer)
-
-    let timeLeft = LISTEN_DURATION
-
-    listenTimer = setInterval(() => {
-
-      timeLeft--
-
-      if (timeLeft <= 0) {
-        clearInterval(listenTimer)
-        canSave = true
-
-        saveBtn.style.opacity = "1"
-        saveBtn.style.pointerEvents = "auto"
+    await supabase.from("album_walls").insert([
+      {
+        user_id: user.id,
+        ...currentAlbum
       }
+    ])
 
-    }, 1000)
-  }
+    alert("Saved!")
+  })
 
 })
 
-
 // =====================
-// GENERATOR + LAST.FM IMAGES
+// GENERATE ALBUM
 // =====================
-async function generateAlbum(genre, era, length) {
+async function generateAlbum() {
 
   const genres = ["Rock", "Pop", "Hip Hop", "Electronic"]
-
   const artists = {
-    "Rock": ["Arctic Monkeys", "Oasis", "The Strokes"],
-    "Pop": ["Taylor Swift", "Dua Lipa", "The Weeknd"],
-    "Hip Hop": ["Kendrick Lamar", "Drake", "J. Cole"],
-    "Electronic": ["Daft Punk", "Calvin Harris", "Disclosure"]
+    Rock: ["Arctic Monkeys", "Oasis"],
+    Pop: ["Dua Lipa", "The Weeknd"],
+    "Hip Hop": ["Drake", "Kendrick Lamar"],
+    Electronic: ["Daft Punk", "Calvin Harris"]
   }
 
-  const eras = ["1960s","1970s","1980s","1990s","2000s","2010s","2020s"]
+  const titles = ["Neon Drift", "Midnight Signals", "Echoes"]
 
-  const titles = [
-    "Midnight Signals",
-    "Echoes in the Static",
-    "Neon Drift",
-    "Lost Frequency",
-    "Digital Heartbreak",
-    "Parallel Nights"
-  ]
+  const genre = genres[Math.floor(Math.random() * genres.length)]
+  const artist = artists[genre][Math.floor(Math.random() * artists[genre].length)]
+  const title = titles[Math.floor(Math.random() * titles.length)]
 
-  const finalGenre = genre || genres[Math.floor(Math.random() * genres.length)]
-  const finalEra = era || eras[Math.floor(Math.random() * eras.length)]
+  const image = await fetchImage(artist, title)
 
-  const finalArtist =
-    artists[finalGenre][Math.floor(Math.random() * artists[finalGenre].length)]
-
-  const finalTitle =
-    titles[Math.floor(Math.random() * titles.length)]
-
-  const image = await fetchAlbumImage(finalArtist, finalTitle)
-
-  return {
-    title: finalTitle,
-    artist: finalArtist,
-    genre: finalGenre,
-    era: finalEra,
-    image
-  }
+  return { genre, artist, title, image }
 }
 
-async function fetchAlbumImage(artist, album) {
+// =====================
+// LAST.FM IMAGE
+// =====================
+async function fetchImage(artist, album) {
 
   try {
     const res = await fetch(
@@ -253,13 +119,46 @@ async function fetchAlbumImage(artist, album) {
 
     const match = data?.results?.albummatches?.album?.[0]
 
-    const img =
-      match?.image?.find(i => i.size === "extralarge") ||
-      match?.image?.at(-1)
+    return match?.image?.at(-1)?.["#text"] || ""
 
-    return img?.["#text"] || ""
-
-  } catch (e) {
+  } catch {
     return ""
   }
+}
+
+// =====================
+// RENDER
+// =====================
+function renderAlbum() {
+
+  const titleEl = document.getElementById("albumTitle")
+  const artistEl = document.getElementById("albumArtist")
+  const metaEl = document.getElementById("albumMeta")
+  const coverEl = document.getElementById("albumCover")
+
+  titleEl.textContent = currentAlbum.title
+  artistEl.textContent = currentAlbum.artist
+  metaEl.textContent = currentAlbum.genre
+
+  coverEl.style.backgroundImage = currentAlbum.image
+    ? `url(${currentAlbum.image})`
+    : ""
+  coverEl.style.backgroundSize = "cover"
+  coverEl.style.backgroundPosition = "center"
+}
+
+// =====================
+// TIMER (3 MIN LOCK)
+// =====================
+function startTimer() {
+
+  canSave = false
+  const saveBtn = document.getElementById("saveBtn")
+
+  saveBtn.style.opacity = "0.5"
+
+  setTimeout(() => {
+    canSave = true
+    saveBtn.style.opacity = "1"
+  }, 180000)
 }
