@@ -1,4 +1,4 @@
-import { supabase, saveAlbum, logout } from './supabase.js'
+import { supabase, logout } from './supabase.js'
 
 window.addEventListener("DOMContentLoaded", () => {
 
@@ -8,13 +8,21 @@ window.addEventListener("DOMContentLoaded", () => {
   let albumQueue = []
   let currentIndex = -1
   let currentAlbum = null
-  let isAnimating = false
+
+  let isPlaying = false
+  let canSave = true
+  let listenTimer = null
+  let remainingTime = 0
+
+  const LISTEN_DURATION = 180 // 3 minutes
 
   const card = document.getElementById("albumCard")
   const titleEl = document.getElementById("albumTitle")
   const artistEl = document.getElementById("albumArtist")
   const metaEl = document.getElementById("albumMeta")
-  const coverEl = document.getElementById("albumCover")
+
+  const playBtn = document.getElementById("playBtn")
+  const saveBtn = document.getElementById("saveBtn")
 
   // =====================
   // MENU
@@ -42,11 +50,35 @@ window.addEventListener("DOMContentLoaded", () => {
   })
 
   // =====================
-  // SAVE
+  // PLAY (START TIMER + OPEN SPOTIFY)
   // =====================
-  document.getElementById("saveBtn").addEventListener("click", async () => {
+  playBtn.addEventListener("click", () => {
 
-    if (!currentAlbum) return alert("Generate first")
+    if (!currentAlbum) return
+
+    const query = encodeURIComponent(
+      `${currentAlbum.artist} ${currentAlbum.title}`
+    )
+
+    window.open(
+      `https://open.spotify.com/search/${query}`,
+      "_blank"
+    )
+
+    startListeningSession()
+  })
+
+  // =====================
+  // SAVE (LOCKED UNTIL TIMER DONE)
+  // =====================
+  saveBtn.addEventListener("click", async () => {
+
+    if (!currentAlbum) return alert("Generate an album first")
+
+    if (!canSave) {
+      alert(`You must listen for ${LISTEN_DURATION}s before saving`)
+      return
+    }
 
     const { data } = await supabase.auth.getSession()
     const user = data.session?.user
@@ -68,19 +100,18 @@ window.addEventListener("DOMContentLoaded", () => {
     if (error) {
       alert(error.message)
     } else {
-      alert("Saved")
-      loadWall()
+      alert("Saved to album wall")
     }
   })
 
   // =====================
-  // NAV
+  // NAVIGATION
   // =====================
   document.getElementById("nextBtn").addEventListener("click", () => {
     if (currentIndex < albumQueue.length - 1) {
       currentIndex++
       animate()
-      setTimeout(() => renderAlbum(), 150)
+      setTimeout(renderAlbum, 150)
     }
   })
 
@@ -88,7 +119,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (currentIndex > 0) {
       currentIndex--
       animate()
-      setTimeout(() => renderAlbum(), 150)
+      setTimeout(renderAlbum, 150)
     }
   })
 
@@ -108,7 +139,6 @@ window.addEventListener("DOMContentLoaded", () => {
   async function init() {
     const { data } = await supabase.auth.getSession()
     if (!data.session) window.location.href = "/"
-    loadWall()
   }
 
   // =====================
@@ -136,42 +166,42 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // =====================
-  // WALL
+  // LISTENING SESSION (CORE LOGIC)
   // =====================
-  async function loadWall() {
+  function startListeningSession() {
 
-    const { data: sessionData } = await supabase.auth.getSession()
-    const user = sessionData.session?.user
+    isPlaying = true
+    canSave = false
+    remainingTime = LISTEN_DURATION
 
-    if (!user) return
+    saveBtn.style.opacity = "0.4"
+    saveBtn.style.pointerEvents = "none"
 
-    const { data } = await supabase
-      .from("album_walls")
-      .select("*")
-      .eq("user_id", user.id)
+    if (listenTimer) clearInterval(listenTimer)
 
-    const wall = document.getElementById("albumWall")
-    wall.innerHTML = ""
+    listenTimer = setInterval(() => {
 
-    data.forEach(a => {
-      const div = document.createElement("div")
-      div.style.margin = "10px"
-      div.style.padding = "10px"
-      div.style.background = "#111"
-      div.style.borderRadius = "10px"
-      div.style.width = "180px"
+      remainingTime--
 
-      div.innerHTML = `
-        <b>${a.title}</b><br>
-        <small>${a.artist}</small><br>
-        <small>${a.genre} • ${a.era}</small>
-      `
+      if (remainingTime <= 0) {
+        clearInterval(listenTimer)
+        unlockSave()
+      }
 
-      wall.appendChild(div)
-    })
+    }, 1000)
+  }
+
+  function unlockSave() {
+
+    isPlaying = false
+    canSave = true
+
+    saveBtn.style.opacity = "1"
+    saveBtn.style.pointerEvents = "auto"
   }
 
 })
+
 
 // =====================
 // GENERATOR
@@ -201,7 +231,8 @@ function generateAlbum(genre, era, length) {
   const finalGenre = genre || genres[Math.floor(Math.random() * genres.length)]
   const finalEra = era || eras[Math.floor(Math.random() * eras.length)]
 
-  const finalArtist = artists[finalGenre][Math.floor(Math.random() * artists[finalGenre].length)]
+  const finalArtist =
+    artists[finalGenre][Math.floor(Math.random() * artists[finalGenre].length)]
 
   return {
     title: titles[Math.floor(Math.random() * titles.length)],
