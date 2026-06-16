@@ -11,11 +11,13 @@
   <div style="
     display:flex;
     justify-content:space-between;
+    align-items:center;
     padding:20px;
     background:#111;
+    border-bottom:1px solid #222;
   ">
 
-    <div style="font-size:26px;">
+    <div style="font-size:26px; font-weight:bold;">
       <span style="color:#FF3B30;">a</span>
       <span style="color:#FF9500;">l</span>
       <span style="color:#FFCC00;">b</span>
@@ -24,7 +26,8 @@
       <span style="color:#AF52DE;">y</span>
     </div>
 
-    <button id="logoutBtn" style="background:#1DB954; border:none; padding:10px;">
+    <button id="logoutBtn"
+      style="padding:10px 16px; background:#1DB954; border:none; color:white;">
       Logout
     </button>
 
@@ -50,11 +53,13 @@
       <option>2020s</option>
     </select>
 
-    <button id="generateBtn" style="background:#1DB954; border:none; padding:10px;">
+    <button id="generateBtn"
+      style="padding:10px 16px; background:#1DB954; border:none; color:white;">
       Generate Album
     </button>
 
-    <button id="saveBtn" style="background:#0A84FF; border:none; padding:10px;">
+    <button id="saveBtn"
+      style="padding:10px 16px; background:#0A84FF; border:none; color:white;">
       Save to Wall
     </button>
 
@@ -76,13 +81,15 @@
     <p id="albumMeta"></p>
 
     <button id="playBtn"
-      style="margin-top:10px; padding:12px 20px; background:#1DB954; border:none;">
+      style="margin-top:10px; padding:12px 20px; background:#1DB954; border:none; color:white;">
       ▶ Play on Spotify
     </button>
 
   </div>
 
+  <!-- IMPORTANT: ONLY APP SCRIPT HERE -->
   <script type="module" src="app.js"></script>
+
 </body>
 
 </html>
