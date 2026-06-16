@@ -1,156 +1,217 @@
 <!DOCTYPE html>
+
 <html>
+
 <head>
+
   <title>Alblay App</title>
+
 </head>
+
 <body style="margin:0; font-family:Arial; background:#0f0f0f; color:white;">
 
   <!-- TOP BAR -->
+
   <div style="
+
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
+
     padding:20px 40px;
+
     background:#111;
+
     border-bottom:1px solid #222;
+
   ">
+
     <div style="font-size:28px; font-weight:600; display:flex; letter-spacing:-1px;">
-  <span style="color:#FF3B30;">a</span>
-  <span style="color:#FF9500;">l</span>
-  <span style="color:#FFCC00;">b</span>
-  <span style="color:#34C759;">l</span>
-  <span style="color:#0A84FF;">a</span>
-  <span style="color:#AF52DE;">y</span>
-</div>
-    <button id="logoutBtn" style="
-      background:#1DB954;
-      border:none;
-      padding:10px 16px;
-      border-radius:6px;
-      font-weight:bold;
-      <button id="menuBtn" style="
-  background:#222;
-  color:white;
-  border:none;
-  padding:10px 14px;
-  border-radius:8px;
-  margin-left:20px;
-   <a href="${a.spotify_url}" target="_blank"
-style="
-  display:inline-block;
-  margin-top:10px;
-  padding:8px 12px;
-  background:#1DB954;
-  color:black;
-  text-decoration:none;
-  border-radius:6px;
-">
-🎵 Listen on Spotify
-</a>   
-">
-☰ Menu
-</button>
-    ">
-      Logout
-    </button>
-  </div>
-<div id="filterPanel" style="
-  display:none;
-  padding:20px 40px;
-  background:#151515;
-  gap:20px;
-  flex-wrap:wrap;
-">
 
-  <select id="filterEra">
-    <option value="">Era</option>
-    <option>70s</option>
-    <option>80s</option>
-    <option>90s</option>
-    <option>2000s</option>
-    <option>2010s</option>
-    <option>2020s</option>
-  </select>
+      <span style="color:#FF3B30;">a</span>
 
-  <select id="filterGenre">
-    <option value="">Genre</option>
-    <option>Pop</option>
-    <option>Rock</option>
-    <option>Hip Hop</option>
-    <option>EDM</option>
-  </select>
+      <span style="color:#FF9500;">l</span>
 
-  <select id="filterLength">
-    <option value="">Length</option>
-    <option>Short</option>
-    <option>Medium</option>
-    <option>Long</option>
-  </select>
+      <span style="color:#FFCC00;">b</span>
 
-</div>
-  <!-- MAIN CONTENT -->
-<div style="
-  display:grid;
-  grid-template-columns: 1fr 2fr;
-  gap:60px;
-  padding:60px;
-  font-size:22px;
-"> 
+      <span style="color:#34C759;">l</span>
 
-    <!-- GENERATOR -->
- <div style="
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-min-height:80vh;
-gap:25px;
-">
-   style="
-width:500px;
-max-width:90%;
-padding:24px;
-font-size:24px;
-border-radius:16px;
-" 
-   
-  style="
-width:500px;
-max-width:90%;
-padding:24px;
-font-size:28px;
-font-weight:bold;
-background:#1DB954;
-border:none;
-border-radius:16px;
-" 
-       Add to Album Wall
-      </button>
+      <span style="color:#0A84FF;">a</span>
+
+      <span style="color:#AF52DE;">y</span>
+
     </div>
 
-    <!-- ALBUM WALL -->
     <div>
-      <h3>Your Albums</h3>
-      <div id="albumWall" style="
-        display:grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap:20px;
-      "></div>
+
+      <button id="menuBtn" style="
+
+        background:#222;
+
+        color:white;
+
+        border:none;
+
+        padding:10px 14px;
+
+        border-radius:8px;
+
+        margin-right:10px;
+
+      ">
+
+        ☰ Menu
+
+      </button>
+
+      <button id="logoutBtn" style="
+
+        background:#1DB954;
+
+        border:none;
+
+        padding:10px 16px;
+
+        border-radius:6px;
+
+        font-weight:bold;
+
+      ">
+
+        Logout
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- FILTER PANEL -->
+
+  <div id="filterPanel" style="
+
+    display:none;
+
+    padding:20px 40px;
+
+    background:#151515;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+  ">
+
+    <select id="era" style="padding:12px;">
+
+      <option value="">Any Era</option>
+
+      <option>1960s</option>
+
+      <option>1970s</option>
+
+      <option>1980s</option>
+
+      <option>1990s</option>
+
+      <option>2000s</option>
+
+      <option>2010s</option>
+
+      <option>2020s</option>
+
+    </select>
+
+    <select id="genre" style="padding:12px;">
+
+      <option value="">Any Genre</option>
+
+      <option>Rock</option>
+
+      <option>Pop</option>
+
+      <option>Hip Hop</option>
+
+      <option>Electronic</option>
+
+    </select>
+
+    <select id="length" style="padding:12px;">
+
+      <option value="">Any Length</option>
+
+      <option>Short</option>
+
+      <option>Medium</option>
+
+      <option>Long</option>
+
+    </select>
+
+  </div>
+
+  <!-- MAIN CONTENT -->
+
+  <div style="
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    min-height:80vh;
+
+    gap:25px;
+
+    padding:40px;
+
+  ">
+
+    <button id="saveBtn" style="
+
+      width:500px;
+
+      max-width:90%;
+
+      padding:24px;
+
+      font-size:28px;
+
+      font-weight:bold;
+
+      background:#1DB954;
+
+      border:none;
+
+      border-radius:16px;
+
+    ">
+
+      Generate Album
+
+    </button>
+
+    <div id="result" style="
+
+      width:700px;
+
+      max-width:95%;
+
+      text-align:center;
+
+    ">
+
     </div>
 
   </div>
 
   <script type="module" src="app.js"></script>
+
 </body>
 
-    Save Album
-  </button>
-
-  <h3>Your Albums</h3>
-  <div id="albumWall"></div>
-
-  <button id="logoutBtn">Logout</button>
-
-  <script type="module" src="app.js"></script>
-</body>
 </html>
