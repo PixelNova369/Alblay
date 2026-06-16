@@ -1,5 +1,7 @@
 import { supabase, logout } from './supabase.js'
 
+const LASTFM_API_KEY = "47339b6a3625cb91d909eedbf7fda6ad"
+
 window.addEventListener("DOMContentLoaded", () => {
 
   // =====================
@@ -9,17 +11,15 @@ window.addEventListener("DOMContentLoaded", () => {
   let currentIndex = -1
   let currentAlbum = null
 
-  let isPlaying = false
   let canSave = true
   let listenTimer = null
-  let remainingTime = 0
-
-  const LISTEN_DURATION = 180 // 3 minutes
+  const LISTEN_DURATION = 180
 
   const card = document.getElementById("albumCard")
   const titleEl = document.getElementById("albumTitle")
   const artistEl = document.getElementById("albumArtist")
   const metaEl = document.getElementById("albumMeta")
+  const coverEl = document.getElementById("albumCover")
 
   const playBtn = document.getElementById("playBtn")
   const saveBtn = document.getElementById("saveBtn")
@@ -35,50 +35,29 @@ window.addEventListener("DOMContentLoaded", () => {
   // =====================
   // GENERATE
   // =====================
-  document.getElementById("generateBtn").addEventListener("click", () => {
+  document.getElementById("generateBtn").addEventListener("click", async () => {
 
     const genre = document.getElementById("genre").value
     const era = document.getElementById("era").value
     const length = document.getElementById("length").value
 
-    const album = generateAlbum(genre, era, length)
+    const album = await generateAlbum(genre, era, length)
 
     albumQueue.push(album)
     currentIndex = albumQueue.length - 1
 
-    renderAlbum(true)
+    renderAlbum()
+    animate()
   })
 
   // =====================
-  // PLAY (START TIMER + OPEN SPOTIFY)
-  // =====================
-  playBtn.addEventListener("click", () => {
-
-    if (!currentAlbum) return
-
-    const query = encodeURIComponent(
-      `${currentAlbum.artist} ${currentAlbum.title}`
-    )
-
-    window.open(
-      `https://open.spotify.com/search/${query}`,
-      "_blank"
-    )
-
-    startListeningSession()
-  })
-
-  // =====================
-  // SAVE (LOCKED UNTIL TIMER DONE)
+  // SAVE
   // =====================
   saveBtn.addEventListener("click", async () => {
 
     if (!currentAlbum) return alert("Generate an album first")
 
-    if (!canSave) {
-      alert(`You must listen for ${LISTEN_DURATION}s before saving`)
-      return
-    }
+    if (!canSave) return alert("Finish listening first")
 
     const { data } = await supabase.auth.getSession()
     const user = data.session?.user
@@ -93,33 +72,45 @@ window.addEventListener("DOMContentLoaded", () => {
           title: currentAlbum.title,
           artist: currentAlbum.artist,
           genre: currentAlbum.genre,
-          era: currentAlbum.era
+          era: currentAlbum.era,
+          image_url: currentAlbum.image
         }
       ])
 
-    if (error) {
-      alert(error.message)
-    } else {
-      alert("Saved to album wall")
-    }
+    if (error) alert(error.message)
+    else alert("Saved")
   })
 
   // =====================
-  // NAVIGATION
+  // PLAY (SPOTIFY SEARCH + TIMER START)
+  // =====================
+  playBtn.addEventListener("click", () => {
+
+    if (!currentAlbum) return
+
+    const query = encodeURIComponent(`${currentAlbum.artist} ${currentAlbum.title}`)
+
+    window.open(`https://open.spotify.com/search/${query}`, "_blank")
+
+    startListening()
+  })
+
+  // =====================
+  // NAV
   // =====================
   document.getElementById("nextBtn").addEventListener("click", () => {
     if (currentIndex < albumQueue.length - 1) {
       currentIndex++
+      renderAlbum()
       animate()
-      setTimeout(renderAlbum, 150)
     }
   })
 
   document.getElementById("prevBtn").addEventListener("click", () => {
     if (currentIndex > 0) {
       currentIndex--
+      renderAlbum()
       animate()
-      setTimeout(renderAlbum, 150)
     }
   })
 
@@ -145,11 +136,21 @@ window.addEventListener("DOMContentLoaded", () => {
   // RENDER
   // =====================
   function renderAlbum() {
+
     currentAlbum = albumQueue[currentIndex]
 
     titleEl.textContent = currentAlbum.title
     artistEl.textContent = currentAlbum.artist
     metaEl.textContent = `${currentAlbum.genre} • ${currentAlbum.era}`
+
+    if (currentAlbum.image) {
+      coverEl.style.backgroundImage = `url(${currentAlbum.image})`
+      coverEl.style.backgroundSize = "cover"
+      coverEl.style.backgroundPosition = "center"
+    } else {
+      coverEl.style.background = "#222"
+      coverEl.style.backgroundImage = "none"
+    }
   }
 
   // =====================
@@ -166,47 +167,40 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // =====================
-  // LISTENING SESSION (CORE LOGIC)
+  // LISTENING TIMER
   // =====================
-  function startListeningSession() {
+  function startListening() {
 
-    isPlaying = true
     canSave = false
-    remainingTime = LISTEN_DURATION
-
     saveBtn.style.opacity = "0.4"
     saveBtn.style.pointerEvents = "none"
 
-    if (listenTimer) clearInterval(listenTimer)
+    clearInterval(listenTimer)
+
+    let timeLeft = LISTEN_DURATION
 
     listenTimer = setInterval(() => {
 
-      remainingTime--
+      timeLeft--
 
-      if (remainingTime <= 0) {
+      if (timeLeft <= 0) {
         clearInterval(listenTimer)
-        unlockSave()
+        canSave = true
+
+        saveBtn.style.opacity = "1"
+        saveBtn.style.pointerEvents = "auto"
       }
 
     }, 1000)
-  }
-
-  function unlockSave() {
-
-    isPlaying = false
-    canSave = true
-
-    saveBtn.style.opacity = "1"
-    saveBtn.style.pointerEvents = "auto"
   }
 
 })
 
 
 // =====================
-// GENERATOR
+// GENERATOR + LAST.FM IMAGES
 // =====================
-function generateAlbum(genre, era, length) {
+async function generateAlbum(genre, era, length) {
 
   const genres = ["Rock", "Pop", "Hip Hop", "Electronic"]
 
@@ -234,10 +228,38 @@ function generateAlbum(genre, era, length) {
   const finalArtist =
     artists[finalGenre][Math.floor(Math.random() * artists[finalGenre].length)]
 
+  const finalTitle =
+    titles[Math.floor(Math.random() * titles.length)]
+
+  const image = await fetchAlbumImage(finalArtist, finalTitle)
+
   return {
-    title: titles[Math.floor(Math.random() * titles.length)],
+    title: finalTitle,
     artist: finalArtist,
     genre: finalGenre,
-    era: finalEra
+    era: finalEra,
+    image
+  }
+}
+
+async function fetchAlbumImage(artist, album) {
+
+  try {
+    const res = await fetch(
+      `https://ws.audioscrobbler.com/2.0/?method=album.search&album=${encodeURIComponent(album)}&api_key=${LASTFM_API_KEY}&format=json`
+    )
+
+    const data = await res.json()
+
+    const match = data?.results?.albummatches?.album?.[0]
+
+    const img =
+      match?.image?.find(i => i.size === "extralarge") ||
+      match?.image?.at(-1)
+
+    return img?.["#text"] || ""
+
+  } catch (e) {
+    return ""
   }
 }
