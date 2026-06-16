@@ -1,16 +1,15 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabaseUrl = "https://imsevturnvlegnmszuyx.supabase.co"
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imltc2V2dHVybnZsZWdubXN6dXl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MjA5NTEsImV4cCI6MjA5NzA5Njk1MX0.1auc5wncmyL7OukXaP13lmuhl_PuPCAIXAqADnztiGg"
+const supabaseKey = "YOUR_ANON_KEY_HERE"
 
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
 
 // =====================
-// AUTH (EMAIL + PASSWORD)
+// AUTH
 // =====================
 
-// LOGIN
 export async function login(email, password) {
   return await supabase.auth.signInWithPassword({
     email,
@@ -18,7 +17,6 @@ export async function login(email, password) {
   })
 }
 
-// SIGN UP
 export async function signup(email, password) {
   return await supabase.auth.signUp({
     email,
@@ -26,12 +24,10 @@ export async function signup(email, password) {
   })
 }
 
-// LOGOUT
 export async function logout() {
   return await supabase.auth.signOut()
 }
 
-// GET USER
 export async function getUser() {
   const { data } = await supabase.auth.getUser()
   return data?.user || null
@@ -51,23 +47,33 @@ export async function saveAlbum(album) {
     return
   }
 
-  return await supabase.from('albums').insert([
-    {
-      user_id: user.id,
-      title: album.title,
-      genre: album.genre,
-      era: album.era,
-      image_url: album.image || ""
-    }
-  ])
+  return await supabase
+    .from('album_walls')
+    .insert([
+      {
+        user_id: user.id,
+        title: album.title,
+        genre: album.genre,
+        era: album.era,
+        image_url: album.image || "",
+        spotify_url: album.spotify || "",
+        has_listened: album.has_listened || false
+      }
+    ])
 }
 
 
 // LOAD ALBUMS
 export async function loadAlbums() {
+  const user = await getUser()
+
+  if (!user) return
+
   const { data, error } = await supabase
-    .from('albums')
+    .from('album_walls')
     .select("*")
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
 
   if (error) {
     console.error(error)
@@ -79,7 +85,7 @@ export async function loadAlbums() {
 
   wall.innerHTML = ""
 
-  data.forEach(a => {
+  data.forEach(album => {
     const div = document.createElement("div")
 
     div.style.border = "1px solid #333"
@@ -90,4 +96,12 @@ export async function loadAlbums() {
     div.style.background = "#111"
 
     div.innerHTML = `
-      <img src="${a.image_url || ''}" style="width:100%; border-radius:6px
+      ${album.image_url ? `<img src="${album.image_url}" style="width:100%; border-radius:6px;">` : ""}
+      <h3>${album.title}</h3>
+      <p>${album.artist || ""}</p>
+      <p>${album.genre} • ${album.era}</p>
+    `
+
+    wall.appendChild(div)
+  })
+}
