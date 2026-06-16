@@ -1,7 +1,18 @@
 import { supabase, saveAlbum, logout, loadAlbums } from './supabase.js'
 
 window.addEventListener("DOMContentLoaded", () => {
+const menuBtn = document.getElementById("menuBtn")
 
+if (menuBtn) {
+  menuBtn.addEventListener("click", () => {
+    const panel = document.getElementById("filterPanel")
+
+    panel.style.display =
+      panel.style.display === "flex"
+        ? "none"
+        : "flex"
+  })
+}
   // LOGIN
   const loginBtn = document.getElementById("loginBtn")
   if (loginBtn) {
