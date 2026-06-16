@@ -5,7 +5,7 @@
   <title>Alblay App</title>
 </head>
 
-<body style="margin:0; font-family:Arial; background:#0f0f0f; color:white;">
+<body style="margin:0; font-family:Arial; background:#0f0f0f; color:white; overflow:hidden;">
 
   <!-- TOP BAR -->
   <div style="
@@ -35,7 +35,7 @@
         border-radius:8px;
         margin-right:10px;
       ">
-        ☰ Menu
+        ☰
       </button>
 
       <button id="logoutBtn" style="
@@ -51,13 +51,19 @@
 
   </div>
 
-  <!-- FILTER PANEL -->
+  <!-- LEFT DRAWER (GENERATOR CONTROLS) -->
   <div id="filterPanel" style="
-    display:none;
-    padding:20px 40px;
+    position:absolute;
+    top:80px;
+    left:0;
+    width:260px;
+    height:calc(100vh - 80px);
     background:#151515;
-    gap:20px;
-    flex-wrap:wrap;
+    padding:20px;
+    display:none;
+    flex-direction:column;
+    gap:15px;
+    border-right:1px solid #222;
   ">
 
     <select id="era" style="padding:12px;">
@@ -86,54 +92,93 @@
       <option>Long</option>
     </select>
 
-  </div>
-
-  <!-- MAIN CONTENT -->
-  <div style="
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    min-height:80vh;
-    gap:25px;
-    padding:40px;
-  ">
-
-    <!-- GENERATE BUTTON -->
     <button id="generateBtn" style="
-      width:500px;
-      max-width:90%;
-      padding:24px;
-      font-size:28px;
-      font-weight:bold;
+      padding:16px;
       background:#1DB954;
       border:none;
-      border-radius:16px;
+      border-radius:10px;
+      font-weight:bold;
+      margin-top:10px;
     ">
-      Generate Album
+      Generate
     </button>
 
-    <!-- SAVE BUTTON -->
     <button id="saveBtn" style="
-      width:500px;
-      max-width:90%;
-      padding:20px;
-      font-size:20px;
-      font-weight:bold;
+      padding:16px;
       background:#0A84FF;
       border:none;
-      border-radius:16px;
+      border-radius:10px;
+      font-weight:bold;
     ">
-      Save to Album Wall
+      Save
     </button>
 
-    <!-- RESULT -->
-    <div id="result" style="
-      width:700px;
-      max-width:95%;
+  </div>
+
+  <!-- MAIN VIEW -->
+  <div style="
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  ">
+
+    <!-- LEFT ARROW -->
+    <button id="prevBtn" style="
+      position:absolute;
+      left:30px;
+      font-size:40px;
+      background:none;
+      border:none;
+      color:white;
+      cursor:pointer;
+    ">‹</button>
+
+    <!-- ALBUM CARD -->
+    <div id="albumCard" style="
+      width:420px;
       text-align:center;
+      transform:translateX(0);
+      opacity:1;
+      transition:all 0.35s ease;
     ">
+
+      <div id="albumCover" style="
+        width:320px;
+        height:320px;
+        margin:0 auto 20px auto;
+        background:#222;
+        border-radius:16px;
+      "></div>
+
+      <h2 id="albumTitle">Generate an album</h2>
+      <p id="albumArtist"></p>
+      <p id="albumMeta"></p>
+
+      <button id="playBtn" style="
+        margin-top:20px;
+        padding:14px 24px;
+        border:none;
+        border-radius:30px;
+        background:#1DB954;
+        font-weight:bold;
+        cursor:pointer;
+      ">
+        ▶ Play on Spotify
+      </button>
+
     </div>
+
+    <!-- RIGHT ARROW -->
+    <button id="nextBtn" style="
+      position:absolute;
+      right:30px;
+      font-size:40px;
+      background:none;
+      border:none;
+      color:white;
+      cursor:pointer;
+    ">›</button>
 
   </div>
 
