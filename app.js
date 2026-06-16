@@ -27,7 +27,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("saveBtn")
   if (saveBtn) {
     saveBtn.addEventListener("click", async () => {
-      const title = document.getElementById("title").value
+
       const genre = document.getElementById("genre").value
       const era = document.getElementById("era").value
       const image = document.getElementById("image").value
