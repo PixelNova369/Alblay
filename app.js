@@ -1,20 +1,20 @@
 import { supabase, saveAlbum, logout, loadAlbums } from './supabase.js'
 
 window.addEventListener("DOMContentLoaded", () => {
-const menuBtn = document.getElementById("menuBtn")
 
-if (menuBtn) {
-  menuBtn.addEventListener("click", () => {
-    const panel = document.getElementById("filterPanel")
+  // MENU TOGGLE (safe single version)
+  const menuBtn = document.getElementById("menuBtn")
+  const panel = document.getElementById("filterPanel")
 
-    panel.style.display =
-      panel.style.display === "flex"
-        ? "none"
-        : "flex"
-  })
-}
-  // LOGIN
+  if (menuBtn && panel) {
+    menuBtn.addEventListener("click", () => {
+      panel.style.display = panel.style.display === "flex" ? "none" : "flex"
+    })
+  }
+
+  // LOGIN (MAGIC LINK AUTH — Supabase OTP)
   const loginBtn = document.getElementById("loginBtn")
+
   if (loginBtn) {
     loginBtn.addEventListener("click", async () => {
       const email = document.getElementById("email").value
@@ -29,47 +29,51 @@ if (menuBtn) {
       if (error) {
         alert(error.message)
       } else {
-        alert("Check your email")
+        alert("Check your email to log in")
       }
-    })
-  }
-
-  // SAVE ALBUM
-  const saveBtn = document.getElementById("saveBtn")
-  if (saveBtn) {
-    saveBtn.addEventListener("click", async () => {
-
-      const genre = document.getElementById("genre").value
-      const era = document.getElementById("era").value
-      const image = document.getElementById("image").value
-
-      await saveAlbum({ title, genre, era, image })
-      loadAlbums()
     })
   }
 
   // LOGOUT
   const logoutBtn = document.getElementById("logoutBtn")
+
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
       await logout()
-      location.href = "/"
+      window.location.href = "/"
     })
   }
-document.getElementById("menuBtn").addEventListener("click", () => {
-  const panel = document.getElementById("filterPanel")
-  panel.style.display = panel.style.display === "none" ? "flex" : "none"
-})
-const hasListened = false
- {
-  title,
-  genre,
-  era,
-  image,
-  spotify,
-  has_listened: false
-} 
-  // SESSION CHECK
+
+  // SAVE ALBUM
+  const saveBtn = document.getElementById("saveBtn")
+
+  if (saveBtn) {
+    saveBtn.addEventListener("click", async () => {
+
+      const title = document.getElementById("title")?.value
+      const genre = document.getElementById("genre")?.value
+      const era = document.getElementById("era")?.value
+      const image = document.getElementById("image")?.value
+      const spotify = document.getElementById("spotify")?.value
+
+      if (!title || !genre) {
+        alert("Missing required fields")
+        return
+      }
+
+      await saveAlbum({
+        title,
+        genre,
+        era,
+        image,
+        spotify,
+        has_listened: false
+      })
+
+      loadAlbums()
+    })
+  }
+
   init()
 })
 
@@ -78,11 +82,13 @@ async function init() {
 
   const onAppPage = window.location.pathname.includes("app.html")
 
-  if (data.session && onAppPage) {
-    loadAlbums()
-  }
-
+  // Redirect rules
   if (!data.session && onAppPage) {
     window.location.href = "/"
+    return
+  }
+
+  if (data.session && onAppPage) {
+    loadAlbums()
   }
 }
