@@ -35,7 +35,7 @@ window.onload = () => {
   // =========================
   async function loadAlbums() {
     try {
-      const res = await fetch(
+      const res = await console.log("LASTFM KEY:", LASTFM_KEY)fetch(
         `https://ws.audioscrobbler.com/2.0/?method=chart.gettopalbums&api_key=${LASTFM_KEY}&format=json`
       )
 
