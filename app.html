@@ -11,7 +11,7 @@
       color: white;
       font-family: Arial;
       overflow-x: hidden;
-      padding-bottom: 90px; /* prevents bottom nav overlap */
+      padding-bottom: 90px;
     }
 
     #albumCover {
@@ -25,7 +25,6 @@
       transition: 0.2s ease;
     }
 
-    /* DRAWER */
     #drawerPanel {
       position: fixed;
       top: 0;
@@ -61,8 +60,7 @@
     input, select {
       width: 100%;
       padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 10px;
+      margin: 6px 0;
       border-radius: 8px;
       border: none;
     }
@@ -75,7 +73,6 @@
 
 <body>
 
-  <!-- MAIN -->
   <div style="text-align:center; padding:20px;">
     <h1>Alblay</h1>
 
@@ -85,16 +82,6 @@
 
       <button id="drawerBackBtn">Close</button>
 
-      <p>Era</p>
-      <select>
-        <option>Any</option>
-        <option>70s</option>
-        <option>80s</option>
-        <option>90s</option>
-        <option>2000s</option>
-        <option>2010s+</option>
-      </select>
-
       <p>Genre</p>
       <select id="genreFilter">
         <option>Any</option>
@@ -102,14 +89,6 @@
         <option>pop</option>
         <option>electronic</option>
         <option>hip-hop</option>
-      </select>
-
-      <p>Length</p>
-      <select>
-        <option>Any</option>
-        <option>Short</option>
-        <option>Medium</option>
-        <option>Long</option>
       </select>
     </div>
 
@@ -126,33 +105,29 @@
       <button id="nextBtn">▶</button>
       <button id="drawerBtn">☰</button>
     </div>
-<div id="friendsPanel">
 
-  <h3>Friends</h3>
-
-  <input id="friendIdInput" placeholder="Friend ID">
-  <button id="sendFriendBtn">Send Friend Request</button>
-
-  <h4>Incoming Requests</h4>
-  <div id="friendRequests"></div>
-
-  <h4>Your Friends</h4>
-  <div id="friendsList"></div>
-
-  <hr>
-
-  <h4>Share Album (Next Phase)</h4>
-  <input id="shareFriendId" placeholder="Friend ID">
-  <button id="shareAlbumBtn">Send Album</button>
-
-</div>
     <br>
-
     <button id="generateBtn">Generate Album</button>
-  </div>
 
-  <!-- FRIEND SYSTEM -->
-  
+    <!-- FRIEND SYSTEM -->
+    <div id="friendsPanel">
+      <h3>Friends</h3>
+
+      <input id="friendIdInput" placeholder="Friend ID">
+      <button id="sendFriendBtn">Send Friend Request</button>
+
+      <h4>Incoming Requests</h4>
+      <div id="friendRequests"></div>
+
+      <h4>Your Friends</h4>
+      <div id="friendsList"></div>
+
+      <hr>
+
+      <h4>Share Album</h4>
+      <input id="shareFriendId" placeholder="Friend ID">
+      <button id="shareAlbumBtn">Send Album</button>
+    </div>
 
   </div>
 
@@ -163,6 +138,8 @@
     <button id="friendsBtn">Friends</button>
   </div>
 
-  <script src="./app.js"></script>
+  <!-- 🔥 CRITICAL FIX -->
+  <script type="module" src="./app.js"></script>
+
 </body>
 </html>
