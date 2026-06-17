@@ -2,152 +2,60 @@
 <html>
 
 <head>
-  <title>Alblay App</title>
+  <title>Alblay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body style="margin:0; font-family:Arial; background:#0f0f0f; color:white; overflow:hidden;">
+<body style="margin:0; font-family:Arial; background:#0f0f0f; color:white; overflow-x:hidden;">
 
-<!-- ================= TOP BAR ================= -->
-<div style="display:flex; justify-content:space-between; padding:16px; background:#111;">
-
-  <div style="font-size:24px;">
-    <span style="color:#FF3B30;">a</span>
-    <span style="color:#FF9500;">l</span>
-    <span style="color:#FFCC00;">b</span>
-    <span style="color:#34C759;">l</span>
-    <span style="color:#0A84FF;">a</span>
-    <span style="color:#AF52DE;">y</span>
-  </div>
-
-  <button id="logoutBtn" style="background:#1DB954; border:none; padding:10px;">
-    Logout
-  </button>
-
+<!-- TOP -->
+<div style="display:flex; justify-content:space-between; padding:15px; background:#111;">
+  <div>Alblay</div>
+  <button id="logoutBtn" style="background:#1DB954; border:none; padding:10px;">Logout</button>
 </div>
 
-<!-- ================= DRAWER MENU (FILTERS) ================= -->
-<div id="drawer" style="
-  position:absolute;
-  top:60px;
-  left:0;
-  width:100%;
-  background:#151515;
-  display:none;
-  flex-direction:column;
-  gap:10px;
-  padding:20px;
-  z-index:10;
-">
-
-  <select id="genre" style="padding:14px;">
-    <option>Any Genre</option>
-    <option>Rock</option>
-    <option>Pop</option>
-    <option>Hip Hop</option>
-    <option>Electronic</option>
-  </select>
-
-  <select id="era" style="padding:14px;">
-    <option>Any Era</option>
-    <option>1980s</option>
-    <option>1990s</option>
-    <option>2000s</option>
-    <option>2010s</option>
-    <option>2020s</option>
-  </select>
-
-  <select id="length" style="padding:14px;">
-    <option>Any Length</option>
-    <option>Short</option>
-    <option>Medium</option>
-    <option>Long</option>
-  </select>
-
-</div>
-
-<!-- ☰ BUTTON -->
-<button id="menuBtn" style="
-  position:absolute;
-  top:70px;
-  right:15px;
-  background:#222;
-  color:white;
-  border:none;
-  padding:10px;
-  z-index:20;
-">☰</button>
-
-<!-- ================= HOME VIEW ================= -->
+<!-- HOME -->
 <div id="homeView">
 
-  <!-- ALBUM -->
-  <div style="display:flex; flex-direction:column; align-items:center; margin-top:80px;">
+  <div style="text-align:center; margin-top:40px;">
 
-    <div id="albumCover" style="
-      width:80vw;
-      max-width:420px;
-      height:80vw;
-      max-height:420px;
-      background:#222;
-      border-radius:18px;
-    "></div>
+    <div id="albumCover" style="width:80vw; max-width:350px; height:80vw; max-height:350px; background:#222; margin:auto; border-radius:12px;"></div>
 
     <h2 id="albumTitle"></h2>
     <p id="albumMeta"></p>
 
-    <button id="playBtn" style="background:#1DB954; padding:14px 20px; border:none; border-radius:30px;">
+    <button id="generateBtn" style="padding:14px; background:#0A84FF; border:none; margin-top:10px;">
+      Generate Album
+    </button>
+
+    <button id="playBtn" style="padding:14px; background:#1DB954; border:none;">
       ▶ Play
+    </button>
+
+    <button id="saveBtn" style="padding:14px; background:#FF9500; border:none;">
+      Save to Wall
     </button>
 
   </div>
 
 </div>
 
-<!-- ================= PROFILE VIEW ================= -->
+<!-- PROFILE -->
 <div id="profileView" style="display:none; padding:20px;">
-  <h2>Profile</h2>
-
-  <input id="username" placeholder="Username"
-    style="padding:14px; width:100%; margin-bottom:10px;">
-
-  <button id="saveProfileBtn" style="background:#1DB954; padding:14px; border:none; width:100%;">
-    Save Profile
-  </button>
-
-  <h3>Your Album Wall</h3>
+  <input id="username" placeholder="Username" style="padding:14px; width:100%;">
   <div id="albumWall"></div>
 </div>
 
-<!-- ================= FRIENDS VIEW ================= -->
+<!-- FRIENDS -->
 <div id="friendsView" style="display:none; padding:20px;">
   <h2>Friends</h2>
-
-  <input placeholder="Add friend email"
-    style="padding:14px; width:100%; margin-bottom:10px;">
-
-  <button style="background:#0A84FF; padding:14px; border:none; width:100%;">
-    Add Friend
-  </button>
-
-  <h3>Streaks</h3>
-  <p>No streaks yet</p>
 </div>
 
-<!-- ================= BOTTOM NAV ================= -->
-<div style="
-  position:absolute;
-  bottom:0;
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  padding:14px;
-  background:#111;
-">
-
-  <button id="profileBtn">👤 Profile</button>
-  <button id="friendsBtn">👥 Friends</button>
-
+<!-- NAV -->
+<div style="position:fixed; bottom:0; width:100%; display:flex; justify-content:space-around; background:#111; padding:10px;">
+  <button id="homeBtn">Home</button>
+  <button id="profileBtn">Profile</button>
+  <button id="friendsBtn">Friends</button>
 </div>
 
 <script type="module" src="app.js"></script>
