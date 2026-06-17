@@ -8,34 +8,42 @@
 
 <body style="margin:0; background:black; color:white; font-family:Arial;">
 
-<div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:15px;">
+  <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:15px; padding:20px;">
 
-  <h1 style="font-size:80px;">
-    <span style="color:#FF3B30;">a</span>
-    <span style="color:#FF9500;">l</span>
-    <span style="color:#FFCC00;">b</span>
-    <span style="color:#34C759;">l</span>
-    <span style="color:#0A84FF;">a</span>
-    <span style="color:#AF52DE;">y</span>
-  </h1>
+    <h1 style="font-size:70px; margin:0;">
+      <span style="color:#FF3B30;">a</span>
+      <span style="color:#FF9500;">l</span>
+      <span style="color:#FFCC00;">b</span>
+      <span style="color:#34C759;">l</span>
+      <span style="color:#0A84FF;">a</span>
+      <span style="color:#AF52DE;">y</span>
+    </h1>
 
-  <input id="email" placeholder="Email"
-    style="width:90%; max-width:400px; padding:16px;">
+    <input id="email"
+      type="email"
+      placeholder="Email"
+      style="width:100%; max-width:400px; padding:14px; border-radius:8px; border:none; outline:none;">
 
-  <input id="password" type="password" placeholder="Password"
-    style="width:90%; max-width:400px; padding:16px;">
+    <input id="password"
+      type="password"
+      placeholder="Password"
+      style="width:100%; max-width:400px; padding:14px; border-radius:8px; border:none; outline:none;">
 
-  <button id="loginBtn" style="width:90%; max-width:400px; padding:16px; background:#1DB954; border:none; color:white;">
-    Login
-  </button>
+    <button id="loginBtn"
+      style="width:100%; max-width:400px; padding:14px; background:#1DB954; border:none; color:white; border-radius:8px;">
+      Login
+    </button>
 
-  <button id="signupBtn" style="width:90%; max-width:400px; padding:16px; background:#0A84FF; border:none; color:white;">
-    Sign Up
-  </button>
+    <button id="signupBtn"
+      style="width:100%; max-width:400px; padding:14px; background:#0A84FF; border:none; color:white; border-radius:8px;">
+      Sign Up
+    </button>
 
-</div>
+    <p id="status" style="opacity:0.7;"></p>
 
-<script type="module" src="auth.js"></script>
+  </div>
+
+  <script type="module" src="auth.js"></script>
 
 </body>
 </html>
