@@ -3,9 +3,19 @@
 
 <head>
   <title>Alblay Login</title>
+
+  <!-- MOBILE FIX -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 
-<body style="margin:0; background:black; color:white; font-family:Arial;">
+<body style="
+margin:0;
+background:black;
+color:white;
+font-family:Arial;
+overflow-x:hidden;
+">
 
   <div style="
     height:100vh;
@@ -13,10 +23,11 @@
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    gap:12px;
+    gap:20px;
+    text-align:center;
   ">
 
-    <h1 style="font-size:60px; margin-bottom:20px;">
+    <h1 style="font-size:100px; margin:0;">
       <span style="color:#FF3B30;">a</span>
       <span style="color:#FF9500;">l</span>
       <span style="color:#FFCC00;">b</span>
@@ -26,26 +37,23 @@
     </h1>
 
     <input id="email" type="email" placeholder="Email"
-      style="padding:14px; width:280px;" />
+      style="width:90%; max-width:500px; padding:20px; font-size:20px;" />
 
     <input id="password" type="password" placeholder="Password"
-      style="padding:14px; width:280px;" />
+      style="width:90%; max-width:500px; padding:20px; font-size:20px;" />
 
     <button id="loginBtn"
-      style="padding:14px 24px; width:280px; background:#1DB954; border:none; color:white;">
+      style="width:90%; max-width:500px; padding:20px; font-size:22px; background:#1DB954; border:none; color:white;">
       Login
     </button>
 
     <button id="signupBtn"
-      style="padding:14px 24px; width:280px; background:#0A84FF; border:none; color:white;">
+      style="width:90%; max-width:500px; padding:20px; font-size:22px; background:#0A84FF; border:none; color:white;">
       Sign Up
     </button>
 
-    <p id="auth-status"></p>
-
   </div>
 
-  <!-- IMPORTANT: ONLY AUTH SCRIPT HERE -->
   <script type="module" src="auth.js"></script>
 
 </body>
