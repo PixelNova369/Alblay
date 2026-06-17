@@ -1,5 +1,7 @@
 console.log("APP START")
 
+const LASTFM_KEY = "47339b6a3625cb91d909eedbf7fda6ad"
+
 let albums = []
 let index = 0
 let current = null
@@ -17,60 +19,100 @@ window.onload = () => {
   const playBtn = document.getElementById("playBtn")
   const generateBtn = document.getElementById("generateBtn")
 
-  // =====================
-  // MOCK LAST.FM DATA (safe fallback)
-  // =====================
-  albums = Array.from({ length: 20 }).map((_, i) => ({
-    title: "Album " + (i + 1),
-    artist: "Artist " + (i + 1),
-    image: `https://picsum.photos/seed/${i}/600/600`
-  }))
+  // =========================
+  // FILTER ELEMENTS (SAFE)
+  // =========================
+  const eraFilter = document.getElementById("eraFilter")
+  const genreFilter = document.getElementById("genreFilter")
+  const lengthFilter = document.getElementById("lengthFilter")
 
+  // =========================
+  // LOAD LAST.FM DATA
+  // =========================
+  async function loadAlbums() {
+    try {
+      const res = await fetch(
+        `https://ws.audioscrobbler.com/2.0/?method=chart.gettopalbums&api_key=${LASTFM_KEY}&format=json`
+      )
+
+      const data = await res.json()
+      const raw = data?.albums?.album || []
+
+      albums = raw.map(a => ({
+        title: a.name || "Unknown Album",
+        artist: a.artist?.name || a.artist || "Unknown Artist",
+        image:
+          a.image?.[3]?.["#text"] ||
+          a.image?.[2]?.["#text"] ||
+          a.image?.[1]?.["#text"] ||
+          ""
+      }))
+
+      console.log("Albums loaded:", albums.length)
+
+      render(0)
+
+    } catch (err) {
+      console.error("Last.fm failed:", err)
+
+      albums = [{
+        title: "Offline Mode",
+        artist: "No connection",
+        image: ""
+      }]
+
+      render(0)
+    }
+  }
+
+  // =========================
+  // SAFE RENDER
+  // =========================
   function render(i) {
+    if (!albums.length) return
+
     current = albums[i]
 
     if (!current) return
 
-    // card update
-    cover.style.backgroundImage = `url(${current.image})`
-    title.textContent = current.title
-    meta.textContent = current.artist
+    if (cover) cover.style.backgroundImage = `url(${current.image})`
+    if (title) title.textContent = current.title
+    if (meta) meta.textContent = current.artist
 
-    // background update (Spotify style)
-    bg.style.backgroundImage = `url(${current.image})`
+    if (bg) bg.style.backgroundImage = `url(${current.image})`
 
-    // smooth fade effect
     cover.style.opacity = 0
-    setTimeout(() => cover.style.opacity = 1, 150)
+    setTimeout(() => {
+      cover.style.opacity = 1
+    }, 120)
   }
 
-  render(0)
-
-  // =====================
+  // =========================
   // CONTROLS
-  // =====================
-  nextBtn.onclick = () => {
+  // =========================
+  nextBtn?.addEventListener("click", () => {
     index = (index + 1) % albums.length
     render(index)
-  }
+  })
 
-  prevBtn.onclick = () => {
+  prevBtn?.addEventListener("click", () => {
     index = (index - 1 + albums.length) % albums.length
     render(index)
-  }
+  })
 
-  generateBtn.onclick = () => {
+  generateBtn?.addEventListener("click", () => {
     index = Math.floor(Math.random() * albums.length)
     render(index)
-  }
+  })
 
-  playBtn.onclick = () => {
-    alert("Would open Spotify track for: " + current.title)
-  }
+  playBtn?.addEventListener("click", () => {
+    if (!current) return
+    window.open(`https://open.spotify.com/search/${encodeURIComponent(current.title)}`, "_blank")
+  })
 
-  // =====================
-  // DRAWER
-  // =====================
+  // =========================
+  // DRAWER SYSTEM (SAFE)
+  // =========================
   const drawer = document.getElementById("drawerPanel")
   const drawerBtn = document.getElementById("drawerBtn")
   const drawerBackBtn = document.getElementById("drawerBackBtn")
@@ -79,20 +121,20 @@ window.onload = () => {
 
   const openDrawer = () => {
     open = true
-    drawer.style.right = "0px"
+    if (drawer) drawer.style.right = "0px"
   }
 
   const closeDrawer = () => {
     open = false
-    drawer.style.right = "-320px"
+    if (drawer) drawer.style.right = "-320px"
   }
 
-  drawerBtn.onclick = (e) => {
+  drawerBtn?.addEventListener("click", (e) => {
     e.stopPropagation()
     open ? closeDrawer() : openDrawer()
-  }
+  })
 
-  drawerBackBtn.onclick = closeDrawer
+  drawerBackBtn?.addEventListener("click", closeDrawer)
 
   document.addEventListener("click", (e) => {
     if (!open) return
@@ -104,4 +146,45 @@ window.onload = () => {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeDrawer()
   })
+
+  // =========================
+  // FILTERS (SAFE - NON-BREAKING)
+  // =========================
+  function applyFilters(list) {
+    if (!list) return []
+
+    let filtered = [...list]
+
+    const genre = genreFilter?.value
+    const era = eraFilter?.value
+
+    // SAFE PLACEHOLDERS (no breaking logic)
+    if (genre && genre !== "Any") {
+      filtered = filtered.filter(a =>
+        a.title.toLowerCase().includes(genre.toLowerCase())
+      )
+    }
+
+    if (era && era !== "Any") {
+      filtered = filtered // placeholder (safe, no crash)
+    }
+
+    return filtered.length ? filtered : list
+  }
+
+  // hook filters safely
+  eraFilter?.addEventListener("change", () => {
+    albums = applyFilters(albums)
+    render(0)
+  })
+
+  genreFilter?.addEventListener("change", () => {
+    albums = applyFilters(albums)
+    render(0)
+  })
+
+  // =========================
+  // START APP
+  // =========================
+  loadAlbums()
 }
