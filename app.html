@@ -12,7 +12,7 @@
       font-family: Arial;
       overflow-x: hidden;
       padding-bottom: 90px;
-      transition: 0.4s ease;
+      transition: background-image 0.5s ease;
     }
 
     #albumCover {
@@ -23,9 +23,7 @@
       border-radius: 16px;
       background-size: cover;
       background-position: center;
-      transition: 0.25s ease;
-      position: relative;
-      z-index: 2;
+      transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
     button {
@@ -45,8 +43,14 @@
       border: none;
     }
 
-    .page { display: none; padding: 20px; }
-    .active { display: block; }
+    .page {
+      display: none;
+      padding: 20px;
+    }
+
+    .active {
+      display: block;
+    }
 
     #bottomNav {
       position: fixed;
@@ -60,28 +64,25 @@
       z-index: 1000;
     }
 
-    /* BLUR LAYER */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-size: cover;
-      background-position: center;
-      filter: blur(25px);
-      transform: scale(1.1);
-      z-index: -1;
-      transition: 0.4s ease;
-      opacity: 0.6;
+    /* PROFILE PREVIEW */
+    #profilePreview {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #avatarPreview {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #222;
+      object-fit: cover;
     }
   </style>
 </head>
 
 <body>
 
-<!-- HOME -->
+<!-- ================= HOME ================= -->
 <div id="homePage" class="page active">
 
   <h2 style="text-align:center;">Alblay</h2>
@@ -103,7 +104,7 @@
 
 </div>
 
-<!-- FRIENDS -->
+<!-- ================= FRIENDS ================= -->
 <div id="friendsPage" class="page">
 
   <h3>Friends</h3>
@@ -122,13 +123,24 @@
 
 </div>
 
-<!-- PROFILE -->
+<!-- ================= PROFILE ================= -->
 <div id="profilePage" class="page">
+
   <h3>Profile</h3>
-  <p>Coming soon</p>
+
+  <input id="usernameInput" placeholder="Username">
+  <input id="avatarInput" placeholder="Profile Image URL">
+
+  <button id="saveProfileBtn">Save Profile</button>
+
+  <div id="profilePreview">
+    <img id="avatarPreview" src="" />
+    <h4 id="namePreview">Guest</h4>
+  </div>
+
 </div>
 
-<!-- NAV -->
+<!-- ================= NAV ================= -->
 <div id="bottomNav">
   <button id="homeBtn">Home</button>
   <button id="friendsBtn">Friends</button>
