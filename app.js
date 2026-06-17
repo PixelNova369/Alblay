@@ -1,7 +1,5 @@
 console.log("APP JS LOADED")
 
-import { getUser, saveAlbum } from './supabase.js'
-
 const LASTFM_KEY = "47339b6a3625cb91d909eedbf7fda6ad"
 
 let albums = []
@@ -9,23 +7,18 @@ let index = 0
 let current = null
 let canSave = false
 
-window.addEventListener("DOMContentLoaded", async () => {
+async function getUser() {
+  return null
+}
+
+async function saveAlbum(album) {
+  console.log("SAVE (mock):", album)
+}
+
+window.addEventListener("DOMContentLoaded", () => {
 
   console.log("DOM READY")
 
-  // =====================
-  // SAFE USER LOAD
-  // =====================
-  try {
-    const user = await getUser()
-    console.log("USER:", user)
-  } catch (e) {
-    console.log("User load failed (non-blocking)")
-  }
-
-  // =====================
-  // ELEMENTS
-  // =====================
   const cover = document.getElementById("albumCover")
   const title = document.getElementById("title")
   const meta = document.getElementById("meta")
@@ -40,24 +33,18 @@ window.addEventListener("DOMContentLoaded", async () => {
   const profileBtn = document.getElementById("profileBtn")
   const friendsBtn = document.getElementById("friendsBtn")
 
-  // =====================
-  // LAST.FM LOAD
-  // =====================
   async function loadAlbums() {
     try {
-      const res = await fetch(
-        `https://ws.audioscrobbler.com/2.0/?method=chart.gettopalbums&api_key=${LASTFM_KEY}&format=json`
-      )
-
+      const res = await fetch(`https://ws.audioscrobbler.com/2.0/?method=chart.gettopalbums&api_key=${LASTFM_KEY}&format=json`)
       const data = await res.json()
-      albums = data?.albums?.album || []
 
+      albums = data?.albums?.album || []
       console.log("Albums loaded:", albums.length)
 
       render(0)
 
-    } catch (err) {
-      console.error("Last.fm error:", err)
+    } catch (e) {
+      console.error("Last.fm failed:", e)
     }
   }
 
@@ -80,71 +67,37 @@ window.addEventListener("DOMContentLoaded", async () => {
     canSave = false
   }
 
-  // =====================
-  // CONTROLS
-  // =====================
-  if (nextBtn) nextBtn.onclick = () => {
+  nextBtn?.addEventListener("click", () => {
     index = (index + 1) % albums.length
     render(index)
-  }
+  })
 
-  if (prevBtn) prevBtn.onclick = () => {
+  prevBtn?.addEventListener("click", () => {
     index = (index - 1 + albums.length) % albums.length
     render(index)
-  }
+  })
 
-  if (generateBtn) generateBtn.onclick = () => {
+  generateBtn?.addEventListener("click", () => {
     index = Math.floor(Math.random() * albums.length)
     render(index)
-  }
+  })
 
-  if (playBtn) playBtn.onclick = () => {
+  playBtn?.addEventListener("click", () => {
     if (!current) return
     window.open(current.spotify, "_blank")
     canSave = true
-  }
+  })
 
-  if (saveBtn) saveBtn.onclick = async () => {
+  saveBtn?.addEventListener("click", () => {
     if (!current) return
     if (!canSave) return alert("Play first")
 
-    try {
-      await saveAlbum({
-        title: current.title,
-        artist: current.artist,
-        image_url: current.image,
-        spotify_url: current.spotify
-      })
+    saveAlbum(current)
+  })
 
-      alert("Saved")
-    } catch (e) {
-      console.error("Save error:", e)
-    }
-  }
+  homeBtn?.addEventListener("click", () => console.log("HOME"))
+  profileBtn?.addEventListener("click", () => console.log("PROFILE"))
+  friendsBtn?.addEventListener("click", () => console.log("FRIENDS"))
 
-  // =====================
-  // BOTTOM NAV (FIXED)
-  // =====================
-  if (homeBtn) {
-    homeBtn.onclick = () => {
-      console.log("HOME")
-    }
-  }
-
-  if (profileBtn) {
-    profileBtn.onclick = () => {
-      console.log("PROFILE")
-    }
-  }
-
-  if (friendsBtn) {
-    friendsBtn.onclick = () => {
-      console.log("FRIENDS")
-    }
-  }
-
-  // =====================
-  // INIT
-  // =====================
   loadAlbums()
 })
