@@ -1,72 +1,56 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alblay</title>
 </head>
 
-<body style="margin:0; font-family:Arial; background:#000; color:white; overflow:hidden;">
+<body style="margin:0;background:#000;color:white;font-family:Arial;">
 
-<!-- TOP BAR -->
-<div style="display:flex; justify-content:space-between; padding:12px; background:#111;">
-  <div>Alblay</div>
-  <button id="logoutBtn">Logout</button>
-</div>
+  <div style="padding:20px;text-align:center;">
+    <h1>Alblay</h1>
 
-<!-- MAIN APP -->
-<div style="text-align:center; padding-top:30px;">
+    <div id="albumCover" style="
+      width:300px;
+      height:300px;
+      margin:20px auto;
+      background:#222;
+      border-radius:16px;
+      background-size:cover;
+      background-position:center;
+    "></div>
 
-  <!-- ALBUM COVER -->
-  <div id="albumCover" style="
-    width:75vw;
-    max-width:320px;
-    height:75vw;
-    max-height:320px;
-    margin:auto;
-    background:#222;
-    border-radius:16px;
-    background-size:cover;
-    background-position:center;
-  "></div>
+    <h2 id="title">No Album Loaded</h2>
+    <p id="meta"></p>
 
-  <h2 id="title"></h2>
-  <p id="meta"></p>
+    <div>
+      <button id="prevBtn">◀</button>
+      <button id="playBtn">Play</button>
+      <button id="nextBtn">▶</button>
+    </div>
 
-  <!-- CONTROLS -->
-  <div style="margin-top:12px; display:flex; justify-content:center; gap:10px;">
-    <button id="prevBtn">⟵</button>
-    <button id="playBtn">Play</button>
-    <button id="nextBtn">⟶</button>
+    <br>
+
+    <button id="generateBtn">Generate Album</button>
+    <button id="saveBtn">Save To Wall</button>
   </div>
 
-  <!-- ACTION BUTTONS -->
-  <div style="margin-top:15px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
-    <button id="generateBtn">Generate</button>
-    <button id="saveBtn">Save</button>
+  <div style="
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    background:#111;
+    display:flex;
+    justify-content:space-around;
+    padding:15px;
+  ">
+    <button id="homeBtn">Home</button>
+    <button id="profileBtn">Profile</button>
+    <button id="friendsBtn">Friends</button>
   </div>
 
-</div>
-
-<!-- BOTTOM NAV (SAFE PLACEHOLDER) -->
-<div style="
-  position:fixed;
-  bottom:0;
-  width:100%;
-  display:flex;
-  justify-content:space-around;
-  background:#111;
-  padding:12px;
-">
-
-  <button id="homeBtn">Home</button>
-  <button id="profileBtn">Profile</button>
-  <button id="friendsBtn">Friends</button>
-
-</div>
-
-<!-- SCRIPT -->
-<script type="module" src="./app.js"></script>
+  <script type="module" src="./app.js"></script>
 
 </body>
 </html>
