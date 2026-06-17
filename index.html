@@ -3,59 +3,39 @@
 
 <head>
   <title>Alblay Login</title>
-
-  <!-- MOBILE FIX -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 
-<body style="
-margin:0;
-background:black;
-color:white;
-font-family:Arial;
-overflow-x:hidden;
-">
+<body style="margin:0; background:black; color:white; font-family:Arial;">
 
-  <div style="
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    gap:20px;
-    text-align:center;
-  ">
+<div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:15px;">
 
-    <h1 style="font-size:100px; margin:0;">
-      <span style="color:#FF3B30;">a</span>
-      <span style="color:#FF9500;">l</span>
-      <span style="color:#FFCC00;">b</span>
-      <span style="color:#34C759;">l</span>
-      <span style="color:#0A84FF;">a</span>
-      <span style="color:#AF52DE;">y</span>
-    </h1>
+  <h1 style="font-size:80px;">
+    <span style="color:#FF3B30;">a</span>
+    <span style="color:#FF9500;">l</span>
+    <span style="color:#FFCC00;">b</span>
+    <span style="color:#34C759;">l</span>
+    <span style="color:#0A84FF;">a</span>
+    <span style="color:#AF52DE;">y</span>
+  </h1>
 
-    <input id="email" type="email" placeholder="Email"
-      style="width:90%; max-width:500px; padding:20px; font-size:20px;" />
+  <input id="email" placeholder="Email"
+    style="width:90%; max-width:400px; padding:16px;">
 
-    <input id="password" type="password" placeholder="Password"
-      style="width:90%; max-width:500px; padding:20px; font-size:20px;" />
+  <input id="password" type="password" placeholder="Password"
+    style="width:90%; max-width:400px; padding:16px;">
 
-    <button id="loginBtn"
-      style="width:90%; max-width:500px; padding:20px; font-size:22px; background:#1DB954; border:none; color:white;">
-      Login
-    </button>
+  <button id="loginBtn" style="width:90%; max-width:400px; padding:16px; background:#1DB954; border:none; color:white;">
+    Login
+  </button>
 
-    <button id="signupBtn"
-      style="width:90%; max-width:500px; padding:20px; font-size:22px; background:#0A84FF; border:none; color:white;">
-      Sign Up
-    </button>
+  <button id="signupBtn" style="width:90%; max-width:400px; padding:16px; background:#0A84FF; border:none; color:white;">
+    Sign Up
+  </button>
 
-  </div>
+</div>
 
-  <script type="module" src="auth.js"></script>
+<script type="module" src="auth.js"></script>
 
 </body>
-
 </html>
