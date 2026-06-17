@@ -3,6 +3,7 @@ console.log("APP START")
 const LASTFM_KEY = "47339b6a3625cb91d909eedbf7fda6ad"
 
 let albums = []
+let filtered = []
 let index = 0
 let current = null
 
@@ -19,15 +20,10 @@ window.onload = () => {
   const playBtn = document.getElementById("playBtn")
   const generateBtn = document.getElementById("generateBtn")
 
-  // =========================
-  // FILTER ELEMENTS (SAFE)
-  // =========================
-  const eraFilter = document.getElementById("eraFilter")
   const genreFilter = document.getElementById("genreFilter")
-  const lengthFilter = document.getElementById("lengthFilter")
 
   // =========================
-  // LOAD LAST.FM DATA
+  // LOAD REAL LAST.FM ALBUMS
   // =========================
   async function loadAlbums() {
     try {
@@ -36,82 +32,126 @@ window.onload = () => {
       )
 
       const data = await res.json()
+
       const raw = data?.albums?.album || []
 
       albums = raw.map(a => ({
-        title: a.name || "Unknown Album",
-        artist: a.artist?.name || a.artist || "Unknown Artist",
-        image:
-          a.image?.[3]?.["#text"] ||
-          a.image?.[2]?.["#text"] ||
-          a.image?.[1]?.["#text"] ||
-          ""
+        title: a.name,
+        artist: a.artist?.name || a.artist,
+        image: a.image?.[3]?.["#text"] || a.image?.[2]?.["#text"] || "",
+        genre: [] // will be filled later if needed
       }))
 
-      console.log("Albums loaded:", albums.length)
+      filtered = [...albums]
 
       render(0)
 
     } catch (err) {
-      console.error("Last.fm failed:", err)
-
-      albums = [{
-        title: "Offline Mode",
-        artist: "No connection",
-        image: ""
-      }]
-
-      render(0)
+      console.error("Last.fm failed", err)
     }
   }
 
   // =========================
-  // SAFE RENDER
+  // REAL GENRE FETCH (LAST.FM TAGS)
+  // =========================
+  async function fetchGenreTags(artist, album) {
+    try {
+      const res = await fetch(
+        `https://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${LASTFM_KEY}&artist=${encodeURIComponent(artist)}&album=${encodeURIComponent(album)}&format=json`
+      )
+
+      const data = await res.json()
+      const tags = data?.album?.tags?.tag || []
+
+      return tags.map(t => t.name.toLowerCase())
+    } catch {
+      return []
+    }
+  }
+
+  // =========================
+  // FILTER SYSTEM
+  // =========================
+  async function applyGenreFilter(genre) {
+    if (!genre || genre === "Any") {
+      filtered = [...albums]
+      render(0)
+      return
+    }
+
+    const results = []
+
+    for (let a of albums) {
+      const tags = await fetchGenreTags(a.artist, a.title)
+
+      if (tags.includes(genre.toLowerCase())) {
+        results.push({ ...a, genre: tags })
+      }
+    }
+
+    filtered = results.length ? results : albums
+    index = 0
+    render(0)
+  }
+
+  genreFilter?.addEventListener("change", (e) => {
+    applyGenreFilter(e.target.value)
+  })
+
+  // =========================
+  // RENDER WITH ANIMATION
   // =========================
   function render(i) {
-    if (!albums.length) return
+    if (!filtered.length) return
 
-    current = albums[i]
+    current = filtered[i]
 
     if (!current) return
 
-    if (cover) cover.style.backgroundImage = `url(${current.image})`
-    if (title) title.textContent = current.title
-    if (meta) meta.textContent = current.artist
-
-    if (bg) bg.style.backgroundImage = `url(${current.image})`
-
+    // fade animation
     cover.style.opacity = 0
+    cover.style.transform = "scale(0.98)"
+
     setTimeout(() => {
+      cover.style.backgroundImage = `url(${current.image})`
+      title.textContent = current.title
+      meta.textContent = current.artist
+
+      bg.style.backgroundImage = `url(${current.image})`
+
       cover.style.opacity = 1
-    }, 120)
+      cover.style.transform = "scale(1)"
+    }, 180)
   }
 
   // =========================
   // CONTROLS
   // =========================
-  nextBtn?.addEventListener("click", () => {
-    index = (index + 1) % albums.length
+  nextBtn.onclick = () => {
+    index = (index + 1) % filtered.length
     render(index)
-  })
+  }
 
-  prevBtn?.addEventListener("click", () => {
-    index = (index - 1 + albums.length) % albums.length
+  prevBtn.onclick = () => {
+    index = (index - 1 + filtered.length) % filtered.length
     render(index)
-  })
+  }
 
-  generateBtn?.addEventListener("click", () => {
-    index = Math.floor(Math.random() * albums.length)
+  generateBtn.onclick = () => {
+    index = Math.floor(Math.random() * filtered.length)
     render(index)
-  })
+  }
 
-  playBtn?.addEventListener("click", () => {
+  playBtn.onclick = () => {
     if (!current) return
-    window.open(`https://open.spotify.com/search/${encodeURIComponent(current.title)}`, "_blank")
-  })
+    window.open(
+      `https://open.spotify.com/search/${encodeURIComponent(current.title + " " + current.artist)}`,
+      "_blank"
+    )
+  }
 
   // =========================
-  // DRAWER SYSTEM (SAFE)
+  // DRAWER (UNCHANGED SAFE)
   // =========================
   const drawer = document.getElementById("drawerPanel")
   const drawerBtn = document.getElementById("drawerBtn")
@@ -121,20 +161,20 @@ window.onload = () => {
 
   const openDrawer = () => {
     open = true
-    if (drawer) drawer.style.right = "0px"
+    drawer.style.right = "0px"
   }
 
   const closeDrawer = () => {
     open = false
-    if (drawer) drawer.style.right = "-320px"
+    drawer.style.right = "-320px"
   }
 
-  drawerBtn?.addEventListener("click", (e) => {
+  drawerBtn.onclick = (e) => {
     e.stopPropagation()
     open ? closeDrawer() : openDrawer()
-  })
+  }
 
-  drawerBackBtn?.addEventListener("click", closeDrawer)
+  drawerBackBtn.onclick = closeDrawer
 
   document.addEventListener("click", (e) => {
     if (!open) return
@@ -148,43 +188,7 @@ window.onload = () => {
   })
 
   // =========================
-  // FILTERS (SAFE - NON-BREAKING)
-  // =========================
-  function applyFilters(list) {
-    if (!list) return []
-
-    let filtered = [...list]
-
-    const genre = genreFilter?.value
-    const era = eraFilter?.value
-
-    // SAFE PLACEHOLDERS (no breaking logic)
-    if (genre && genre !== "Any") {
-      filtered = filtered.filter(a =>
-        a.title.toLowerCase().includes(genre.toLowerCase())
-      )
-    }
-
-    if (era && era !== "Any") {
-      filtered = filtered // placeholder (safe, no crash)
-    }
-
-    return filtered.length ? filtered : list
-  }
-
-  // hook filters safely
-  eraFilter?.addEventListener("change", () => {
-    albums = applyFilters(albums)
-    render(0)
-  })
-
-  genreFilter?.addEventListener("change", () => {
-    albums = applyFilters(albums)
-    render(0)
-  })
-
-  // =========================
-  // START APP
+  // START
   // =========================
   loadAlbums()
 }
