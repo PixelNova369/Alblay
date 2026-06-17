@@ -3,38 +3,19 @@ console.log("APP START")
 import {
   sendFriendRequest,
   loadFriendRequests,
-  loadFriends
+  loadFriends,
+  sendAlbumToFriend,
+  loadInbox
 } from "./friends.js"
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
 
   console.log("WINDOW LOADED")
 
-  // =====================
-  // SAFE ELEMENT GETTER
-  // =====================
   const $ = (id) => document.getElementById(id)
 
   // =====================
-  // TAB SYSTEM
-  // =====================
-  const pages = {
-    home: $("homePage"),
-    friends: $("friendsPage"),
-    profile: $("profilePage")
-  }
-
-  function show(page) {
-    Object.values(pages).forEach(p => p.classList.remove("active"))
-    pages[page].classList.add("active")
-  }
-
-  $("homeBtn")?.addEventListener("click", () => show("home"))
-  $("friendsBtn")?.addEventListener("click", () => show("friends"))
-  $("profileBtn")?.addEventListener("click", () => show("profile"))
-
-  // =====================
-  // FRIEND SYSTEM
+  // FRIEND REQUEST
   // =====================
   $("sendFriendBtn")?.addEventListener("click", async () => {
     const id = $("friendIdInput").value
@@ -48,17 +29,28 @@ window.addEventListener("DOMContentLoaded", () => {
   })
 
   // =====================
-  // LOAD FRIEND DATA
+  // ALBUM SHARE BUTTON
   // =====================
-  loadFriendRequests()
-  loadFriends()
+  $("shareAlbumBtn")?.addEventListener("click", async () => {
+    const friendId = $("shareFriendId").value
+    if (!friendId) return
+
+    // TEMP MOCK ALBUM (we will connect real album later)
+    const album = {
+      title: "Sample Album",
+      artist: "Alblay System",
+      image: ""
+    }
+
+    await sendAlbumToFriend(friendId, album)
+    alert("Album sent!")
+  })
 
   // =====================
-  // BASIC BUTTON TESTS (SAFE)
+  // LOAD EVERYTHING
   // =====================
-  $("playBtn")?.addEventListener("click", () => alert("Play"))
-  $("nextBtn")?.addEventListener("click", () => alert("Next"))
-  $("prevBtn")?.addEventListener("click", () => alert("Prev"))
-  $("generateBtn")?.addEventListener("click", () => alert("Generate"))
+  await loadFriendRequests()
+  await loadFriends()
+  await loadInbox()
 
 })
