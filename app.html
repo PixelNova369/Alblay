@@ -6,56 +6,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body style="margin:0; font-family:Arial; background:#0f0f0f; color:white; overflow-x:hidden;">
+<body style="margin:0; font-family:Arial; background:#000; color:white; overflow:hidden;">
 
 <!-- TOP -->
-<div style="display:flex; justify-content:space-between; padding:15px; background:#111;">
+<div style="display:flex; justify-content:space-between; padding:14px; background:#111;">
   <div>Alblay</div>
   <button id="logoutBtn" style="background:#1DB954; border:none; padding:10px;">Logout</button>
 </div>
 
-<!-- HOME -->
-<div id="homeView">
+<!-- CENTER PLAYER -->
+<div style="
+  height:70vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  position:relative;
+">
 
-  <div style="text-align:center; margin-top:40px;">
+  <!-- rewind -->
+  <button id="prevBtn" style="position:absolute; left:10px; top:50%; transform:translateY(-50%);">
+    ⟵
+  </button>
 
-    <div id="albumCover" style="width:80vw; max-width:350px; height:80vw; max-height:350px; background:#222; margin:auto; border-radius:12px;"></div>
+  <!-- cover -->
+  <div id="albumCover" style="
+    width:75vw;
+    max-width:360px;
+    height:75vw;
+    max-height:360px;
+    background:#222;
+    border-radius:18px;
+  "></div>
 
-    <h2 id="albumTitle"></h2>
-    <p id="albumMeta"></p>
+  <!-- play -->
+  <button id="playBtn" style="margin-top:15px; padding:14px 20px;">
+    ▶ Play
+  </button>
 
-    <button id="generateBtn" style="padding:14px; background:#0A84FF; border:none; margin-top:10px;">
-      Generate Album
-    </button>
+  <!-- forward -->
+  <button id="nextBtn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%);">
+    ⟶
+  </button>
 
-    <button id="playBtn" style="padding:14px; background:#1DB954; border:none;">
-      ▶ Play
-    </button>
-
-    <button id="saveBtn" style="padding:14px; background:#FF9500; border:none;">
-      Save to Wall
-    </button>
-
-  </div>
+  <h2 id="albumTitle"></h2>
+  <p id="albumMeta"></p>
 
 </div>
 
-<!-- PROFILE -->
-<div id="profileView" style="display:none; padding:20px;">
-  <input id="username" placeholder="Username" style="padding:14px; width:100%;">
-  <div id="albumWall"></div>
+<!-- BOTTOM BAR -->
+<div style="
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  padding:14px;
+  background:#111;
+">
+
+  <!-- drawer -->
+  <button id="menuBtn">☰ Filters</button>
+
+  <!-- generate -->
+  <button id="generateBtn" style="background:#1DB954; border:none; padding:12px;">
+    Generate
+  </button>
+
+  <!-- save -->
+  <button id="saveBtn" style="background:#0A84FF; border:none; padding:12px;">
+    Save
+  </button>
+
 </div>
 
-<!-- FRIENDS -->
-<div id="friendsView" style="display:none; padding:20px;">
-  <h2>Friends</h2>
-</div>
+<!-- DRAWER -->
+<div id="drawer" style="
+  display:none;
+  position:absolute;
+  bottom:60px;
+  width:100%;
+  background:#151515;
+  padding:20px;
+">
 
-<!-- NAV -->
-<div style="position:fixed; bottom:0; width:100%; display:flex; justify-content:space-around; background:#111; padding:10px;">
-  <button id="homeBtn">Home</button>
-  <button id="profileBtn">Profile</button>
-  <button id="friendsBtn">Friends</button>
+  <select id="era"><option>Any Era</option><option>80s</option><option>90s</option><option>00s</option></select>
+  <select id="genre"><option>Any Genre</option><option>Rock</option><option>Pop</option></select>
+  <select id="length"><option>Any Length</option><option>Short</option><option>Medium</option><option>Long</option></select>
+
 </div>
 
 <script type="module" src="app.js"></script>
