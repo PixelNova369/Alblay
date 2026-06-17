@@ -3,76 +3,91 @@ import { supabase, saveAlbum, getUser } from './supabase.js'
 const LASTFM_KEY = "47339b6a3625cb91d909eedbf7fda6ad"
 
 let currentAlbum = null
-let playing = false
+let playStart = null
+let canSave = false
+let albumIndex = 0
+let albumList = []
 
 window.addEventListener("DOMContentLoaded", async () => {
 
   const user = await getUser()
   if (!user) location.href = "index.html"
 
-  // NAV
-  const home = document.getElementById("homeView")
-  const profile = document.getElementById("profileView")
-  const friends = document.getElementById("friendsView")
+  const cover = document.getElementById("albumCover")
+  const title = document.getElementById("albumTitle")
+  const meta = document.getElementById("albumMeta")
 
-  document.getElementById("homeBtn").onclick = () => {
-    home.style.display = "block"
-    profile.style.display = "none"
-    friends.style.display = "none"
-  }
-
-  document.getElementById("profileBtn").onclick = () => {
-    home.style.display = "none"
-    profile.style.display = "block"
-    friends.style.display = "none"
-  }
-
-  document.getElementById("friendsBtn").onclick = () => {
-    home.style.display = "none"
-    profile.style.display = "none"
-    friends.style.display = "block"
-  }
-
-  // GENERATE ALBUM (LAST.FM)
-  document.getElementById("generateBtn").onclick = async () => {
-
-    const res = await fetch(`https://ws.audioscrobbler.com/2.0/?method=album.search&album=love&api_key=${LASTFM_KEY}&format=json`)
+  // LOAD ALBUMS (seed list)
+  async function loadAlbums() {
+    const res = await fetch(`https://ws.audioscrobbler.com/2.0/?method=chart.gettopalbums&api_key=${LASTFM_KEY}&format=json`)
     const data = await res.json()
+    albumList = data.albums.album
+  }
 
-    const album = data.results.albummatches.album[0]
+  await loadAlbums()
 
+  function render(album) {
     currentAlbum = {
       title: album.name,
-      artist: album.artist,
+      artist: album.artist.name,
       image: album.image.at(-1)["#text"],
       spotify: `https://open.spotify.com/search/${encodeURIComponent(album.name)}`
     }
 
-    document.getElementById("albumTitle").textContent = album.name
-    document.getElementById("albumMeta").textContent = album.artist
-    document.getElementById("albumCover").style.backgroundImage = `url(${currentAlbum.image})`
-    document.getElementById("albumCover").style.backgroundSize = "cover"
+    cover.style.backgroundImage = `url(${currentAlbum.image})`
+    cover.style.backgroundSize = "cover"
+    title.textContent = currentAlbum.title
+    meta.textContent = currentAlbum.artist
+
+    canSave = false
+  }
+
+  render(albumList[0])
+
+  // NAV NEXT / PREV
+  document.getElementById("nextBtn").onclick = () => {
+    albumIndex = (albumIndex + 1) % albumList.length
+    render(albumList[albumIndex])
+  }
+
+  document.getElementById("prevBtn").onclick = () => {
+    albumIndex = (albumIndex - 1 + albumList.length) % albumList.length
+    render(albumList[albumIndex])
   }
 
   // PLAY
   document.getElementById("playBtn").onclick = () => {
     if (!currentAlbum) return
     window.open(currentAlbum.spotify, "_blank")
-    playing = true
+
+    playStart = Date.now()
+    canSave = false
+
+    setTimeout(() => {
+      canSave = true
+    }, 180000) // 3 minutes
   }
 
-  // SAVE (locked until played)
+  // SAVE
   document.getElementById("saveBtn").onclick = async () => {
-    if (!playing) return alert("Play first")
+    if (!currentAlbum) return
+    if (!canSave) return alert("Wait 3 minutes after playing")
 
     await saveAlbum({
       title: currentAlbum.title,
       artist: currentAlbum.artist,
       image_url: currentAlbum.image,
-      spotify_url: currentAlbum.spotify
+      spotify_url: currentAlbum.spotify,
+      has_listened: true
     })
 
-    alert("Saved")
+    alert("Saved to Album Wall")
+  }
+
+  // DRAWER
+  document.getElementById("menuBtn").onclick = () => {
+    const d = document.getElementById("drawer")
+    d.style.display = d.style.display === "block" ? "none" : "block"
   }
 
 })
