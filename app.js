@@ -1,161 +1,78 @@
-import {
-  supabase,
-  saveAlbum,
-  loadAlbums,
-  logout,
-  getUser
-} from './supabase.js'
+import { supabase, saveAlbum, getUser } from './supabase.js'
+
+const LASTFM_KEY = "47339b6a3625cb91d909eedbf7fda6ad"
+
+let currentAlbum = null
+let playing = false
 
 window.addEventListener("DOMContentLoaded", async () => {
 
-  // =========================
-  // SESSION CHECK
-  // =========================
   const user = await getUser()
+  if (!user) location.href = "index.html"
 
-  if (!user) {
-    window.location.href = "index.html"
-    return
+  // NAV
+  const home = document.getElementById("homeView")
+  const profile = document.getElementById("profileView")
+  const friends = document.getElementById("friendsView")
+
+  document.getElementById("homeBtn").onclick = () => {
+    home.style.display = "block"
+    profile.style.display = "none"
+    friends.style.display = "none"
   }
 
-  // =========================
-  // ELEMENTS
-  // =========================
-  const homeView = document.getElementById("homeView")
-  const profileView = document.getElementById("profileView")
-  const friendsView = document.getElementById("friendsView")
-
-  const drawer = document.getElementById("drawer")
-
-  const albumCover = document.getElementById("albumCover")
-  const albumTitle = document.getElementById("albumTitle")
-  const albumMeta = document.getElementById("albumMeta")
-
-  let currentAlbum = null
-  let isPlaying = false
-
-  // =========================
-  // DRAWER (☰ MENU)
-  // =========================
-  const menuBtn = document.getElementById("menuBtn")
-
-  if (menuBtn) {
-    menuBtn.onclick = () => {
-      drawer.style.display =
-        drawer.style.display === "flex" ? "none" : "flex"
-    }
-  }
-
-  // =========================
-  // VIEW SWITCHING
-  // =========================
   document.getElementById("profileBtn").onclick = () => {
-    homeView.style.display = "none"
-    friendsView.style.display = "none"
-    profileView.style.display = "block"
-    loadAlbums()
+    home.style.display = "none"
+    profile.style.display = "block"
+    friends.style.display = "none"
   }
 
   document.getElementById("friendsBtn").onclick = () => {
-    homeView.style.display = "none"
-    profileView.style.display = "none"
-    friendsView.style.display = "block"
+    home.style.display = "none"
+    profile.style.display = "none"
+    friends.style.display = "block"
   }
 
-  // back to home when clicking logo
-  document.querySelector("div").onclick = () => {
-    profileView.style.display = "none"
-    friendsView.style.display = "none"
-    homeView.style.display = "block"
-  }
+  // GENERATE ALBUM (LAST.FM)
+  document.getElementById("generateBtn").onclick = async () => {
 
-  // =========================
-  // LOGOUT
-  // =========================
-  document.getElementById("logoutBtn").onclick = async () => {
-    await logout()
-    window.location.href = "index.html"
-  }
+    const res = await fetch(`https://ws.audioscrobbler.com/2.0/?method=album.search&album=love&api_key=${LASTFM_KEY}&format=json`)
+    const data = await res.json()
 
-  // =========================
-  // ALBUM GENERATION (MOCK FOR NOW)
-  // =========================
-  document.getElementById("generateBtn")?.addEventListener("click", async () => {
-
-    const genre = document.getElementById("genre")?.value || "Any"
-    const era = document.getElementById("era")?.value || "Any"
-    const length = document.getElementById("length")?.value || "Any"
+    const album = data.results.albummatches.album[0]
 
     currentAlbum = {
-      title: "Random Album " + Math.floor(Math.random() * 1000),
-      artist: "Unknown Artist",
-      genre,
-      era,
-      length,
-      image: "",
-      spotify: ""
+      title: album.name,
+      artist: album.artist,
+      image: album.image.at(-1)["#text"],
+      spotify: `https://open.spotify.com/search/${encodeURIComponent(album.name)}`
     }
 
-    albumTitle.textContent = currentAlbum.title
-    albumMeta.textContent = `${genre} • ${era} • ${length}`
-
-    albumCover.style.background = "#222"
-
-    isPlaying = false
-    document.getElementById("playBtn").textContent = "▶ Play"
-  })
-
-  // =========================
-  // NOW PLAYING STATE
-  // =========================
-  document.getElementById("playBtn").onclick = () => {
-
-    if (!currentAlbum) return
-
-    isPlaying = !isPlaying
-
-    document.getElementById("playBtn").textContent =
-      isPlaying ? "⏸ Playing" : "▶ Play"
-
-    currentAlbum.spotify = "https://open.spotify.com"
+    document.getElementById("albumTitle").textContent = album.name
+    document.getElementById("albumMeta").textContent = album.artist
+    document.getElementById("albumCover").style.backgroundImage = `url(${currentAlbum.image})`
+    document.getElementById("albumCover").style.backgroundSize = "cover"
   }
 
-  // =========================
-  // SAVE TO WALL (LOCKED UNTIL PLAYED)
-  // =========================
-  document.getElementById("saveBtn")?.addEventListener("click", async () => {
-
+  // PLAY
+  document.getElementById("playBtn").onclick = () => {
     if (!currentAlbum) return
+    window.open(currentAlbum.spotify, "_blank")
+    playing = true
+  }
 
-    if (!isPlaying) {
-      alert("You must play the album before saving it.")
-      return
-    }
+  // SAVE (locked until played)
+  document.getElementById("saveBtn").onclick = async () => {
+    if (!playing) return alert("Play first")
 
     await saveAlbum({
-      ...currentAlbum,
-      has_listened: true
+      title: currentAlbum.title,
+      artist: currentAlbum.artist,
+      image_url: currentAlbum.image,
+      spotify_url: currentAlbum.spotify
     })
 
-    alert("Saved to album wall")
-    loadAlbums()
-  })
-
-  // =========================
-  // PROFILE SAVE
-  // =========================
-  document.getElementById("saveProfileBtn")?.addEventListener("click", async () => {
-
-    const username = document.getElementById("username").value
-
-    await supabase
-      .from("profiles")
-      .upsert({
-        id: user.id,
-        username
-      })
-
-    alert("Profile updated")
-  })
+    alert("Saved")
+  }
 
 })
