@@ -82,33 +82,41 @@ window.addEventListener("DOMContentLoaded", () => {
   // -------------------------
   // CONTROLS (SAFE BINDING)
   // -------------------------
-  nextBtn?.addEventListener("click", () => {
-    index = (index + 1) % albums.length
-    render(index)
-  })
+  const ids = [
+  "albumCover",
+  "title",
+  "meta",
+  "nextBtn",
+  "prevBtn",
+  "playBtn",
+  "saveBtn",
+  "generateBtn",
+  "homeBtn",
+  "profileBtn",
+  "friendsBtn"
+]
 
-  prevBtn?.addEventListener("click", () => {
-    index = (index - 1 + albums.length) % albums.length
-    render(index)
-  })
+const el = {}
+ids.forEach(id => {
+  el[id] = document.getElementById(id)
+  console.log(id, "=", el[id])
+})
 
-  generateBtn?.addEventListener("click", () => {
-    index = Math.floor(Math.random() * albums.length)
-    render(index)
-  })
+// HARD FAIL IF CORE BUTTONS MISSING
+if (!el.playBtn || !el.nextBtn || !el.prevBtn) {
+  alert("CRITICAL UI ERROR: buttons missing from HTML")
+}
 
-  playBtn?.addEventListener("click", () => {
-    if (!current) return
-    window.open(current.spotify, "_blank")
-    canSave = true
-  })
+// SAFE BINDING
+el.playBtn?.addEventListener("click", () => alert("PLAY WORKS"))
+el.nextBtn?.addEventListener("click", () => alert("NEXT WORKS"))
+el.prevBtn?.addEventListener("click", () => alert("PREV WORKS"))
+el.generateBtn?.addEventListener("click", () => alert("GENERATE WORKS"))
+el.saveBtn?.addEventListener("click", () => alert("SAVE WORKS"))
 
-  saveBtn?.addEventListener("click", () => {
-    if (!current) return
-    if (!canSave) return alert("Play first")
-    alert("Saved (placeholder)")
-  })
-
+el.homeBtn?.addEventListener("click", () => console.log("HOME"))
+el.profileBtn?.addEventListener("click", () => console.log("PROFILE"))
+el.friendsBtn?.addEventListener("click", () => console.log("FRIENDS"))
   // -------------------------
   // BOTTOM NAV (SAFE)
   // -------------------------
