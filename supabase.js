@@ -1,7 +1,7 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabaseUrl = "https://imsevturnvlegnmszuyx.supabase.co"
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imltc2V2dHVybnZsZWdubXN6dXl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MjA5NTEsImV4cCI6MjA5NzA5Njk1MX0.1auc5wncmyL7OukXaP13lmuhl_PuPCAIXAqADnztiGg"
+const supabaseKey = "YOUR_ANON_KEY_HERE"
 
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
@@ -18,8 +18,6 @@ export const getUser = async () => {
 // =====================
 // FRIEND SYSTEM
 // =====================
-
-// Send friend request
 export const sendFriendRequest = async (receiver_id) => {
   const user = await getUser()
   if (!user) return
@@ -31,7 +29,6 @@ export const sendFriendRequest = async (receiver_id) => {
   })
 }
 
-// Accept friend request
 export const acceptFriendRequest = async (request_id) => {
   return await supabase
     .from("friend_requests")
@@ -39,7 +36,6 @@ export const acceptFriendRequest = async (request_id) => {
     .eq("id", request_id)
 }
 
-// Get friend requests (incoming)
 export const getFriendRequests = async () => {
   const user = await getUser()
   if (!user) return []
@@ -52,9 +48,6 @@ export const getFriendRequests = async () => {
   return data || []
 }
 
-// =====================
-// FRIENDS LIST
-// =====================
 export const getFriends = async () => {
   const user = await getUser()
   if (!user) return []
@@ -80,12 +73,11 @@ export const sendAlbumToFriend = async (friend_id, album) => {
     receiver_id: friend_id,
     title: album.title,
     artist: album.artist,
-    image_url: album.image,
+    image_url: album.cover_url || album.image_url,
     spotify_url: album.spotify_url || ""
   })
 }
 
-// Get inbox (shared albums received)
 export const getSharedAlbums = async () => {
   const user = await getUser()
   if (!user) return []
