@@ -3,21 +3,30 @@
 
 <head>
   <title>Alblay App</title>
+
+  <!-- MOBILE FIX -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 
-<body style="margin:0; font-family:Arial; background:#0f0f0f; color:white;">
+<body style="
+margin:0;
+font-family:Arial;
+background:#0f0f0f;
+color:white;
+overflow-x:hidden;
+">
 
   <!-- TOP BAR -->
   <div style="
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:20px;
+    padding:16px;
     background:#111;
-    border-bottom:1px solid #222;
   ">
 
-    <div style="font-size:26px; font-weight:bold;">
+    <div style="font-size:26px;">
       <span style="color:#FF3B30;">a</span>
       <span style="color:#FF9500;">l</span>
       <span style="color:#FFCC00;">b</span>
@@ -27,16 +36,22 @@
     </div>
 
     <button id="logoutBtn"
-      style="padding:10px 16px; background:#1DB954; border:none; color:white;">
+      style="background:#1DB954; border:none; padding:10px 14px; color:white;">
       Logout
     </button>
 
   </div>
 
   <!-- CONTROLS -->
-  <div style="padding:20px; display:flex; gap:10px; flex-wrap:wrap;">
+  <div style="
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    align-items:center;
+  ">
 
-    <select id="genre">
+    <select id="genre" style="width:90%; max-width:500px; padding:16px; font-size:18px;">
       <option value="">Any Genre</option>
       <option>Rock</option>
       <option>Pop</option>
@@ -44,7 +59,7 @@
       <option>Electronic</option>
     </select>
 
-    <select id="era">
+    <select id="era" style="width:90%; max-width:500px; padding:16px; font-size:18px;">
       <option value="">Any Era</option>
       <option>1980s</option>
       <option>1990s</option>
@@ -54,40 +69,48 @@
     </select>
 
     <button id="generateBtn"
-      style="padding:10px 16px; background:#1DB954; border:none; color:white;">
+      style="width:90%; max-width:500px; padding:18px; font-size:20px; background:#1DB954; border:none; color:white;">
       Generate Album
     </button>
 
     <button id="saveBtn"
-      style="padding:10px 16px; background:#0A84FF; border:none; color:white;">
+      style="width:90%; max-width:500px; padding:18px; font-size:20px; background:#0A84FF; border:none; color:white;">
       Save to Wall
     </button>
 
   </div>
 
   <!-- ALBUM DISPLAY -->
-  <div style="text-align:center; margin-top:40px;">
+  <div style="
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    margin-top:20px;
+    gap:10px;
+  ">
 
     <div id="albumCover" style="
-      width:300px;
-      height:300px;
-      margin:0 auto;
+      width:85vw;
+      max-width:450px;
+      height:85vw;
+      max-height:450px;
       background:#222;
-      border-radius:12px;
+      border-radius:16px;
     "></div>
 
-    <h2 id="albumTitle"></h2>
+    <h2 id="albumTitle" style="margin:10px 0 0 0;"></h2>
     <p id="albumArtist"></p>
     <p id="albumMeta"></p>
 
     <button id="playBtn"
-      style="margin-top:10px; padding:12px 20px; background:#1DB954; border:none; color:white;">
+      style="margin-top:10px; padding:14px 22px; background:#1DB954; border:none; color:white; border-radius:30px;">
       ▶ Play on Spotify
     </button>
 
   </div>
 
-  <!-- IMPORTANT: ONLY APP SCRIPT HERE -->
   <script type="module" src="app.js"></script>
 
 </body>
