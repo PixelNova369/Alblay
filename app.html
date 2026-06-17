@@ -3,161 +3,141 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alblay</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: white;
+      font-family: Arial;
+      overflow-x: hidden;
+    }
+
+    #albumCover {
+      width: 300px;
+      height: 300px;
+      margin: 20px auto;
+      background: #222;
+      border-radius: 16px;
+      background-size: cover;
+      background-position: center;
+      transition: 0.2s ease;
+    }
+
+    /* DRAWER */
+    #drawerPanel {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 320px;
+      height: 100%;
+      background: #111;
+      padding: 20px;
+      transition: 0.3s ease;
+      z-index: 999;
+    }
+
+    #bottomNav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #111;
+      display: flex;
+      justify-content: space-around;
+      padding: 15px;
+    }
+
+    button {
+      background: #222;
+      color: white;
+      border: none;
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 
-<body style="
-  margin:0;
-  background:#000;
-  color:white;
-  font-family:Arial;
-  overflow-x:hidden;
-">
+<body>
 
-<!-- BLURRED BACKGROUND -->
-<div id="bg" style="
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:#000;
-  background-size:cover;
-  background-position:center;
-  filter:blur(30px);
-  transform:scale(1.2);
-  z-index:-2;
-"></div>
+  <div style="text-align:center; padding:20px;">
+    <h1>Alblay</h1>
 
-<!-- DARK OVERLAY -->
-<div style="
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.6);
-  z-index:-1;
-"></div>
+    <!-- DRAWER -->
+    <div id="drawerPanel">
+      <h3>Filters</h3>
 
-<!-- DRAWER -->
-<div id="drawerPanel" style="
-  position:fixed;
-  top:0;
-  right:-320px;
-  width:320px;
-  height:100%;
-  background:rgba(20,20,20,0.95);
-  backdrop-filter: blur(14px);
-  padding:20px;
-  box-shadow:-20px 0 40px rgba(0,0,0,0.6);
-  transition:0.35s;
-  z-index:999;
-">
+      <button id="drawerBackBtn">Close</button>
 
-  <h3>Filters</h3>
+      <p>Era</p>
+      <select>
+        <option>Any</option>
+        <option>70s</option>
+        <option>80s</option>
+        <option>90s</option>
+        <option>2000s</option>
+        <option>2010s+</option>
+      </select>
 
-  <button id="drawerBackBtn" style="
-    background:none;
-    border:none;
-    color:white;
-    font-size:18px;
-    margin-bottom:10px;
-  ">← Back</button>
+      <p>Genre</p>
+      <select id="genreFilter">
+        <option>Any</option>
+        <option>rock</option>
+        <option>pop</option>
+        <option>electronic</option>
+        <option>hip-hop</option>
+      </select>
 
-  <p>Era</p>
-  <select id="eraFilter">
-    <option>Any</option>
-    <option>70s</option>
-    <option>80s</option>
-    <option>90s</option>
-    <option>2000s</option>
-    <option>2010s+</option>
-  </select>
+      <p>Length</p>
+      <select>
+        <option>Any</option>
+        <option>Short</option>
+        <option>Medium</option>
+        <option>Long</option>
+      </select>
+    </div>
 
-  <p>Genre</p>
-  <select id="genreFilter">
-    <option>Any</option>
-    <option>Pop</option>
-    <option>Rock</option>
-    <option>Hip-Hop</option>
-    <option>Electronic</option>
-  </select>
+    <!-- ALBUM -->
+    <div id="albumCover"></div>
 
-  <p>Length</p>
-  <select id="lengthFilter">
-    <option>Any</option>
-    <option>Short</option>
-    <option>Medium</option>
-    <option>Long</option>
-  </select>
-
-</div>
-
-<!-- MAIN VIEW -->
-<div style="text-align:center;padding:20px;">
-
-  <h1 style="opacity:0.9;">Now Playing</h1>
-
-  <!-- CARD -->
-  <div style="
-    margin:0 auto;
-    max-width:340px;
-    background:rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
-    border-radius:24px;
-    padding:20px;
-  ">
-
-    <div id="albumCover" style="
-      width:300px;
-      height:300px;
-      margin:10px auto;
-      border-radius:18px;
-      background:#222;
-      background-size:cover;
-      background-position:center;
-      transition:0.4s;
-    "></div>
-
-    <h2 id="title">Loading...</h2>
-    <p id="meta" style="opacity:0.7;"></p>
+    <h2 id="title">No Album Loaded</h2>
+    <p id="meta"></p>
 
     <!-- CONTROLS -->
-    <div style="margin-top:15px;">
+    <div>
       <button id="prevBtn">◀</button>
-      <button id="playBtn">▶</button>
+      <button id="playBtn">Play</button>
       <button id="nextBtn">▶</button>
       <button id="drawerBtn">☰</button>
     </div>
 
     <br>
 
-    <button id="generateBtn">Generate</button>
-    <button id="saveBtn">Save</button>
-
+    <button id="generateBtn">Generate Album</button>
   </div>
-</div>
 
-<!-- BOTTOM NAV -->
-<div style="
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  background:rgba(20,20,20,0.95);
-  display:flex;
-  justify-content:space-around;
-  padding:15px;
-  box-sizing:border-box;
-  z-index:1000;
-">
+  <!-- FRIEND SYSTEM UI (READY FOR NEXT STEP) -->
+  <div style="padding:20px;">
+    <h3>Friends</h3>
 
-  <button id="homeBtn">Home</button>
-  <button id="profileBtn">Profile</button>
-  <button id="friendsBtn">Friends</button>
+    <input id="friendIdInput" placeholder="Friend ID" style="width:100%;padding:10px;">
+    <button id="sendFriendBtn">Send Friend Request</button>
 
-</div>
+    <br><br>
 
-<script src="./app.js"></script>
+    <input id="shareFriendId" placeholder="Friend ID to share album" style="width:100%;padding:10px;">
+    <button id="shareAlbumBtn">Share Album</button>
+
+    <div id="inbox"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div id="bottomNav">
+    <button id="homeBtn">Home</button>
+    <button id="profileBtn">Profile</button>
+    <button id="friendsBtn">Friends</button>
+  </div>
+
+  <script src="./app.js"></script>
 </body>
 </html>
