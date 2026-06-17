@@ -1,5 +1,5 @@
 import { supabase } from './supabase.js'
-
+alert("auth.js loaded")
 window.addEventListener("DOMContentLoaded", () => {
 
   const loginBtn = document.getElementById("loginBtn")
