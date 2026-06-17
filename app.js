@@ -13,13 +13,19 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   console.log("DOM READY")
 
+  // =====================
+  // SAFE USER LOAD
+  // =====================
   try {
     const user = await getUser()
     console.log("USER:", user)
   } catch (e) {
-    console.log("User fetch failed (non-blocking)")
+    console.log("User load failed (non-blocking)")
   }
 
+  // =====================
+  // ELEMENTS
+  // =====================
   const cover = document.getElementById("albumCover")
   const title = document.getElementById("title")
   const meta = document.getElementById("meta")
@@ -30,8 +36,12 @@ window.addEventListener("DOMContentLoaded", async () => {
   const saveBtn = document.getElementById("saveBtn")
   const generateBtn = document.getElementById("generateBtn")
 
+  const homeBtn = document.getElementById("homeBtn")
+  const profileBtn = document.getElementById("profileBtn")
+  const friendsBtn = document.getElementById("friendsBtn")
+
   // =====================
-  // LOAD LAST.FM ALBUMS
+  // LAST.FM LOAD
   // =====================
   async function loadAlbums() {
     try {
@@ -47,7 +57,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       render(0)
 
     } catch (err) {
-      console.error("Last.fm failed:", err)
+      console.error("Last.fm error:", err)
     }
   }
 
@@ -71,79 +81,65 @@ window.addEventListener("DOMContentLoaded", async () => {
   }
 
   // =====================
-  // MAIN BUTTONS
+  // CONTROLS
   // =====================
-  if (nextBtn) {
-    nextBtn.onclick = () => {
-      index = (index + 1) % albums.length
-      render(index)
-    }
+  if (nextBtn) nextBtn.onclick = () => {
+    index = (index + 1) % albums.length
+    render(index)
   }
 
-  if (prevBtn) {
-    prevBtn.onclick = () => {
-      index = (index - 1 + albums.length) % albums.length
-      render(index)
-    }
+  if (prevBtn) prevBtn.onclick = () => {
+    index = (index - 1 + albums.length) % albums.length
+    render(index)
   }
 
-  if (generateBtn) {
-    generateBtn.onclick = () => {
-      index = Math.floor(Math.random() * albums.length)
-      render(index)
-    }
+  if (generateBtn) generateBtn.onclick = () => {
+    index = Math.floor(Math.random() * albums.length)
+    render(index)
   }
 
-  if (playBtn) {
-    playBtn.onclick = () => {
-      if (!current) return
-      window.open(current.spotify, "_blank")
-      canSave = true
-    }
+  if (playBtn) playBtn.onclick = () => {
+    if (!current) return
+    window.open(current.spotify, "_blank")
+    canSave = true
   }
 
-  if (saveBtn) {
-    saveBtn.onclick = async () => {
-      if (!current) return
-      if (!canSave) return alert("Play first")
+  if (saveBtn) saveBtn.onclick = async () => {
+    if (!current) return
+    if (!canSave) return alert("Play first")
 
-      try {
-        await saveAlbum({
-          title: current.title,
-          artist: current.artist,
-          image_url: current.image,
-          spotify_url: current.spotify
-        })
+    try {
+      await saveAlbum({
+        title: current.title,
+        artist: current.artist,
+        image_url: current.image,
+        spotify_url: current.spotify
+      })
 
-        alert("Saved")
-      } catch (e) {
-        console.error(e)
-      }
+      alert("Saved")
+    } catch (e) {
+      console.error("Save error:", e)
     }
   }
 
   // =====================
   // BOTTOM NAV (FIXED)
   // =====================
-  const homeBtn = document.getElementById("homeBtn")
-  const profileBtn = document.getElementById("profileBtn")
-  const friendsBtn = document.getElementById("friendsBtn")
-
   if (homeBtn) {
     homeBtn.onclick = () => {
-      alert("HOME")
+      console.log("HOME")
     }
   }
 
   if (profileBtn) {
     profileBtn.onclick = () => {
-      alert("PROFILE")
+      console.log("PROFILE")
     }
   }
 
   if (friendsBtn) {
     friendsBtn.onclick = () => {
-      alert("FRIENDS")
+      console.log("FRIENDS")
     }
   }
 
