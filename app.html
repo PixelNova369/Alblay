@@ -11,6 +11,8 @@
       color: white;
       font-family: Arial;
       overflow-x: hidden;
+      padding-bottom: 90px;
+      transition: 0.4s ease;
     }
 
     #albumCover {
@@ -21,14 +23,16 @@
       border-radius: 16px;
       background-size: cover;
       background-position: center;
-      transition: 0.2s ease;
+      transition: 0.25s ease;
+      position: relative;
+      z-index: 2;
     }
 
     button {
       background: #222;
       color: white;
       border: none;
-      padding: 10px;
+      padding: 10px 12px;
       border-radius: 8px;
       margin: 3px;
     }
@@ -41,14 +45,8 @@
       border: none;
     }
 
-    .page {
-      display: none;
-      padding: 20px;
-    }
-
-    .active {
-      display: block;
-    }
+    .page { display: none; padding: 20px; }
+    .active { display: block; }
 
     #bottomNav {
       position: fixed;
@@ -59,14 +57,33 @@
       display: flex;
       justify-content: space-around;
       padding: 12px;
+      z-index: 1000;
+    }
+
+    /* BLUR LAYER */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(25px);
+      transform: scale(1.1);
+      z-index: -1;
+      transition: 0.4s ease;
+      opacity: 0.6;
     }
   </style>
 </head>
 
 <body>
 
-<!-- ================= HOME ================= -->
+<!-- HOME -->
 <div id="homePage" class="page active">
+
   <h2 style="text-align:center;">Alblay</h2>
 
   <div id="albumCover"></div>
@@ -82,33 +99,36 @@
 
   <div style="text-align:center;">
     <button id="generateBtn">Generate</button>
-    <button id="drawerBtn">Filters</button>
   </div>
+
 </div>
 
-<!-- ================= FRIENDS ================= -->
+<!-- FRIENDS -->
 <div id="friendsPage" class="page">
 
   <h3>Friends</h3>
 
   <input id="friendIdInput" placeholder="Friend ID">
-  <button id="sendFriendBtn">Send Request</button>
+  <button id="sendFriendBtn">Send Friend Request</button>
 
-  <h4>Requests</h4>
+  <h4>Incoming Requests</h4>
   <div id="friendRequests"></div>
 
-  <h4>Friends</h4>
+  <h4>Your Friends</h4>
   <div id="friendsList"></div>
+
+  <h4>Inbox</h4>
+  <div id="inbox"></div>
 
 </div>
 
-<!-- ================= PROFILE ================= -->
+<!-- PROFILE -->
 <div id="profilePage" class="page">
   <h3>Profile</h3>
   <p>Coming soon</p>
 </div>
 
-<!-- ================= BOTTOM NAV ================= -->
+<!-- NAV -->
 <div id="bottomNav">
   <button id="homeBtn">Home</button>
   <button id="friendsBtn">Friends</button>
