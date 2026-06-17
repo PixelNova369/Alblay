@@ -1,17 +1,26 @@
-console.log("JS FILE STARTED")
+console.log("APP JS LOADED")
 
-window.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM LOADED")
+import { supabase, getUser, saveAlbum } from './supabase.js'
 
-  document.body.style.background = "green"
+window.addEventListener("DOMContentLoaded", async () => {
 
-  const btn = document.getElementById("playBtn")
+  console.log("DOM READY")
 
-  console.log("playBtn exists?", btn)
+  let user = null
 
-  if (btn) {
-    btn.onclick = () => {
-      alert("BUTTON WORKS")
+  try {
+    user = await getUser()
+    console.log("USER:", user)
+  } catch (err) {
+    console.error("Supabase failed:", err)
+  }
+
+  const playBtn = document.getElementById("playBtn")
+
+  if (playBtn) {
+    playBtn.onclick = () => {
+      alert("Play works with Supabase loaded")
     }
   }
+
 })
