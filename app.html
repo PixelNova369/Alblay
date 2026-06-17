@@ -2,90 +2,56 @@
 <html>
 
 <head>
-  <title>Alblay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alblay</title>
 </head>
 
-<body style="margin:0; font-family:Arial; background:black; color:white; overflow:hidden;">
+<body style="margin:0; font-family:Arial; background:black; color:white;">
 
-<!-- BLURRED BACKGROUND -->
-<div id="bg" style="
-  position:fixed;
-  inset:0;
-  background:#000;
-  background-size:cover;
-  background-position:center;
-  filter:blur(40px) brightness(0.4);
-  transform:scale(1.2);
-  z-index:0;
-"></div>
-
-<!-- OVERLAY -->
-<div style="position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1;"></div>
-
-<!-- TOP BAR -->
-<div style="position:relative; z-index:2; display:flex; justify-content:space-between; padding:14px;">
+<!-- TOP -->
+<div style="display:flex; justify-content:space-between; padding:14px; background:#111;">
   <div>Alblay</div>
-  <button id="logoutBtn" style="background:#1DB954; border:none; padding:10px;">Logout</button>
+  <button id="logoutBtn">Logout</button>
 </div>
 
-<!-- HOME VIEW -->
-<div id="homeView" style="position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; height:75vh;">
+<!-- MAIN -->
+<div id="app" style="padding:20px; text-align:center;">
 
-  <!-- REWIND -->
-  <button id="prevBtn" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:22px;">
-    ⟵
-  </button>
-
-  <!-- COVER -->
   <div id="albumCover" style="
-    width:75vw;
-    max-width:340px;
-    height:75vw;
-    max-height:340px;
-    border-radius:18px;
+    width:80vw;
+    height:80vw;
+    max-width:320px;
+    max-height:320px;
+    margin:auto;
     background:#222;
+    border-radius:16px;
     background-size:cover;
     background-position:center;
-    transition:all 0.4s ease;
   "></div>
 
-  <h2 id="albumTitle"></h2>
-  <p id="albumMeta"></p>
+  <h2 id="title"></h2>
+  <p id="meta"></p>
 
-  <button id="playBtn" style="margin-top:10px; padding:14px 20px; background:#1DB954; border:none;">
-    ▶ Play
-  </button>
+  <button id="prevBtn">⟵ Prev</button>
+  <button id="playBtn">Play</button>
+  <button id="nextBtn">Next ⟶</button>
 
-  <!-- FORWARD -->
-  <button id="nextBtn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:22px;">
-    ⟶
-  </button>
+  <br><br>
+
+  <button id="generateBtn" style="background:#1DB954; padding:12px;">Generate Album</button>
+  <button id="saveBtn" style="background:#0A84FF; padding:12px;">Save</button>
 
 </div>
 
-<!-- PROFILE -->
-<div id="profileView" style="display:none; position:relative; z-index:2; padding:20px; height:75vh; overflow:auto;">
-  <h2>Album Wall</h2>
-  <div id="albumWall"></div>
-</div>
-
-<!-- FRIENDS -->
-<div id="friendsView" style="display:none; position:relative; z-index:2; padding:20px;">
-  <h2>Friends</h2>
-</div>
-
-<!-- BOTTOM NAV (FIXED) -->
+<!-- NAV -->
 <div style="
   position:fixed;
   bottom:0;
-  left:0;
   width:100%;
   display:flex;
   justify-content:space-around;
-  padding:14px;
   background:#111;
-  z-index:10;
+  padding:12px;
 ">
 
   <button id="homeBtn">Home</button>
