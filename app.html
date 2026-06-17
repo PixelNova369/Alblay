@@ -10,6 +10,53 @@
   <div style="padding:20px;text-align:center;">
     <h1>Alblay</h1>
 
+    <!-- DRAWER PANEL -->
+    <div id="drawerPanel" style="
+      position:fixed;
+      top:0;
+      right:-300px;
+      width:300px;
+      height:100%;
+      background:#111;
+      color:white;
+      transition:0.3s;
+      padding:20px;
+      box-shadow:-10px 0 30px rgba(0,0,0,0.5);
+      z-index:999;
+    ">
+
+      <h3>Filters</h3>
+
+      <p>Era</p>
+      <select>
+        <option>Any</option>
+        <option>70s</option>
+        <option>80s</option>
+        <option>90s</option>
+        <option>2000s</option>
+        <option>2010s+</option>
+      </select>
+
+      <p>Genre</p>
+      <select>
+        <option>Any</option>
+        <option>Pop</option>
+        <option>Rock</option>
+        <option>Hip-Hop</option>
+        <option>Electronic</option>
+      </select>
+
+      <p>Length</p>
+      <select>
+        <option>Any</option>
+        <option>Short</option>
+        <option>Medium</option>
+        <option>Long</option>
+      </select>
+
+    </div>
+
+    <!-- ALBUM -->
     <div id="albumCover" style="
       width:300px;
       height:300px;
@@ -23,10 +70,16 @@
     <h2 id="title">No Album Loaded</h2>
     <p id="meta"></p>
 
+    <!-- CONTROLS -->
     <div>
       <button id="prevBtn">◀</button>
       <button id="playBtn">Play</button>
       <button id="nextBtn">▶</button>
+
+      <!-- FIXED DRAWER BUTTON -->
+      <button id="drawerBtn" style="font-size:22px;background:none;border:none;color:white;">
+        ☰
+      </button>
     </div>
 
     <br>
@@ -35,6 +88,7 @@
     <button id="saveBtn">Save To Wall</button>
   </div>
 
+  <!-- BOTTOM NAV -->
   <div style="
     position:fixed;
     bottom:0;
@@ -50,6 +104,6 @@
     <button id="friendsBtn">Friends</button>
   </div>
 
-<script src="./app.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
