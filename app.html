@@ -1,101 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alblay</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alblay</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      color: white;
-      background: #000;
-      overflow-x: hidden;
-    }
+<style>
+body {
+  margin:0;
+  font-family:Arial;
+  background:#000;
+  color:white;
+  overflow-x:hidden;
+  padding-bottom:80px;
+}
 
-    /* WRAPPED STYLE BACKGROUND (NO BLUR) */
-    #bgPattern {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      background: radial-gradient(circle at 20% 20%, #1DB95433, transparent 40%),
-                  radial-gradient(circle at 80% 30%, #ff3b3033, transparent 40%),
-                  radial-gradient(circle at 40% 80%, #0a84ff33, transparent 40%);
-      animation: floatBG 10s ease-in-out infinite alternate;
-    }
+/* WRAPPED BACKGROUND */
+#bgPattern {
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background: radial-gradient(circle at 20% 20%, #1DB95433, transparent 40%),
+              radial-gradient(circle at 80% 30%, #ff3b3033, transparent 40%),
+              radial-gradient(circle at 50% 80%, #0a84ff33, transparent 40%);
+  animation: float 12s ease-in-out infinite alternate;
+}
 
-    @keyframes floatBG {
-      0% { transform: scale(1) rotate(0deg); }
-      100% { transform: scale(1.1) rotate(2deg); }
-    }
+@keyframes float {
+  0% { transform:scale(1); }
+  100% { transform:scale(1.1); }
+}
 
-    #albumCover {
-      width: 300px;
-      height: 300px;
-      margin: 20px auto;
-      background: #222;
-      border-radius: 18px;
-      background-size: cover;
-      background-position: center;
-      transition: 0.25s ease;
-    }
+/* ALBUM */
+#albumCover {
+  width:300px;
+  height:300px;
+  margin:20px auto;
+  background:#222;
+  border-radius:16px;
+  background-size:cover;
+  transition:0.25s ease;
+}
 
-    button {
-      background: #1c1c1c;
-      color: white;
-      border: none;
-      padding: 10px 12px;
-      border-radius: 10px;
-      margin: 4px;
-    }
+/* DRAWER FIXED (NO OVERLAP ISSUE) */
+#drawer {
+  position:fixed;
+  right:-340px;
+  top:0;
+  width:320px;
+  height:100%;
+  background:#111;
+  padding:20px;
+  transition:0.3s ease;
+  z-index:2000;
+  box-shadow:-10px 0 30px rgba(0,0,0,0.4);
+}
 
-    input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: none;
-      margin: 6px 0;
-    }
+#drawer.open {
+  right:0;
+}
 
-    .page { display: none; padding: 20px; }
-    .active { display: block; }
+.page { display:none; padding:20px; }
+.active { display:block; }
 
-    #bottomNav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #111;
-      display: flex;
-      justify-content: space-around;
-      padding: 12px;
-      z-index: 999;
-    }
+/* NAV */
+#bottomNav {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#111;
+  display:flex;
+  justify-content:space-around;
+  padding:12px;
+  z-index:1000;
+}
 
-    /* DRAWER */
-    #drawer {
-      position: fixed;
-      right: -320px;
-      top: 0;
-      width: 320px;
-      height: 100%;
-      background: #111;
-      padding: 20px;
-      transition: 0.3s ease;
-      z-index: 1000;
-    }
+button {
+  background:#1a1a1a;
+  color:white;
+  border:none;
+  padding:10px;
+  border-radius:10px;
+}
 
-    #drawer.open {
-      right: 0;
-    }
+input {
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  margin:6px 0;
+}
 
-    .card {
-      background: #1a1a1a;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 10px;
-    }
-  </style>
+.card {
+  background:#1a1a1a;
+  padding:10px;
+  border-radius:10px;
+  margin:6px 0;
+}
+</style>
 </head>
 
 <body>
@@ -106,23 +107,16 @@
 <div id="drawer">
   <h3>Filters</h3>
   <button id="closeDrawer">Close</button>
-
   <p>Genre</p>
   <input placeholder="rock / pop / chill">
-
-  <p>Era</p>
-  <input placeholder="70s / 80s / 90s">
-
 </div>
 
 <!-- HOME -->
 <div id="homePage" class="page active">
 
-  <h2>Alblay</h2>
-
   <div id="albumCover"></div>
 
-  <h3 id="title">Album</h3>
+  <h2 id="title">Album</h2>
   <p id="meta"></p>
 
   <div>
@@ -133,39 +127,48 @@
   </div>
 
   <button id="generateBtn">Generate</button>
-  <br><br>
-
-  <input id="shareFriendId" placeholder="Friend ID">
-  <button id="sendAlbumBtn">Send Album</button>
 
 </div>
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
+
   <h3>Friends</h3>
 
-  <input id="friendIdInput" placeholder="Friend ID">
-  <button id="sendFriendBtn">Send Request</button>
+  <!-- username-based search -->
+  <input id="friendUsernameInput" placeholder="Friend username">
+  <button id="sendFriendBtn">Send Friend Request</button>
+
+  <h4>Suggested Friends</h4>
+  <div id="suggestedFriends"></div>
+
+  <h4>Send Album</h4>
+  <input id="shareUsername" placeholder="Friend username">
+  <button id="sendAlbumBtn">Send Current Album</button>
 
   <h4>Inbox</h4>
   <div id="inbox"></div>
 
-  <h4>Friends</h4>
+  <h4>Friends List</h4>
   <div id="friendsList"></div>
+
 </div>
 
 <!-- PROFILE -->
 <div id="profilePage" class="page">
+
   <h3>Profile</h3>
 
   <input id="usernameInput" placeholder="Username">
   <input id="avatarInput" placeholder="Avatar URL">
+
   <button id="saveProfileBtn">Save</button>
 
   <div class="card">
     <img id="avatarPreview" style="width:60px;height:60px;border-radius:50%;">
     <h4 id="namePreview">Guest</h4>
   </div>
+
 </div>
 
 <!-- NAV -->
