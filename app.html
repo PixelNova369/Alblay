@@ -3,116 +3,154 @@
 
 <head>
   <title>Alblay App</title>
-
-  <!-- MOBILE FIX -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 
-<body style="
-margin:0;
-font-family:Arial;
-background:#0f0f0f;
-color:white;
-overflow-x:hidden;
+<body style="margin:0; font-family:Arial; background:#0f0f0f; color:white; overflow:hidden;">
+
+<!-- ================= TOP BAR ================= -->
+<div style="display:flex; justify-content:space-between; padding:16px; background:#111;">
+
+  <div style="font-size:24px;">
+    <span style="color:#FF3B30;">a</span>
+    <span style="color:#FF9500;">l</span>
+    <span style="color:#FFCC00;">b</span>
+    <span style="color:#34C759;">l</span>
+    <span style="color:#0A84FF;">a</span>
+    <span style="color:#AF52DE;">y</span>
+  </div>
+
+  <button id="logoutBtn" style="background:#1DB954; border:none; padding:10px;">
+    Logout
+  </button>
+
+</div>
+
+<!-- ================= DRAWER MENU (FILTERS) ================= -->
+<div id="drawer" style="
+  position:absolute;
+  top:60px;
+  left:0;
+  width:100%;
+  background:#151515;
+  display:none;
+  flex-direction:column;
+  gap:10px;
+  padding:20px;
+  z-index:10;
 ">
 
-  <!-- TOP BAR -->
-  <div style="
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:16px;
-    background:#111;
-  ">
+  <select id="genre" style="padding:14px;">
+    <option>Any Genre</option>
+    <option>Rock</option>
+    <option>Pop</option>
+    <option>Hip Hop</option>
+    <option>Electronic</option>
+  </select>
 
-    <div style="font-size:26px;">
-      <span style="color:#FF3B30;">a</span>
-      <span style="color:#FF9500;">l</span>
-      <span style="color:#FFCC00;">b</span>
-      <span style="color:#34C759;">l</span>
-      <span style="color:#0A84FF;">a</span>
-      <span style="color:#AF52DE;">y</span>
-    </div>
+  <select id="era" style="padding:14px;">
+    <option>Any Era</option>
+    <option>1980s</option>
+    <option>1990s</option>
+    <option>2000s</option>
+    <option>2010s</option>
+    <option>2020s</option>
+  </select>
 
-    <button id="logoutBtn"
-      style="background:#1DB954; border:none; padding:10px 14px; color:white;">
-      Logout
-    </button>
+  <select id="length" style="padding:14px;">
+    <option>Any Length</option>
+    <option>Short</option>
+    <option>Medium</option>
+    <option>Long</option>
+  </select>
 
-  </div>
+</div>
 
-  <!-- CONTROLS -->
-  <div style="
-    padding:20px;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    align-items:center;
-  ">
+<!-- ☰ BUTTON -->
+<button id="menuBtn" style="
+  position:absolute;
+  top:70px;
+  right:15px;
+  background:#222;
+  color:white;
+  border:none;
+  padding:10px;
+  z-index:20;
+">☰</button>
 
-    <select id="genre" style="width:90%; max-width:500px; padding:16px; font-size:18px;">
-      <option value="">Any Genre</option>
-      <option>Rock</option>
-      <option>Pop</option>
-      <option>Hip Hop</option>
-      <option>Electronic</option>
-    </select>
+<!-- ================= HOME VIEW ================= -->
+<div id="homeView">
 
-    <select id="era" style="width:90%; max-width:500px; padding:16px; font-size:18px;">
-      <option value="">Any Era</option>
-      <option>1980s</option>
-      <option>1990s</option>
-      <option>2000s</option>
-      <option>2010s</option>
-      <option>2020s</option>
-    </select>
-
-    <button id="generateBtn"
-      style="width:90%; max-width:500px; padding:18px; font-size:20px; background:#1DB954; border:none; color:white;">
-      Generate Album
-    </button>
-
-    <button id="saveBtn"
-      style="width:90%; max-width:500px; padding:18px; font-size:20px; background:#0A84FF; border:none; color:white;">
-      Save to Wall
-    </button>
-
-  </div>
-
-  <!-- ALBUM DISPLAY -->
-  <div style="
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    margin-top:20px;
-    gap:10px;
-  ">
+  <!-- ALBUM -->
+  <div style="display:flex; flex-direction:column; align-items:center; margin-top:80px;">
 
     <div id="albumCover" style="
-      width:85vw;
-      max-width:450px;
-      height:85vw;
-      max-height:450px;
+      width:80vw;
+      max-width:420px;
+      height:80vw;
+      max-height:420px;
       background:#222;
-      border-radius:16px;
+      border-radius:18px;
     "></div>
 
-    <h2 id="albumTitle" style="margin:10px 0 0 0;"></h2>
-    <p id="albumArtist"></p>
+    <h2 id="albumTitle"></h2>
     <p id="albumMeta"></p>
 
-    <button id="playBtn"
-      style="margin-top:10px; padding:14px 22px; background:#1DB954; border:none; color:white; border-radius:30px;">
-      ▶ Play on Spotify
+    <button id="playBtn" style="background:#1DB954; padding:14px 20px; border:none; border-radius:30px;">
+      ▶ Play
     </button>
 
   </div>
 
-  <script type="module" src="app.js"></script>
+</div>
+
+<!-- ================= PROFILE VIEW ================= -->
+<div id="profileView" style="display:none; padding:20px;">
+  <h2>Profile</h2>
+
+  <input id="username" placeholder="Username"
+    style="padding:14px; width:100%; margin-bottom:10px;">
+
+  <button id="saveProfileBtn" style="background:#1DB954; padding:14px; border:none; width:100%;">
+    Save Profile
+  </button>
+
+  <h3>Your Album Wall</h3>
+  <div id="albumWall"></div>
+</div>
+
+<!-- ================= FRIENDS VIEW ================= -->
+<div id="friendsView" style="display:none; padding:20px;">
+  <h2>Friends</h2>
+
+  <input placeholder="Add friend email"
+    style="padding:14px; width:100%; margin-bottom:10px;">
+
+  <button style="background:#0A84FF; padding:14px; border:none; width:100%;">
+    Add Friend
+  </button>
+
+  <h3>Streaks</h3>
+  <p>No streaks yet</p>
+</div>
+
+<!-- ================= BOTTOM NAV ================= -->
+<div style="
+  position:absolute;
+  bottom:0;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  padding:14px;
+  background:#111;
+">
+
+  <button id="profileBtn">👤 Profile</button>
+  <button id="friendsBtn">👥 Friends</button>
+
+</div>
+
+<script type="module" src="app.js"></script>
 
 </body>
-
 </html>
