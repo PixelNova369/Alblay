@@ -11,7 +11,6 @@
       color: white;
       font-family: Arial;
       overflow-x: hidden;
-      padding-bottom: 90px;
     }
 
     #albumCover {
@@ -25,36 +24,13 @@
       transition: 0.2s ease;
     }
 
-    #drawerPanel {
-      position: fixed;
-      top: 0;
-      right: -320px;
-      width: 320px;
-      height: 100%;
-      background: #111;
-      padding: 20px;
-      transition: 0.3s ease;
-      z-index: 999;
-    }
-
-    #bottomNav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #111;
-      display: flex;
-      justify-content: space-around;
-      padding: 15px;
-      z-index: 1000;
-    }
-
     button {
       background: #222;
       color: white;
       border: none;
-      padding: 10px 12px;
+      padding: 10px;
       border-radius: 8px;
+      margin: 3px;
     }
 
     input, select {
@@ -65,81 +41,81 @@
       border: none;
     }
 
-    #friendsPanel {
+    .page {
+      display: none;
       padding: 20px;
+    }
+
+    .active {
+      display: block;
+    }
+
+    #bottomNav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #111;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px;
     }
   </style>
 </head>
 
 <body>
 
-  <div style="text-align:center; padding:20px;">
-    <h1>Alblay</h1>
+<!-- ================= HOME ================= -->
+<div id="homePage" class="page active">
+  <h2 style="text-align:center;">Alblay</h2>
 
-    <!-- DRAWER -->
-    <div id="drawerPanel">
-      <h3>Filters</h3>
+  <div id="albumCover"></div>
 
-      <button id="drawerBackBtn">Close</button>
+  <h3 id="title">No Album</h3>
+  <p id="meta"></p>
 
-      <p>Genre</p>
-      <select id="genreFilter">
-        <option>Any</option>
-        <option>rock</option>
-        <option>pop</option>
-        <option>electronic</option>
-        <option>hip-hop</option>
-      </select>
-    </div>
-
-    <!-- ALBUM -->
-    <div id="albumCover"></div>
-
-    <h2 id="title">No Album Loaded</h2>
-    <p id="meta"></p>
-
-    <!-- CONTROLS -->
-    <div>
-      <button id="prevBtn">◀</button>
-      <button id="playBtn">Play</button>
-      <button id="nextBtn">▶</button>
-      <button id="drawerBtn">☰</button>
-    </div>
-
-    <br>
-    <button id="generateBtn">Generate Album</button>
-
-    <!-- FRIEND SYSTEM -->
-    <div id="friendsPanel">
-      <h3>Friends</h3>
-
-      <input id="friendIdInput" placeholder="Friend ID">
-      <button id="sendFriendBtn">Send Friend Request</button>
-
-      <h4>Incoming Requests</h4>
-      <div id="friendRequests"></div>
-
-      <h4>Your Friends</h4>
-      <div id="friendsList"></div>
-
-      <hr>
-
-      <h4>Share Album</h4>
-      <input id="shareFriendId" placeholder="Friend ID">
-      <button id="shareAlbumBtn">Send Album</button>
-    </div>
-
+  <div style="text-align:center;">
+    <button id="prevBtn">◀</button>
+    <button id="playBtn">Play</button>
+    <button id="nextBtn">▶</button>
   </div>
 
-  <!-- BOTTOM NAV -->
-  <div id="bottomNav">
-    <button id="homeBtn">Home</button>
-    <button id="profileBtn">Profile</button>
-    <button id="friendsBtn">Friends</button>
+  <div style="text-align:center;">
+    <button id="generateBtn">Generate</button>
+    <button id="drawerBtn">Filters</button>
   </div>
+</div>
 
-  <!-- 🔥 CRITICAL FIX -->
-  <script type="module" src="./app.js"></script>
+<!-- ================= FRIENDS ================= -->
+<div id="friendsPage" class="page">
+
+  <h3>Friends</h3>
+
+  <input id="friendIdInput" placeholder="Friend ID">
+  <button id="sendFriendBtn">Send Request</button>
+
+  <h4>Requests</h4>
+  <div id="friendRequests"></div>
+
+  <h4>Friends</h4>
+  <div id="friendsList"></div>
+
+</div>
+
+<!-- ================= PROFILE ================= -->
+<div id="profilePage" class="page">
+  <h3>Profile</h3>
+  <p>Coming soon</p>
+</div>
+
+<!-- ================= BOTTOM NAV ================= -->
+<div id="bottomNav">
+  <button id="homeBtn">Home</button>
+  <button id="friendsBtn">Friends</button>
+  <button id="profileBtn">Profile</button>
+</div>
+
+<script type="module" src="./app.js"></script>
 
 </body>
 </html>
