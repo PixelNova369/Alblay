@@ -2,22 +2,24 @@ console.log("APP START")
 
 import {
   sendFriendRequest,
-  loadFriendRequests,
-  loadFriends,
+  getUserByUsername,
   sendAlbumToFriend,
-  loadInbox
+  getSuggestedFriends,
+  loadInbox,
+  loadFriends
 } from "./friends.js"
 
 const albums = [
-  { title: "Abbey Road", artist: "The Beatles", image: "https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg" },
-  { title: "Dark Side of the Moon", artist: "Pink Floyd", image: "https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png" },
-  { title: "Rumours", artist: "Fleetwood Mac", image: "https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG" }
+  { title:"Abbey Road", artist:"Beatles", image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg" },
+  { title:"Dark Side", artist:"Pink Floyd", image:"https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png" },
+  { title:"Rumours", artist:"Fleetwood Mac", image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG" }
 ]
 
 let index = 0
-let current = null
+let current = albums[0]
 
-function render(i) {
+// ================= ALBUM =================
+function render(i){
   current = albums[i]
 
   const cover = document.getElementById("albumCover")
@@ -26,78 +28,81 @@ function render(i) {
 
   cover.style.opacity = 0
 
-  setTimeout(() => {
+  setTimeout(()=>{
     cover.style.backgroundImage = `url(${current.image})`
     title.textContent = current.title
     meta.textContent = current.artist
     cover.style.opacity = 1
-  }, 150)
+  },150)
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
 
-  const $ = (id) => document.getElementById(id)
+  const $ = (id)=>document.getElementById(id)
 
   // NAV
-  function show(page) {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"))
-    $(page + "Page").classList.add("active")
+  function show(page){
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
+    $(page+"Page").classList.add("active")
   }
 
-  $("homeBtn").onclick = () => show("home")
-  $("friendsBtn").onclick = () => show("friends")
-  $("profileBtn").onclick = () => show("profile")
+  $("homeBtn").onclick = ()=>show("home")
+  $("friendsBtn").onclick = ()=>show("friends")
+  $("profileBtn").onclick = ()=>show("profile")
 
-  // DRAWER
-  $("drawerBtn").onclick = () => document.getElementById("drawer").classList.add("open")
-  $("closeDrawer").onclick = () => document.getElementById("drawer").classList.remove("open")
+  // DRAWER FIX
+  $("drawerBtn").onclick = ()=> document.getElementById("drawer").classList.add("open")
+  $("closeDrawer").onclick = ()=> document.getElementById("drawer").classList.remove("open")
 
   // ALBUM CONTROLS
-  $("nextBtn").onclick = () => { index = (index + 1) % albums.length; render(index) }
-  $("prevBtn").onclick = () => { index = (index - 1 + albums.length) % albums.length; render(index) }
-  $("generateBtn").onclick = () => { index = Math.floor(Math.random() * albums.length); render(index) }
+  $("nextBtn").onclick = ()=>{index=(index+1)%albums.length;render(index)}
+  $("prevBtn").onclick = ()=>{index=(index-1+albums.length)%albums.length;render(index)}
+  $("generateBtn").onclick = ()=>{index=Math.floor(Math.random()*albums.length);render(index)}
 
-  $("playBtn").onclick = () => {
-    window.open(`https://open.spotify.com/search/${current.title + " " + current.artist}`)
+  $("playBtn").onclick = ()=>{
+    window.open(`https://open.spotify.com/search/${current.title+" "+current.artist}`)
   }
 
-  // SEND FRIEND REQUEST
-  $("sendFriendBtn").onclick = async () => {
-    await sendFriendRequest($("friendIdInput").value)
-    $("friendIdInput").value = ""
-    loadFriendRequests()
-    loadFriends()
+  // ================= FRIEND REQUEST (USERNAME BASED)
+  $("sendFriendBtn").onclick = async ()=>{
+    const username = $("friendUsernameInput").value
+    await sendFriendRequest(username)
+    $("friendUsernameInput").value=""
   }
 
-  // REAL ALBUM SEND
-  $("sendAlbumBtn").onclick = async () => {
-    const friendId = $("shareFriendId").value
-    if (!friendId || !current) return
+  // ================= ALBUM SEND (REAL FIX)
+  $("sendAlbumBtn").onclick = async ()=>{
+    const username = $("shareUsername").value
+    if(!username) return
 
-    await sendAlbumToFriend(friendId, current)
+    const friend = await getUserByUsername(username)
+    if(!friend) return alert("User not found")
+
+    await sendAlbumToFriend(friend.id, current)
     alert("Album sent")
   }
 
-  // PROFILE
-  const saved = JSON.parse(localStorage.getItem("profile") || "{}")
+  // ================= SUGGESTIONS
+  async function loadSuggestions(){
+    const box = $("suggestedFriends")
+    const data = await getSuggestedFriends()
 
-  if (saved.username) $("namePreview").textContent = saved.username
-  if (saved.avatar) $("avatarPreview").src = saved.avatar
+    box.innerHTML=""
 
-  $("saveProfileBtn").onclick = () => {
-    const profile = {
-      username: $("usernameInput").value,
-      avatar: $("avatarInput").value
-    }
-
-    localStorage.setItem("profile", JSON.stringify(profile))
-    alert("Saved")
+    data.forEach(u=>{
+      const div=document.createElement("div")
+      div.className="card"
+      div.innerHTML=`
+        <b>${u.username || u.id}</b><br/>
+        <small>${u.mutualCount} mutual friends</small>
+      `
+      box.appendChild(div)
+    })
   }
 
-  // LOAD
-  await loadFriendRequests()
-  await loadFriends()
+  await loadSuggestions()
   await loadInbox()
+  await loadFriends()
 
   render(0)
 })
