@@ -4,7 +4,7 @@ window.onload = () => {
   console.log("WINDOW LOADED")
 
   // =====================
-  // BUTTON TEST BINDING
+  // BUTTON TESTS
   // =====================
   const ids = [
     "playBtn",
@@ -19,7 +19,6 @@ window.onload = () => {
 
   ids.forEach(id => {
     const el = document.getElementById(id)
-    console.log(id, el)
 
     if (el) {
       el.onclick = () => alert(id + " WORKS")
@@ -27,42 +26,43 @@ window.onload = () => {
   })
 
   // =====================
-  // DRAWER MENU (FULLY INTEGRATED)
+  // DRAWER SYSTEM
   // =====================
   const drawerBtn = document.getElementById("drawerBtn")
+  const drawerBackBtn = document.getElementById("drawerBackBtn")
   const drawer = document.getElementById("drawerPanel")
 
   let open = false
 
-  if (drawerBtn && drawer) {
+  const openDrawer = () => {
+    open = true
+    drawer.style.right = "0px"
+  }
 
-    // OPEN / CLOSE TOGGLE
+  const closeDrawer = () => {
+    open = false
+    drawer.style.right = "-320px"
+  }
+
+  if (drawerBtn && drawer) {
     drawerBtn.onclick = (e) => {
       e.stopPropagation()
-
-      open = !open
-      drawer.style.right = open ? "0px" : "-320px"
+      open ? closeDrawer() : openDrawer()
     }
-
-    // CLOSE WHEN CLICKING OUTSIDE
-    document.addEventListener("click", (e) => {
-      if (!open) return
-
-      const clickedInsideDrawer = drawer.contains(e.target)
-      const clickedButton = drawerBtn.contains(e.target)
-
-      if (!clickedInsideDrawer && !clickedButton) {
-        open = false
-        drawer.style.right = "-320px"
-      }
-    })
-
-    // ESC KEY CLOSE (mobile-friendly bonus)
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        open = false
-        drawer.style.right = "-320px"
-      }
-    })
   }
+
+  if (drawerBackBtn) {
+    drawerBackBtn.onclick = closeDrawer
+  }
+
+  document.addEventListener("click", (e) => {
+    if (!open) return
+    if (!drawer.contains(e.target) && !drawerBtn.contains(e.target)) {
+      closeDrawer()
+    }
+  })
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeDrawer()
+  })
 }
