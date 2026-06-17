@@ -3,15 +3,70 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test</title>
+  <title>Alblay</title>
 </head>
 
-<body>
+<body style="margin:0; font-family:Arial; background:#000; color:white; overflow:hidden;">
 
-  <h1>Test Page</h1>
+<!-- TOP BAR -->
+<div style="display:flex; justify-content:space-between; padding:12px; background:#111;">
+  <div>Alblay</div>
+  <button id="logoutBtn">Logout</button>
+</div>
 
-  <button id="testBtn">Click Me</<script>
-alert("HTML SCRIPT WORKS")
-</script>
+<!-- MAIN APP -->
+<div style="text-align:center; padding-top:30px;">
+
+  <!-- ALBUM COVER -->
+  <div id="albumCover" style="
+    width:75vw;
+    max-width:320px;
+    height:75vw;
+    max-height:320px;
+    margin:auto;
+    background:#222;
+    border-radius:16px;
+    background-size:cover;
+    background-position:center;
+  "></div>
+
+  <h2 id="title"></h2>
+  <p id="meta"></p>
+
+  <!-- CONTROLS -->
+  <div style="margin-top:12px; display:flex; justify-content:center; gap:10px;">
+    <button id="prevBtn">⟵</button>
+    <button id="playBtn">Play</button>
+    <button id="nextBtn">⟶</button>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div style="margin-top:15px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+    <button id="generateBtn">Generate</button>
+    <button id="saveBtn">Save</button>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV (SAFE PLACEHOLDER) -->
+<div style="
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  background:#111;
+  padding:12px;
+">
+
+  <button id="homeBtn">Home</button>
+  <button id="profileBtn">Profile</button>
+  <button id="friendsBtn">Friends</button>
+
+</div>
+
+<!-- SCRIPT -->
+<script type="module" src="./app.js"></script>
+
 </body>
 </html>
