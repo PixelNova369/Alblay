@@ -11,6 +11,7 @@
       color: white;
       font-family: Arial;
       overflow-x: hidden;
+      padding-bottom: 90px; /* prevents bottom nav overlap */
     }
 
     #albumCover {
@@ -46,6 +47,7 @@
       display: flex;
       justify-content: space-around;
       padding: 15px;
+      z-index: 1000;
     }
 
     button {
@@ -55,11 +57,25 @@
       padding: 10px 12px;
       border-radius: 8px;
     }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    #friendsPanel {
+      padding: 20px;
+    }
   </style>
 </head>
 
 <body>
 
+  <!-- MAIN -->
   <div style="text-align:center; padding:20px;">
     <h1>Alblay</h1>
 
@@ -116,19 +132,20 @@
     <button id="generateBtn">Generate Album</button>
   </div>
 
-  <!-- FRIEND SYSTEM UI (READY FOR NEXT STEP) -->
-  <div style="padding:20px;">
+  <!-- FRIEND SYSTEM -->
+  <div id="friendsPanel">
+
     <h3>Friends</h3>
 
-    <input id="friendIdInput" placeholder="Friend ID" style="width:100%;padding:10px;">
+    <input id="friendIdInput" placeholder="Friend ID">
     <button id="sendFriendBtn">Send Friend Request</button>
 
-    <br><br>
-
-    <input id="shareFriendId" placeholder="Friend ID to share album" style="width:100%;padding:10px;">
+    <input id="shareFriendId" placeholder="Friend ID to share album">
     <button id="shareAlbumBtn">Share Album</button>
 
+    <h4>Inbox</h4>
     <div id="inbox"></div>
+
   </div>
 
   <!-- BOTTOM NAV -->
