@@ -35,11 +35,6 @@ const albums = [
     title: "Rumours",
     artist: "Fleetwood Mac",
     image: "https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG"
-  },
-  {
-    title: "Born in the U.S.A.",
-    artist: "Bruce Springsteen",
-    image: "https://upload.wikimedia.org/wikipedia/en/0/0c/Born_in_the_U.S.A._album.jpg"
   }
 ]
 
@@ -47,20 +42,7 @@ let index = 0
 let current = null
 
 // =====================
-// BACKGROUND UPDATE
-// =====================
-function updateBackground(img) {
-  document.body.style.setProperty(
-    "--bg",
-    `url(${img})`
-  )
-  document.body.style.backgroundImage = `url(${img})`
-  document.body.style.backgroundSize = "cover"
-  document.body.style.backgroundPosition = "center"
-}
-
-// =====================
-// RENDER ALBUM
+// RENDER ALBUM (SPOTIFY STYLE)
 // =====================
 function render(i) {
   current = albums[i]
@@ -71,23 +53,31 @@ function render(i) {
 
   if (!current) return
 
-  cover.style.opacity = 0
-  cover.style.transform = "scale(0.95)"
+  // OUT animation
+  cover.style.opacity = "0"
+  cover.style.transform = "translateY(10px) scale(0.96)"
 
   setTimeout(() => {
+
+    // UPDATE CONTENT
     cover.style.backgroundImage = `url(${current.image})`
     title.textContent = current.title
     meta.textContent = current.artist
 
-    updateBackground(current.image)
+    // IN animation
+    cover.style.opacity = "1"
+    cover.style.transform = "translateY(0px) scale(1)"
 
-    cover.style.opacity = 1
-    cover.style.transform = "scale(1)"
-  }, 150)
+    // BACKGROUND BLUR
+    document.body.style.backgroundImage = `url(${current.image})`
+    document.body.style.backgroundSize = "cover"
+    document.body.style.backgroundPosition = "center"
+
+  }, 180)
 }
 
 // =====================
-// MAIN APP
+// APP START
 // =====================
 window.addEventListener("DOMContentLoaded", async () => {
 
@@ -135,15 +125,12 @@ window.addEventListener("DOMContentLoaded", async () => {
     await loadFriends()
   })
 
-  // =====================
-  // LOAD FRIEND DATA
-  // =====================
   await loadFriendRequests()
   await loadFriends()
   await loadInbox()
 
   // =====================
-  // NAV SYSTEM
+  // NAVIGATION
   // =====================
   function show(page) {
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"))
@@ -155,7 +142,39 @@ window.addEventListener("DOMContentLoaded", async () => {
   $("profileBtn")?.addEventListener("click", () => show("profile"))
 
   // =====================
-  // START
+  // PROFILE SYSTEM
+  // =====================
+  const usernameInput = $("usernameInput")
+  const avatarInput = $("avatarInput")
+
+  const namePreview = $("namePreview")
+  const avatarPreview = $("avatarPreview")
+
+  const saved = JSON.parse(localStorage.getItem("profile") || "{}")
+
+  if (saved.username) namePreview.textContent = saved.username
+  if (saved.avatar) avatarPreview.src = saved.avatar
+
+  usernameInput?.addEventListener("input", () => {
+    namePreview.textContent = usernameInput.value || "Guest"
+  })
+
+  avatarInput?.addEventListener("input", () => {
+    avatarPreview.src = avatarInput.value
+  })
+
+  $("saveProfileBtn")?.addEventListener("click", () => {
+    const profile = {
+      username: usernameInput.value,
+      avatar: avatarInput.value
+    }
+
+    localStorage.setItem("profile", JSON.stringify(profile))
+    alert("Profile saved")
+  })
+
+  // =====================
+  // INIT
   // =====================
   render(0)
 })
