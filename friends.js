@@ -140,3 +140,17 @@ export const loadInbox = async () => {
     container.appendChild(div)
   })
 }
+export const getUserByUsername = async (username) => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("username", username)
+    .single()
+
+  if (error) {
+    console.error(error)
+    return null
+  }
+
+  return data
+}
