@@ -1,41 +1,64 @@
 console.log("APP START")
 
-import { supabase } from "./supabase.js"
 import {
   sendFriendRequest,
   loadFriendRequests,
   loadFriends
 } from "./friends.js"
 
-window.onload = async () => {
+window.addEventListener("DOMContentLoaded", () => {
 
   console.log("WINDOW LOADED")
 
   // =====================
-  // FRIEND UI
+  // SAFE ELEMENT GETTER
   // =====================
-  const friendInput = document.getElementById("friendIdInput")
-  const sendFriendBtn = document.getElementById("sendFriendBtn")
+  const $ = (id) => document.getElementById(id)
 
-  const shareInput = document.getElementById("shareFriendId")
-  const shareBtn = document.getElementById("shareAlbumBtn")
-
-  sendFriendBtn.onclick = async () => {
-    if (!friendInput.value) return
-    await sendFriendRequest(friendInput.value)
-    friendInput.value = ""
+  // =====================
+  // TAB SYSTEM
+  // =====================
+  const pages = {
+    home: $("homePage"),
+    friends: $("friendsPage"),
+    profile: $("profilePage")
   }
 
-  // =====================
-  // FRIEND SYSTEM LOAD
-  // =====================
-  await loadFriendRequests()
-  await loadFriends()
+  function show(page) {
+    Object.values(pages).forEach(p => p.classList.remove("active"))
+    pages[page].classList.add("active")
+  }
+
+  $("homeBtn")?.addEventListener("click", () => show("home"))
+  $("friendsBtn")?.addEventListener("click", () => show("friends"))
+  $("profileBtn")?.addEventListener("click", () => show("profile"))
 
   // =====================
-  // SHARE ALBUM (placeholder for next phase)
+  // FRIEND SYSTEM
   // =====================
-  shareBtn.onclick = () => {
-    alert("Album sharing system coming next phase")
-  }
-}
+  $("sendFriendBtn")?.addEventListener("click", async () => {
+    const id = $("friendIdInput").value
+    if (!id) return
+
+    await sendFriendRequest(id)
+    $("friendIdInput").value = ""
+
+    await loadFriendRequests()
+    await loadFriends()
+  })
+
+  // =====================
+  // LOAD FRIEND DATA
+  // =====================
+  loadFriendRequests()
+  loadFriends()
+
+  // =====================
+  // BASIC BUTTON TESTS (SAFE)
+  // =====================
+  $("playBtn")?.addEventListener("click", () => alert("Play"))
+  $("nextBtn")?.addEventListener("click", () => alert("Next"))
+  $("prevBtn")?.addEventListener("click", () => alert("Prev"))
+  $("generateBtn")?.addEventListener("click", () => alert("Generate"))
+
+})
