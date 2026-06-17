@@ -3,121 +3,16 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alblay</title>
+  <title>Test</title>
 </head>
 
-<body style="margin:0; font-family:Arial; background:black; color:white; overflow:hidden;">
+<body>
 
-<!-- TOP -->
-<div style="display:flex; justify-content:space-between; padding:12px; background:#111;">
-  <div>Alblay</div>
-  <button id="logoutBtn">Logout</button>
-</div>
+  <h1>Test Page</h1>
 
-<!-- BLURRED BG (disabled visually but kept for later) -->
-<div id="bg"></div>
+  <button id="testBtn">Click Me</button>
 
-<!-- MAIN -->
-<div id="homeView" style="text-align:center; padding-top:30px;">
-
-  <!-- COVER -->
-  <div id="albumCover" style="
-    width:75vw;
-    max-width:320px;
-    height:75vw;
-    max-height:320px;
-    margin:auto;
-    background:#222;
-    border-radius:16px;
-    background-size:cover;
-    background-position:center;
-  "></div>
-
-  <h2 id="title"></h2>
-  <p id="meta"></p>
-
-  <!-- CONTROLS ROW -->
-  <div style="margin-top:10px; display:flex; justify-content:center; gap:10px;">
-
-    <button id="prevBtn">⟵</button>
-    <button id="playBtn">Play</button>
-    <button id="nextBtn">⟶</button>
-
-  </div>
-
-  <!-- ACTIONS -->
-  <div style="margin-top:15px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
-
-    <button id="generateBtn">Generate</button>
-    <button id="saveBtn">Save</button>
-    <button id="menuBtn">☰</button>
-
-  </div>
-
-</div>
-
-<!-- DRAWER -->
-<div id="drawer" style="
-  display:none;
-  position:fixed;
-  bottom:60px;
-  left:0;
-  width:100%;
-  background:#111;
-  padding:15px;
-  z-index:5;
-">
-
-  <select id="era">
-    <option>Any Era</option>
-    <option>80s</option>
-    <option>90s</option>
-    <option>00s</option>
-  </select>
-
-  <select id="genre">
-    <option>Any Genre</option>
-    <option>Rock</option>
-    <option>Pop</option>
-  </select>
-
-  <select id="length">
-    <option>Any Length</option>
-    <option>Short</option>
-    <option>Long</option>
-  </select>
-
-</div>
-
-<!-- PROFILE -->
-<div id="profileView" style="display:none; padding:20px;">
-  <h2>Profile</h2>
-  <div id="albumWall"></div>
-</div>
-
-<!-- FRIENDS -->
-<div id="friendsView" style="display:none; padding:20px;">
-  <h2>Friends</h2>
-</div>
-
-<!-- BOTTOM NAV (FIXED ALWAYS VISIBLE) -->
-<div style="
-  position:fixed;
-  bottom:0;
-  width:100%;
-  display:flex;
-  justify-content:space-around;
-  background:#111;
-  padding:12px;
-">
-
-  <button id="homeBtn">Home</button>
-  <button id="profileBtn">Profile</button>
-  <button id="friendsBtn">Friends</button>
-
-</div>
-
-<script type="module" src="app.js"></script>
+  <script type="module" src="./app.js"></script>
 
 </body>
 </html>
