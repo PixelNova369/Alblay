@@ -1,3 +1,4 @@
+alert("APP JS FILE IS LOADING")
 console.log("APP JS STARTED")
 
 const LASTFM_KEY = "47339b6a3625cb91d909eedbf7fda6ad"
