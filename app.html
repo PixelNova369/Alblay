@@ -6,94 +6,123 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body style="margin:0; font-family:Arial; background:#000; color:white; overflow:hidden;">
+<body style="margin:0; font-family:Arial; background:black; color:white; overflow:hidden;">
 
-<!-- TOP -->
-<div style="display:flex; justify-content:space-between; padding:14px; background:#111;">
+<!-- BLURRED BACKGROUND -->
+<div id="bg" style="
+  position:fixed;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  background:#000;
+  background-size:cover;
+  background-position:center;
+  filter:blur(40px) brightness(0.4);
+  transform:scale(1.2);
+  z-index:0;
+"></div>
+
+<!-- DARK OVERLAY -->
+<div style="
+  position:fixed;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.55);
+  z-index:1;
+"></div>
+
+<!-- TOP BAR -->
+<div style="position:relative; z-index:2; display:flex; justify-content:space-between; padding:14px;">
   <div>Alblay</div>
-  <button id="logoutBtn" style="background:#1DB954; border:none; padding:10px;">Logout</button>
+  <button id="logoutBtn" style="background:#1DB954; border:none; padding:10px;">
+    Logout
+  </button>
 </div>
 
-<!-- CENTER PLAYER -->
-<div style="
-  height:70vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  position:relative;
-">
+<!-- HOME VIEW -->
+<div id="homeView" style="position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; height:75vh; text-align:center;">
 
-  <!-- rewind -->
-  <button id="prevBtn" style="position:absolute; left:10px; top:50%; transform:translateY(-50%);">
-    ⟵
-  </button>
-
-  <!-- cover -->
   <div id="albumCover" style="
-    width:75vw;
-    max-width:360px;
-    height:75vw;
-    max-height:360px;
-    background:#222;
+    width:78vw;
+    max-width:340px;
+    height:78vw;
+    max-height:340px;
     border-radius:18px;
+    background:#222;
+    background-size:cover;
+    background-position:center;
+    transition:all 0.5s ease;
   "></div>
-
-  <!-- play -->
-  <button id="playBtn" style="margin-top:15px; padding:14px 20px;">
-    ▶ Play
-  </button>
-
-  <!-- forward -->
-  <button id="nextBtn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%);">
-    ⟶
-  </button>
 
   <h2 id="albumTitle"></h2>
   <p id="albumMeta"></p>
 
+  <button id="playBtn" style="margin-top:10px; padding:14px; background:#1DB954; border:none;">
+    ▶ Play
+  </button>
+
 </div>
 
-<!-- BOTTOM BAR -->
-<div style="
-  position:fixed;
-  bottom:0;
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  padding:14px;
-  background:#111;
-">
+<!-- PROFILE VIEW -->
+<div id="profileView" style="display:none; position:relative; z-index:2; padding:20px; height:75vh; overflow:auto;">
+  <h2>Album Wall</h2>
+  <div id="albumWall"></div>
+</div>
 
-  <!-- drawer -->
-  <button id="menuBtn">☰ Filters</button>
-
-  <!-- generate -->
-  <button id="generateBtn" style="background:#1DB954; border:none; padding:12px;">
-    Generate
-  </button>
-
-  <!-- save -->
-  <button id="saveBtn" style="background:#0A84FF; border:none; padding:12px;">
-    Save
-  </button>
-
+<!-- FRIENDS VIEW -->
+<div id="friendsView" style="display:none; position:relative; z-index:2; padding:20px;">
+  <h2>Friends</h2>
 </div>
 
 <!-- DRAWER -->
 <div id="drawer" style="
   display:none;
-  position:absolute;
+  position:fixed;
   bottom:60px;
   width:100%;
-  background:#151515;
+  background:#111;
   padding:20px;
+  z-index:3;
 ">
 
-  <select id="era"><option>Any Era</option><option>80s</option><option>90s</option><option>00s</option></select>
+  <select id="era"><option>Any Era</option><option>80s</option><option>90s</option></select>
   <select id="genre"><option>Any Genre</option><option>Rock</option><option>Pop</option></select>
-  <select id="length"><option>Any Length</option><option>Short</option><option>Medium</option><option>Long</option></select>
+  <select id="length"><option>Any Length</option><option>Short</option><option>Long</option></select>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div style="
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  padding:12px;
+  background:#111;
+  z-index:5;
+">
+
+  <button id="menuBtn">☰</button>
+  <button id="generateBtn">Generate</button>
+  <button id="saveBtn">Save</button>
+
+</div>
+
+<!-- PAGE NAV -->
+<div style="
+  position:fixed;
+  bottom:55px;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  z-index:5;
+">
+
+  <button id="homeBtn">Home</button>
+  <button id="profileBtn">Profile</button>
+  <button id="friendsBtn">Friends</button>
 
 </div>
 
