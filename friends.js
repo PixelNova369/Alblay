@@ -1,156 +1,77 @@
-import { supabase } from "./supabase.js"
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
 
-// =====================
-// FRIEND REQUESTS
-// =====================
-export const sendFriendRequest = async (receiver_id) => {
-  const { data: userData } = await supabase.auth.getUser()
-  const user = userData?.user
-  if (!user) return
+const supabase = createClient(
+  "https://imsevturnvlegnmszuyx.supabase.co",
+  "YOUR_ANON_KEY"
+)
 
-  return await supabase.from("friend_requests").insert({
-    sender_id: user.id,
-    receiver_id,
-    status: "pending"
-  })
-}
-
-export const loadFriendRequests = async () => {
-  const { data: userData } = await supabase.auth.getUser()
-  const user = userData?.user
-  if (!user) return
-
-  const { data } = await supabase
-    .from("friend_requests")
-    .select("*")
-    .eq("receiver_id", user.id)
-    .eq("status", "pending")
-
-  const container = document.getElementById("friendRequests")
-  if (!container) return
-
-  container.innerHTML = ""
-
-  data?.forEach(req => {
-    const div = document.createElement("div")
-    div.style.padding = "10px"
-    div.style.margin = "5px"
-    div.style.background = "#222"
-    div.innerHTML = `
-      <p>Request from: ${req.sender_id}</p>
-      <button data-id="${req.id}">Accept</button>
-    `
-
-    div.querySelector("button").onclick = async () => {
-      await supabase
-        .from("friend_requests")
-        .update({ status: "accepted" })
-        .eq("id", req.id)
-
-      loadFriendRequests()
-      loadFriends()
-    }
-
-    container.appendChild(div)
-  })
-}
-
-// =====================
-// FRIEND LIST
-// =====================
-export const loadFriends = async () => {
-  const { data: userData } = await supabase.auth.getUser()
-  const user = userData?.user
-  if (!user) return
-
-  const { data } = await supabase
-    .from("friends")
-    .select("*")
-    .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
-
-  const container = document.getElementById("friendsList")
-  if (!container) return
-
-  container.innerHTML = ""
-
-  data?.forEach(f => {
-    const other = f.user_id === user.id ? f.friend_id : f.user_id
-
-    const div = document.createElement("div")
-    div.style.padding = "10px"
-    div.style.margin = "5px"
-    div.style.background = "#222"
-    div.innerHTML = `Friend: ${other}`
-
-    container.appendChild(div)
-  })
-}
-
-// =====================
-// ALBUM SHARING (REAL)
-// =====================
-export const sendAlbumToFriend = async (friend_id, album) => {
-  const { data: userData } = await supabase.auth.getUser()
-  const user = userData?.user
-  if (!user) return
-
-  return await supabase.from("shared_albums").insert({
-    sender_id: user.id,
-    receiver_id: friend_id,
-    title: album.title,
-    artist: album.artist,
-    image_url: album.image_url || album.image,
-    spotify_url: album.spotify_url || ""
-  })
-}
-
-// =====================
-// INBOX SYSTEM
-// =====================
-export const loadInbox = async () => {
-  const { data: userData } = await supabase.auth.getUser()
-  const user = userData?.user
-  if (!user) return
-
-  const { data } = await supabase
-    .from("shared_albums")
-    .select("*")
-    .eq("receiver_id", user.id)
-    .order("created_at", { ascending: false })
-
-  const container = document.getElementById("friendRequests")
-  if (!container) return
-
-  // append inbox section visually separated
-  const inboxTitle = document.createElement("h4")
-  inboxTitle.innerText = "Inbox"
-  container.appendChild(inboxTitle)
-
-  data?.forEach(album => {
-    const div = document.createElement("div")
-    div.style.padding = "10px"
-    div.style.margin = "5px"
-    div.style.background = "#333"
-
-    div.innerHTML = `
-      <strong>${album.title}</strong><br/>
-      ${album.artist}
-    `
-
-    container.appendChild(div)
-  })
-}
+// USER LOOKUP
 export const getUserByUsername = async (username) => {
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("profiles")
     .select("*")
     .eq("username", username)
     .single()
 
-  if (error) {
-    console.error(error)
-    return null
-  }
-
   return data
+}
+
+// FRIEND REQUEST
+export const sendFriendRequest = async (username) => {
+  const friend = await getUserByUsername(username)
+  if (!friend) return
+
+  const user = await supabase.auth.getUser()
+
+  return supabase.from("friend_requests").insert({
+    sender_id: user.data.user.id,
+    receiver_id: friend.id,
+    status: "pending"
+  })
+}
+
+// SEND ALBUM
+export const sendAlbumToFriend = async (friend_id, album) => {
+  const user = await supabase.auth.getUser()
+
+  return supabase.from("shared_albums").insert({
+    sender_id: user.data.user.id,
+    receiver_id: friend_id,
+    title: album.title,
+    artist: album.artist,
+    image_url: album.image
+  })
+}
+
+// SUGGESTIONS (simple version)
+export const getSuggestedFriends = async () => {
+  const { data } = await supabase.from("profiles").select("*")
+  return (data || []).map(u => ({
+    id: u.id,
+    mutualCount: Math.floor(Math.random()*5)
+  }))
+}
+
+// INBOX
+export const getSharedAlbums = async () => {
+  const user = await supabase.auth.getUser()
+
+  const { data } = await supabase
+    .from("shared_albums")
+    .select("*")
+    .eq("receiver_id", user.data.user.id)
+
+  return data || []
+}
+
+// FRIENDS
+export const getFriends = async () => {
+  const user = await supabase.auth.getUser()
+
+  const { data } = await supabase
+    .from("friends")
+    .select("*")
+    .or(`user_id.eq.${user.data.user.id},friend_id.eq.${user.data.user.id}`)
+
+  return data || []
 }
