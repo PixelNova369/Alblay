@@ -1,118 +1,84 @@
-console.log("APP LOADED")
+console.log("APP START SAFE MODE")
 
-const $ = (id) => document.getElementById(id)
+const $ = (id)=>document.getElementById(id)
 
-// --------------------
-// NAV (FIXED)
-// --------------------
-function show(page){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
-  $(page + "Page").classList.add("active")
-}
-
-// --------------------
-// FRIENDS DATA (TEMP SAFE)
-// --------------------
-let friends = [
-  { name:"Ethan" },
-  { name:"Emma" },
-  { name:"Ciaran" }
+/* ---------------- ALBUMS ---------------- */
+const albums = [
+  {
+    title:"Abbey Road",
+    artist:"The Beatles",
+    image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg"
+  },
+  {
+    title:"Rumours",
+    artist:"Fleetwood Mac",
+    image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG"
+  },
+  {
+    title:"Dark Side of the Moon",
+    artist:"Pink Floyd",
+    image:"https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png"
+  }
 ]
 
-// --------------------
-// RENDER FRIENDS
-// --------------------
-function renderFriends(){
+/* ---------------- NAV ---------------- */
+function show(page){
+
+  document.querySelectorAll(".page")
+    .forEach(p=>p.classList.remove("active"))
+
+  $(page+"Page").classList.add("active")
+}
+
+/* ---------------- ALBUM ---------------- */
+function render(){
+
+  const a = albums[Math.floor(Math.random()*albums.length)]
+
+  $("albumCover").style.backgroundImage = `url(${a.image})`
+  $("title").textContent = a.title
+  $("meta").textContent = a.artist
+}
+
+/* ---------------- FRIENDS (STATIC SAFE) ---------------- */
+function loadFriends(){
 
   const box = $("friendsList")
   if(!box) return
 
   box.innerHTML = ""
 
-  friends.forEach(f=>{
+  const friends = ["Ethan","Emma","Ciaran"]
 
-    const row = document.createElement("div")
+  friends.forEach(name=>{
 
-    row.style.cssText = `
-      display:flex;
-      justify-content:space-between;
-      padding:12px;
-      margin:8px 0;
-      background:#1a1a1a;
-      border-radius:12px;
-    `
+    const div = document.createElement("div")
+    div.className = "friendRow"
 
-    row.innerHTML = `
-      <span>${f.name}</span>
+    div.innerHTML = `
+      <span>${name}</span>
       <button>Message</button>
     `
 
-    box.appendChild(row)
+    box.appendChild(div)
   })
 }
 
-// --------------------
-// INBOX (PLACEHOLDER SAFE)
-// --------------------
-function renderInbox(){
-
-  const box = $("requestsBox")
-  if(!box) return
-
-  box.innerHTML = `
-    <div style="padding:10px;background:#111;border-radius:10px;">
-      No friend requests yet
-    </div>
-  `
-}
-
-// --------------------
-// SEARCH FRIENDS
-// --------------------
-function setupSearch(){
-
-  const btn = $("searchBtn")
-  const input = $("searchFriend")
-  const results = $("searchResults")
-
-  if(!btn || !input || !results) return
-
-  btn.onclick = () => {
-
-    results.innerHTML = ""
-
-    const fake = ["Alex", "Cathal", "Sarah"]
-
-    fake.forEach(name=>{
-      const div = document.createElement("div")
-
-      div.style.cssText = `
-        padding:10px;
-        margin:6px 0;
-        background:#222;
-        border-radius:10px;
-      `
-
-      div.innerHTML = `${name} <button>Add</button>`
-
-      results.appendChild(div)
-    })
-  }
-}
-
-// --------------------
-// INIT (FORCED SAFE)
-// --------------------
+/* ---------------- INIT (CRASH PROTECTED) ---------------- */
 window.addEventListener("DOMContentLoaded", ()=>{
 
-  console.log("DOM READY")
+  try{
 
-  // NAV FIX
-  $("homeBtn")?.addEventListener("click", ()=>show("home"))
-  $("friendsBtn")?.addEventListener("click", ()=>show("friends"))
+    $("homeBtn").onclick = ()=>show("home")
+    $("friendsBtn").onclick = ()=>show("friends")
 
-  // FRIENDS
-  renderFriends()
-  renderInbox()
-  setupSearch()
+    $("generateBtn").onclick = render
+
+    render()
+    loadFriends()
+
+  }catch(err){
+    console.log("CRASH BLOCKED:", err)
+  }
+
 })
