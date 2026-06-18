@@ -2,31 +2,78 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alblay DM</title>
+<title>Alblay</title>
 
 <style>
 body{
   margin:0;
   font-family:-apple-system;
-  background:#0b0b0f;
   color:white;
   overflow:hidden;
 }
 
-/* BACKGROUND */
+/* BACKGROUND (HOME GREEN) */
 #bg{
   position:fixed;
   inset:0;
   z-index:-2;
+
   background:
-    radial-gradient(circle at 20% 20%, rgba(29,185,84,0.35), transparent 45%),
-    radial-gradient(circle at 80% 10%, rgba(120,80,255,0.25), transparent 50%),
-    radial-gradient(circle at 50% 80%, rgba(0,200,120,0.15), transparent 55%);
-  filter:blur(80px);
+    radial-gradient(circle at 20% 25%, rgba(29,185,84,0.55), transparent 45%),
+    radial-gradient(circle at 80% 15%, rgba(0,255,140,0.25), transparent 50%),
+    radial-gradient(circle at 50% 85%, rgba(0,160,90,0.22), transparent 55%);
+
+  filter: blur(75px) saturate(140%);
 }
 
-/* MAIN DM */
-#dmWrap{
+/* PAGES */
+.page{
+  display:none;
+  height:100vh;
+}
+.active{ display:block; }
+
+/* LOGIN */
+#loginPage{
+  background:#0b0b0f;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:10px;
+}
+
+input{
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  width:220px;
+}
+
+button{
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:rgba(255,255,255,0.1);
+  color:white;
+}
+
+/* HOME */
+#homePage{
+  text-align:center;
+  padding-top:20px;
+}
+
+#albumCover{
+  width:280px;
+  height:280px;
+  margin:18px auto;
+  border-radius:26px;
+  background-size:cover;
+}
+
+/* FRIENDS TAB (DM EMBED) */
+#friendsPage{
   display:flex;
   height:100vh;
 }
@@ -35,14 +82,14 @@ body{
 #inbox{
   width:35%;
   background:rgba(255,255,255,0.04);
-  backdrop-filter:blur(18px);
+  backdrop-filter:blur(15px);
   overflow-y:auto;
   padding:10px;
 }
 
 .thread{
   padding:12px;
-  margin:8px 0;
+  margin:6px 0;
   border-radius:12px;
   background:rgba(255,255,255,0.06);
   cursor:pointer;
@@ -57,9 +104,8 @@ body{
 
 /* HEADER */
 #chatHeader{
-  padding:14px;
+  padding:12px;
   background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(10px);
 }
 
 /* MESSAGES */
@@ -75,10 +121,9 @@ body{
 /* BUBBLES */
 .msg{
   max-width:70%;
-  padding:10px 12px;
-  border-radius:16px;
+  padding:10px;
+  border-radius:14px;
   background:rgba(255,255,255,0.08);
-  align-self:flex-start;
 }
 
 .me{
@@ -99,14 +144,22 @@ body{
   padding:10px;
   border:none;
   border-radius:10px;
-  outline:none;
 }
 
-button{
+/* NAV */
+#nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  background:rgba(0,0,0,0.4);
+}
+
+#nav button{
+  flex:1;
+  padding:14px;
   border:none;
-  padding:10px;
-  border-radius:10px;
-  background:rgba(255,255,255,0.1);
+  background:none;
   color:white;
 }
 </style>
@@ -116,7 +169,30 @@ button{
 
 <div id="bg"></div>
 
-<div id="dmWrap">
+<!-- LOGIN -->
+<div id="loginPage" class="page active">
+  <h2>Login</h2>
+
+  <input id="user" placeholder="Username">
+  <input id="pass" type="password" placeholder="Password">
+
+  <button id="loginBtn">Enter</button>
+</div>
+
+<!-- HOME -->
+<div id="homePage" class="page">
+
+  <h2>Now Playing</h2>
+
+  <div id="albumCover"></div>
+
+  <h3 id="title"></h3>
+  <p id="meta"></p>
+
+</div>
+
+<!-- FRIENDS (DM EMBED) -->
+<div id="friendsPage" class="page">
 
   <!-- INBOX -->
   <div id="inbox"></div>
@@ -135,6 +211,12 @@ button{
 
   </div>
 
+</div>
+
+<!-- NAV -->
+<div id="nav">
+  <button id="homeBtn">Home</button>
+  <button id="friendsBtn">Friends</button>
 </div>
 
 <script src="./app.js"></script>
