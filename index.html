@@ -12,6 +12,26 @@ body{
   overflow:hidden;
 }
 
+/* 🌿 BACKGROUND */
+#bg{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+
+  background:
+    radial-gradient(circle at 20% 25%, rgba(29,185,84,0.55), transparent 45%),
+    radial-gradient(circle at 80% 15%, rgba(0,255,140,0.25), transparent 50%),
+    radial-gradient(circle at 50% 85%, rgba(0,160,90,0.22), transparent 55%);
+
+  filter: blur(75px) saturate(140%);
+  animation: floatBg 11s ease-in-out infinite alternate;
+}
+
+@keyframes floatBg{
+  0%{ transform:scale(1) translateY(0); }
+  100%{ transform:scale(1.12) translateY(-22px); }
+}
+
 /* PAGES */
 .page{
   display:none;
@@ -26,46 +46,74 @@ body{
   align-items:center;
   justify-content:center;
   flex-direction:column;
+  gap:10px;
 }
 
 input{
   padding:12px;
-  margin:6px;
   border-radius:10px;
   border:none;
+  width:220px;
 }
 
-/* HOME BACKGROUND (GREEN) */
-#homeBg{
-  position:fixed;
-  inset:0;
-  z-index:-2;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(29,185,84,0.5), transparent 45%),
-    radial-gradient(circle at 80% 20%, rgba(0,255,120,0.25), transparent 50%),
-    radial-gradient(circle at 50% 80%, rgba(0,160,90,0.2), transparent 55%);
-  filter:blur(80px);
-}
-
-/* FRIENDS BACKGROUND (PINK) */
-#friendsBg{
-  position:fixed;
-  inset:0;
-  z-index:-2;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(255,60,160,0.5), transparent 45%),
-    radial-gradient(circle at 80% 30%, rgba(255,0,120,0.25), transparent 50%),
-    radial-gradient(circle at 50% 80%, rgba(255,120,180,0.2), transparent 55%);
-  filter:blur(80px);
+button{
+  padding:12px 16px;
+  border-radius:10px;
+  border:none;
+  background:rgba(255,255,255,0.1);
+  color:white;
 }
 
 /* HOME */
 #albumCover{
   width:280px;
   height:280px;
-  margin:20px auto;
-  border-radius:24px;
+  margin:18px auto;
+  border-radius:26px;
+
   background-size:cover;
+  background-position:center;
+
+  box-shadow:
+    0 25px 90px rgba(0,0,0,0.55),
+    0 0 45px rgba(29,185,84,0.30);
+}
+
+/* NOW PLAYING */
+#nowPlaying{
+  text-align:center;
+  margin-top:10px;
+}
+
+/* CONTROLS */
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  margin-top:14px;
+}
+
+.controls button{
+  width:60px;
+  height:48px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.06);
+}
+
+/* DRAWER */
+.drawer{
+  position:fixed;
+  bottom:78px;
+  left:0;
+  right:0;
+  background:#111;
+  padding:14px;
+  border-radius:18px 18px 0 0;
+  transition:0.3s;
+}
+
+.hidden{
+  transform:translateY(120%);
 }
 
 /* FRIENDS */
@@ -74,7 +122,7 @@ input{
   justify-content:space-between;
   padding:12px;
   margin:8px;
-  background:rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.06);
   border-radius:12px;
 }
 
@@ -85,7 +133,6 @@ input{
   width:100%;
   display:flex;
   background:rgba(0,0,0,0.4);
-  backdrop-filter:blur(10px);
 }
 
 #nav button{
@@ -100,36 +147,65 @@ input{
 
 <body>
 
+<div id="bg"></div>
+
 <!-- LOGIN -->
 <div id="loginPage" class="page active">
   <h2>Login</h2>
+
   <input id="user" placeholder="Username">
-  <button onclick="login()">Enter</button>
+  <input id="pass" type="password" placeholder="Password">
+
+  <button id="loginBtn">Enter</button>
 </div>
 
 <!-- HOME -->
 <div id="homePage" class="page">
-  <div id="homeBg"></div>
+  <div style="text-align:center;padding:16px;">
 
-  <h2>Now Playing</h2>
-  <div id="albumCover"></div>
+    <h2>Now Playing</h2>
 
-  <h3 id="title"></h3>
-  <p id="meta"></p>
+    <div id="albumCover"></div>
+
+    <div id="nowPlaying">
+      <h3 id="title"></h3>
+      <p id="meta"></p>
+    </div>
+
+    <div class="controls">
+      <button id="prevBtn">⟲</button>
+      <button id="playBtn">▶</button>
+      <button id="nextBtn">⟳</button>
+    </div>
+
+    <div style="margin-top:10px;">
+      <button id="drawerBtn">☰ Drawer</button>
+      <button id="generateBtn">Find Album</button>
+    </div>
+
+    <div id="drawerPanel" class="drawer hidden">
+      <h3>Filters</h3>
+
+      <input id="genre" placeholder="Genre">
+      <input id="era" placeholder="Era">
+      <input id="length" placeholder="Length">
+
+      <button id="closeDrawer">Back</button>
+    </div>
+
+  </div>
 </div>
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
-  <div id="friendsBg"></div>
-
-  <h2>Friends</h2>
+  <h2 style="padding:12px;">Friends</h2>
   <div id="friendsList"></div>
 </div>
 
 <!-- NAV -->
 <div id="nav">
-  <button onclick="go('home')">Home</button>
-  <button onclick="go('friends')">Friends</button>
+  <button id="homeBtn">Home</button>
+  <button id="friendsBtn">Friends</button>
 </div>
 
 <script src="./app.js"></script>
