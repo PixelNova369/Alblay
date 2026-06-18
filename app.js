@@ -1,17 +1,16 @@
+import { supabase } from "./supabase.js"
+
 console.log("APP START")
 
+// ================= HOME ALBUMS =================
 const albums = [
-  { title:"Abbey Road", artist:"The Beatles", image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg" },
-  { title:"Rumours", artist:"Fleetwood Mac", image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG" },
-  { title:"Dark Side of the Moon", artist:"Pink Floyd", image:"https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png" }
+  { title:"Abbey Road", artist:"Beatles", image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg" },
+  { title:"Rumours", artist:"Fleetwood Mac", image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG" }
 ]
 
-let index = 0
 let current = albums[0]
+let currentChatId = null
 
-// =====================
-// RENDER
-// =====================
 function render(i){
   current = albums[i]
 
@@ -19,74 +18,179 @@ function render(i){
   const title = document.getElementById("title")
   const meta = document.getElementById("meta")
 
-  cover.style.opacity = 0
-
-  setTimeout(()=>{
-    cover.style.backgroundImage = `url(${current.image})`
-    title.textContent = current.title
-    meta.textContent = current.artist
-    cover.style.opacity = 1
-  },150)
+  cover.style.backgroundImage = `url(${current.image})`
+  title.textContent = current.title
+  meta.textContent = current.artist
 }
 
-// =====================
-// NAV SYSTEM (FIXED)
-// =====================
-function setPage(page){
+// ================= NAV =================
+function show(page){
 
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
+
+  if(page === "chat"){
+    document.getElementById("chatPage").style.display = "flex"
+    document.getElementById("friendsPage").classList.remove("active")
+    document.getElementById("homePage").classList.remove("active")
+    return
+  }
+
   document.getElementById(page+"Page").classList.add("active")
-
-  document.querySelectorAll(".navBtn").forEach(b=>b.classList.remove("active"))
-
-  if(page==="home") document.getElementById("homeBtn").classList.add("active")
-  if(page==="friends") document.getElementById("friendsBtn").classList.add("active")
-  if(page==="profile") document.getElementById("profileBtn").classList.add("active")
+  document.getElementById("chatPage").style.display = "none"
 }
 
-// =====================
-// INIT
-// =====================
-window.addEventListener("DOMContentLoaded", ()=>{
+// ================= FRIEND LIST =================
+async function loadFriends(){
 
-  // NAV BUTTONS
-  document.getElementById("homeBtn").onclick = ()=>setPage("home")
-  document.getElementById("friendsBtn").onclick = ()=>setPage("friends")
-  document.getElementById("profileBtn").onclick = ()=>setPage("profile")
+  const { data: userData } = await supabase.auth.getUser()
+  const user = userData.user
 
-  // DRAWER FIX
-  const drawer = document.getElementById("drawerPanel")
+  const { data } = await supabase
+    .from("friends")
+    .select("*")
+    .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
 
-  document.getElementById("drawerBtn").onclick = ()=>{
-    drawer.classList.add("open")
+  const list = document.getElementById("friendsList")
+  list.innerHTML = ""
+
+  data.forEach(f=>{
+
+    const other = f.user_id === user.id ? f.friend_id : f.user_id
+
+    const row = document.createElement("div")
+    row.className = "friendRow"
+
+    row.innerHTML = `
+      <span>${other}</span>
+      <button data-id="${other}">Message</button>
+    `
+
+    row.querySelector("button").onclick = ()=>openChat(other)
+
+    list.appendChild(row)
+  })
+}
+
+// ================= CHAT SYSTEM =================
+async function openChat(friendId){
+
+  const { data: userData } = await supabase.auth.getUser()
+  const user = userData.user
+
+  let { data: chats } = await supabase
+    .from("chat_members")
+    .select("chat_id")
+    .eq("user_id", user.id)
+
+  let chatId = null
+
+  for(const c of chats){
+    const { data: members } = await supabase
+      .from("chat_members")
+      .select("*")
+      .eq("chat_id", c.chat_id)
+
+    if(members.some(m=>m.user_id === friendId)){
+      chatId = c.chat_id
+      break
+    }
   }
 
-  document.getElementById("closeDrawerBtn").onclick = ()=>{
-    drawer.classList.remove("open")
+  if(!chatId){
+
+    const { data: newChat } = await supabase
+      .from("chats")
+      .insert({})
+      .select()
+      .single()
+
+    chatId = newChat.id
+
+    await supabase.from("chat_members").insert([
+      { chat_id: chatId, user_id: user.id },
+      { chat_id: chatId, user_id: friendId }
+    ])
   }
 
-  // PLAYER CONTROLS
-  document.getElementById("nextBtn").onclick = ()=>{
-    index = (index + 1) % albums.length
-    render(index)
-  }
+  currentChatId = chatId
 
-  document.getElementById("prevBtn").onclick = ()=>{
-    index = (index - 1 + albums.length) % albums.length
-    render(index)
-  }
+  document.getElementById("chatTitle").textContent = friendId
 
-  document.getElementById("generateBtn").onclick = ()=>{
-    index = Math.floor(Math.random()*albums.length)
-    render(index)
-  }
+  show("chat")
+  loadMessages(chatId)
+  listenMessages(chatId)
+}
 
-  document.getElementById("playBtn").onclick = ()=>{
-    window.open(
-      `https://open.spotify.com/search/${encodeURIComponent(current.title+" "+current.artist)}`,
-      "_blank"
-    )
+// ================= MESSAGES =================
+async function loadMessages(chatId){
+
+  const { data } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("chat_id", chatId)
+    .order("created_at", { ascending:true })
+
+  renderMessages(data)
+}
+
+function renderMessages(msgs){
+
+  const box = document.getElementById("messages")
+  box.innerHTML = ""
+
+  msgs.forEach(m=>{
+
+    const div = document.createElement("div")
+    div.className = "msg " + (m.sender_id === "me" ? "me" : "them")
+
+    div.textContent = m.message_text
+    box.appendChild(div)
+  })
+}
+
+// realtime
+function listenMessages(chatId){
+
+  supabase
+    .channel("chat_"+chatId)
+    .on("postgres_changes",{
+      event:"INSERT",
+      schema:"public",
+      table:"messages",
+      filter:`chat_id=eq.${chatId}`
+    },payload=>{
+      loadMessages(chatId)
+    })
+    .subscribe()
+}
+
+// send message
+async function sendMessage(){
+
+  const input = document.getElementById("msgInput")
+
+  await supabase.from("messages").insert({
+    chat_id: currentChatId,
+    sender_id: (await supabase.auth.getUser()).data.user.id,
+    message_text: input.value
+  })
+
+  input.value = ""
+}
+
+// ================= INIT =================
+window.addEventListener("DOMContentLoaded",()=>{
+
+  document.getElementById("homeBtn").onclick=()=>show("home")
+  document.getElementById("friendsBtn").onclick=()=>show("friends")
+
+  document.getElementById("sendMsgBtn").onclick=sendMessage
+
+  document.getElementById("generateBtn").onclick=()=>{
+    const i = Math.floor(Math.random()*albums.length)
+    render(i)
   }
 
   render(0)
+  loadFriends()
 })
