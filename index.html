@@ -13,7 +13,7 @@ body{
   overflow-x:hidden;
 }
 
-/* 🔥 VIRAL BACKGROUND */
+/* 🔥 NEON BACKGROUND */
 #bg{
   position:fixed;
   inset:0;
@@ -21,14 +21,14 @@ body{
   background:
     radial-gradient(circle at 20% 20%, rgba(29,185,84,0.35), transparent 40%),
     radial-gradient(circle at 80% 10%, rgba(0,255,140,0.25), transparent 45%),
-    radial-gradient(circle at 40% 90%, rgba(10,132,255,0.15), transparent 45%);
+    radial-gradient(circle at 40% 90%, rgba(90,120,255,0.18), transparent 45%);
   filter:blur(70px);
   animation:move 10s infinite alternate ease-in-out;
 }
 
 @keyframes move{
-  0%{ transform:scale(1) translateY(0px); }
-  100%{ transform:scale(1.2) translateY(-30px); }
+  0%{transform:scale(1) translateY(0);}
+  100%{transform:scale(1.2) translateY(-25px);}
 }
 
 /* PAGES */
@@ -39,7 +39,7 @@ body{
 
 .active{ display:block; }
 
-/* HOME WRAP */
+/* HOME */
 .homeWrap{
   text-align:center;
   padding:20px;
@@ -59,35 +59,42 @@ body{
   transition:0.4s ease;
 }
 
-/* NOW PLAYING CARD */
+/* NOW PLAYING */
 #nowPlaying{
   background:rgba(255,255,255,0.06);
   padding:14px;
   border-radius:16px;
   backdrop-filter:blur(12px);
-  box-shadow:0 10px 40px rgba(0,0,0,0.4);
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
 }
 
-/* CONTROLS */
+/* 🎛 CURVED SQUARE CONTROLS */
 .controls{
   display:flex;
   justify-content:center;
-  gap:18px;
+  gap:16px;
   margin-top:16px;
 }
 
 .controls button{
-  width:60px;
-  height:60px;
-  border-radius:50%;
+  width:64px;
+  height:52px;
+  border-radius:14px;
   border:none;
-  background:#1db954;
-  color:black;
-  font-size:18px;
-  box-shadow:0 0 25px rgba(29,185,84,0.4);
+  background:rgba(255,255,255,0.08);
+  color:white;
+  font-size:16px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.35);
+  transition:0.2s;
 }
 
-/* BOTTOM CONTROLS */
+.controls button:active{
+  transform:scale(0.95);
+  background:rgba(29,185,84,0.25);
+}
+
+/* BOTTOM BUTTONS */
 .bottomControls{
   display:flex;
   gap:10px;
@@ -113,7 +120,7 @@ body{
   background:#111;
   padding:16px;
   border-radius:18px 18px 0 0;
-  transition:0.3s ease;
+  transition:0.3s;
   box-shadow:0 -10px 40px rgba(0,0,0,0.6);
 }
 
@@ -131,22 +138,25 @@ body{
   border-radius:12px;
 }
 
-/* NAV */
+/* 🔵 NEW BOTTOM NAV (INDIGO GLASS) */
 #bottomNav{
   position:fixed;
   bottom:0;
   width:100%;
   display:flex;
-  background:rgba(10,10,10,0.9);
-  backdrop-filter:blur(12px);
+
+  background:rgba(70,90,200,0.18);
+  backdrop-filter:blur(18px);
+  border-top:1px solid rgba(255,255,255,0.08);
 }
 
-button{
+#bottomNav button{
   flex:1;
-  padding:14px;
+  padding:16px;
   border:none;
   background:none;
   color:white;
+  font-weight:500;
 }
 </style>
 </head>
@@ -181,7 +191,6 @@ button{
     </div>
 
     <div id="drawerPanel" class="drawer hidden">
-
       <h3>Filters</h3>
 
       <input id="genre" placeholder="Genre">
@@ -190,7 +199,6 @@ button{
 
       <button id="applyFilters">Apply</button>
       <button id="closeDrawer">Back</button>
-
     </div>
 
   </div>
