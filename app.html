@@ -10,74 +10,63 @@ body{
   font-family:-apple-system;
   background:#050505;
   color:white;
-  overflow:hidden;
 }
 
-/* ================= BACKGROUND ================= */
-#bg{
+/* NAV */
+#bottomNav{
   position:fixed;
-  inset:0;
-  z-index:-3;
+  bottom:0;
+  width:100%;
+  display:flex;
+  background:#111;
+  border-top:1px solid rgba(0,255,120,0.2);
 }
 
-.waveGreen{
-  position:absolute;
-  inset:-200px;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(0,255,120,0.22), transparent 45%),
-    radial-gradient(circle at 70% 20%, rgba(0,255,140,0.16), transparent 55%),
-    radial-gradient(circle at 50% 80%, rgba(0,255,100,0.12), transparent 60%);
-  filter:blur(80px);
+.navBtn{
+  flex:1;
+  padding:14px;
+  background:none;
+  border:none;
+  color:white;
 }
 
-/* ================= PAGES ================= */
-.page{
-  display:none;
-  padding:16px;
-}
+/* PAGES */
+.page{display:none;padding:16px;}
+.active{display:block;}
 
-.active{
-  display:block;
-}
-
-/* ================= HOME PLAYER ================= */
-.nowPlaying{
-  width:340px;
-  margin:50px auto;
-  padding:20px;
-  border-radius:26px;
-
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(0,255,120,0.2);
-  text-align:center;
-}
-
+/* HOME */
 #albumCover{
   width:280px;
   height:280px;
-  border-radius:22px;
-  margin:0 auto 15px;
+  margin:20px auto;
+  border-radius:18px;
+  background:#222;
   background-size:cover;
 }
 
-/* ================= FRIEND LIST ================= */
+button{
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#222;
+  color:white;
+}
+
+/* FRIENDS */
 .friendRow{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-
   padding:12px;
   margin:10px 0;
-
-  background:rgba(255,255,255,0.04);
-  border-radius:14px;
+  background:#1a1a1a;
+  border-radius:12px;
 }
 
-/* ================= CHAT ================= */
+/* CHAT */
 #chatPage{
   display:none;
-  flex-direction:column;
   height:100vh;
+  flex-direction:column;
 }
 
 #messages{
@@ -86,25 +75,10 @@ body{
   padding:10px;
 }
 
-.msg{
-  padding:10px;
-  margin:6px 0;
-  border-radius:12px;
-  max-width:70%;
-  word-wrap:break-word;
-}
+.msg.me{background:rgba(0,255,120,0.2);margin-left:auto;padding:10px;border-radius:10px;}
+.msg.them{background:rgba(255,43,214,0.2);padding:10px;border-radius:10px;}
 
-.me{
-  background:rgba(0,255,120,0.2);
-  margin-left:auto;
-}
-
-.them{
-  background:rgba(255,43,214,0.2);
-}
-
-/* INPUT BAR */
-#msgInputBar{
+#msgBar{
   display:flex;
   gap:10px;
   padding:10px;
@@ -113,95 +87,49 @@ body{
 input{
   flex:1;
   padding:10px;
-  border-radius:12px;
+  border-radius:10px;
   border:none;
-  background:rgba(255,255,255,0.06);
-  color:white;
-}
-
-/* ================= BUTTONS ================= */
-button{
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.08);
-  color:white;
-  padding:10px 14px;
-  border-radius:14px;
-}
-
-/* ================= NAV ================= */
-#bottomNav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  display:flex;
-  background:rgba(10,10,10,0.9);
-  border-top:1px solid rgba(0,255,120,0.2);
-}
-
-.navBtn{
-  flex:1;
-  padding:12px;
-  background:none;
-  border:none;
-  color:white;
 }
 </style>
 </head>
 
 <body>
 
-<!-- BACKGROUND -->
-<div id="bg">
-  <div class="waveGreen"></div>
-</div>
-
 <!-- HOME -->
 <div id="homePage" class="page active">
 
-  <div class="nowPlaying">
+  <div id="albumCover"></div>
 
-    <div id="albumCover"></div>
+  <h2 id="title">Loading...</h2>
+  <p id="meta"></p>
 
-    <h2 id="title">Loading...</h2>
-    <p id="meta"></p>
-
-    <button id="generateBtn">Find Album</button>
-
-  </div>
-
+  <button id="generateBtn">Find Album</button>
 </div>
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
-
-  <h3>Inbox</h3>
-
+  <h3>Friends</h3>
   <div id="friendsList"></div>
-
 </div>
 
-<!-- CHAT SCREEN -->
+<!-- CHAT -->
 <div id="chatPage">
-
   <h3 id="chatTitle"></h3>
 
   <div id="messages"></div>
 
-  <div id="msgInputBar">
-    <input id="msgInput" placeholder="Message...">
-    <button id="sendMsgBtn">Send</button>
+  <div id="msgBar">
+    <input id="msgInput" placeholder="Message">
+    <button id="sendBtn">Send</button>
   </div>
-
 </div>
 
 <!-- NAV -->
 <div id="bottomNav">
   <button id="homeBtn" class="navBtn">Home</button>
   <button id="friendsBtn" class="navBtn">Friends</button>
-  <button id="profileBtn" class="navBtn">Profile</button>
 </div>
 
 <script type="module" src="./app.js"></script>
-
 </body>
 </html>
