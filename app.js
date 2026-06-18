@@ -1,119 +1,108 @@
 const $ = (id)=>document.getElementById(id);
 
-const friends = ["Ethan","Emma","Ciaran","Alex","Jamie"];
+let user = null;
 
-let activeFriend = null;
+/* ALBUMS */
+const albums = [
+  {
+    title:"Abbey Road",
+    artist:"The Beatles",
+    image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg"
+  },
+  {
+    title:"Rumours",
+    artist:"Fleetwood Mac",
+    image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG"
+  },
+  {
+    title:"Blonde",
+    artist:"Frank Ocean",
+    image:"https://upload.wikimedia.org/wikipedia/en/a/a0/Blonde_-_Frank_Ocean.jpeg"
+  }
+];
 
-/* STORAGE */
-function getChats(){
-  return JSON.parse(localStorage.getItem("chats") || "{}");
+let index = 0;
+
+/* LOGIN */
+function login(){
+  const val = $("user").value.trim();
+  if(!val) return;
+
+  user = val;
+
+  go("home");
+  render();
 }
 
-function saveChats(data){
-  localStorage.setItem("chats", JSON.stringify(data));
-}
+/* NAV */
+function go(page){
 
-/* LOAD FRIENDS */
-function loadFriends(){
-  const panel = $("friendsPanel");
-  panel.innerHTML = "";
-
-  friends.forEach(name=>{
-    const div = document.createElement("div");
-    div.className = "friendItem";
-    div.innerText = name;
-
-    div.onclick = ()=>openChat(name);
-
-    panel.appendChild(div);
+  document.querySelectorAll(".page").forEach(p=>{
+    p.classList.remove("active");
   });
+
+  $(page+"Page").classList.add("active");
+
+  if(page==="friends"){
+    loadFriends();
+  }
 }
 
-/* OPEN CHAT */
-function openChat(name){
-  activeFriend = name;
+/* HOME */
+function render(){
+  const a = albums[index];
 
-  $("chatHeader").innerText = name;
-
-  renderMessages();
+  $("albumCover").style.backgroundImage = `url(${a.image})`;
+  $("title").textContent = a.title;
+  $("meta").textContent = a.artist;
 }
 
-/* RENDER MESSAGES */
-function renderMessages(){
+/* FRIENDS (ONLY USER-ADDED) */
+function loadFriends(){
 
-  const box = $("messages");
+  const box = $("friendsList");
   box.innerHTML = "";
 
-  if(!activeFriend) return;
+  let stored = JSON.parse(localStorage.getItem("friends") || "[]");
 
-  const chats = getChats();
-
-  const msgs = chats[activeFriend] || [];
-
-  msgs.forEach(m=>{
+  stored.forEach(name=>{
     const div = document.createElement("div");
-    div.className = "msg " + (m.from === "me" ? "me" : "");
-    div.innerText = m.text;
+    div.className = "friendRow";
+
+    div.innerHTML = `
+      <span>${name}</span>
+      <button onclick="message('${name}')">Message</button>
+    `;
+
     box.appendChild(div);
   });
 
-  box.scrollTop = box.scrollHeight;
+  /* add simple input UI */
+  const input = document.createElement("input");
+  input.placeholder = "Add friend";
+
+  const btn = document.createElement("button");
+  btn.innerText = "Add";
+
+  btn.onclick = ()=>{
+    if(!input.value.trim()) return;
+
+    stored.push(input.value.trim());
+    localStorage.setItem("friends", JSON.stringify(stored));
+
+    loadFriends();
+  };
+
+  box.appendChild(input);
+  box.appendChild(btn);
 }
 
-/* SEND MESSAGE */
-function sendMessage(){
-
-  const input = $("textInput");
-  const text = input.value.trim();
-
-  if(!text || !activeFriend) return;
-
-  const chats = getChats();
-
-  if(!chats[activeFriend]) chats[activeFriend] = [];
-
-  chats[activeFriend].push({
-    from:"me",
-    text
-  });
-
-  saveChats(chats);
-
-  input.value = "";
-
-  renderMessages();
-}
-
-/* ALBUM SEND (placeholder) */
-function sendAlbum(){
-
-  if(!activeFriend) return;
-
-  const chats = getChats();
-
-  if(!chats[activeFriend]) chats[activeFriend] = [];
-
-  chats[activeFriend].push({
-    from:"me",
-    text:"🎧 Sent you an album (feature coming soon)"
-  });
-
-  saveChats(chats);
-
-  renderMessages();
+/* MESSAGE (placeholder) */
+function message(name){
+  alert("Chat with " + name + " coming next update");
 }
 
 /* INIT */
 window.addEventListener("DOMContentLoaded", ()=>{
-
-  loadFriends();
-
-  $("sendBtn").onclick = sendMessage;
-
-  $("albumBtn").onclick = sendAlbum;
-
-  $("textInput").addEventListener("keypress",(e)=>{
-    if(e.key === "Enter") sendMessage();
-  });
-
+  render();
 });
