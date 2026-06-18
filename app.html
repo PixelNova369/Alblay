@@ -12,6 +12,7 @@ body{
   color:white;
 }
 
+/* PAGES */
 .page{
   display:none;
   padding:16px;
@@ -21,29 +22,55 @@ body{
   display:block;
 }
 
+/* HOME */
+.homeWrap{
+  text-align:center;
+  padding:20px;
+}
+
 #albumCover{
   width:300px;
   height:300px;
   margin:20px auto;
-  border-radius:18px;
-  background:#222;
+  border-radius:22px;
   background-size:cover;
   background-position:center;
+  box-shadow:0 25px 80px rgba(0,255,120,0.15);
+  transition:all 0.4s ease;
 }
 
-#nowPlaying{
-  text-align:center;
-  background:#111;
+.nowCard{
+  background:rgba(255,255,255,0.06);
   padding:12px;
-  border-radius:12px;
+  border-radius:14px;
+  margin-top:10px;
+  backdrop-filter:blur(10px);
 }
 
-button{
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  margin-top:15px;
+}
+
+.controls button{
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  border:none;
+  background:#1db954;
+  color:black;
+  font-size:18px;
+}
+
+.generateBtn{
+  margin-top:15px;
+  width:80%;
   padding:12px;
   border:none;
   border-radius:10px;
   background:#1db954;
-  color:black;
   font-weight:bold;
 }
 
@@ -81,16 +108,28 @@ button{
 <!-- HOME -->
 <div id="homePage" class="page active">
 
-  <h2>Now Playing</h2>
+  <div class="homeWrap">
 
-  <div id="albumCover"></div>
+    <h2>Now Playing</h2>
 
-  <div id="nowPlaying">
-    <h3 id="title">Loading...</h3>
-    <p id="meta"></p>
+    <div id="albumCover"></div>
+
+    <div class="nowCard">
+      <h3 id="title">Loading...</h3>
+      <p id="meta"></p>
+    </div>
+
+    <div class="controls">
+      <button id="prevBtn">⟲</button>
+      <button id="playBtn">▶</button>
+      <button id="nextBtn">⟳</button>
+    </div>
+
+    <button id="generateBtn" class="generateBtn">
+      Find Album
+    </button>
+
   </div>
-
-  <button id="generateBtn">Find Album</button>
 </div>
 
 <!-- FRIENDS -->
