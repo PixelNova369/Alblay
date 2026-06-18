@@ -1,4 +1,4 @@
-console.log("ALBLAY FINAL UI LOADED");
+console.log("ALBLAY WRAPPED UI ACTIVE");
 
 const $ = (id)=>document.getElementById(id);
 
@@ -24,10 +24,7 @@ let index = 0;
 
 /* NAV */
 function show(page){
-  document.querySelectorAll(".page").forEach(p=>{
-    p.classList.remove("active");
-  });
-
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   $(page+"Page").classList.add("active");
 }
 
