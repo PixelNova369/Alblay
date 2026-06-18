@@ -1,131 +1,118 @@
-console.log("APP LOADED SUCCESSFULLY")
+console.log("APP LOADED")
 
-// --------------------
-// ALBUM DATA
-// --------------------
-const albums = [
-  {
-    title: "Abbey Road",
-    artist: "The Beatles",
-    image: "https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg"
-  },
-  {
-    title: "Rumours",
-    artist: "Fleetwood Mac",
-    image: "https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG"
-  },
-  {
-    title: "Dark Side of the Moon",
-    artist: "Pink Floyd",
-    image: "https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png"
-  }
-]
-
-let currentFriend = null
-
-// --------------------
-// HELPERS
-// --------------------
 const $ = (id) => document.getElementById(id)
 
 // --------------------
-// PAGE SWITCH
+// NAV (FIXED)
 // --------------------
 function show(page){
-
-  document.querySelectorAll(".page").forEach(p=>{
-    p.classList.remove("active")
-  })
-
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
   $(page + "Page").classList.add("active")
 }
 
 // --------------------
-// ALBUM GENERATOR
+// FRIENDS DATA (TEMP SAFE)
 // --------------------
-function renderAlbum(){
-
-  const a = albums[Math.floor(Math.random() * albums.length)]
-
-  $("albumCover").style.backgroundImage = `url(${a.image})`
-  $("title").textContent = a.title
-  $("meta").textContent = a.artist
-}
+let friends = [
+  { name:"Ethan" },
+  { name:"Emma" },
+  { name:"Ciaran" }
+]
 
 // --------------------
-// FRIENDS (STATIC TEST FIRST)
+// RENDER FRIENDS
 // --------------------
-function loadFriends(){
-
-  const friends = ["Ethan", "Emma", "Ciaran"]
+function renderFriends(){
 
   const box = $("friendsList")
+  if(!box) return
+
   box.innerHTML = ""
 
-  friends.forEach(name=>{
+  friends.forEach(f=>{
 
     const row = document.createElement("div")
-    row.className = "friendRow"
 
-    row.innerHTML = `
-      <span>${name}</span>
-      <button>Message</button>
+    row.style.cssText = `
+      display:flex;
+      justify-content:space-between;
+      padding:12px;
+      margin:8px 0;
+      background:#1a1a1a;
+      border-radius:12px;
     `
 
-    row.querySelector("button").onclick = ()=>{
-      openChat(name)
-    }
+    row.innerHTML = `
+      <span>${f.name}</span>
+      <button>Message</button>
+    `
 
     box.appendChild(row)
   })
 }
 
 // --------------------
-// CHAT
+// INBOX (PLACEHOLDER SAFE)
 // --------------------
-function openChat(name){
+function renderInbox(){
 
-  currentFriend = name
+  const box = $("requestsBox")
+  if(!box) return
 
-  $("friendsPage").classList.remove("active")
-  $("chatPage").style.display = "flex"
-
-  $("chatTitle").textContent = "Chat with " + name
-
-  $("messages").innerHTML = ""
+  box.innerHTML = `
+    <div style="padding:10px;background:#111;border-radius:10px;">
+      No friend requests yet
+    </div>
+  `
 }
 
 // --------------------
-// SEND MESSAGE
+// SEARCH FRIENDS
 // --------------------
-function sendMessage(){
+function setupSearch(){
 
-  const input = $("msgInput")
+  const btn = $("searchBtn")
+  const input = $("searchFriend")
+  const results = $("searchResults")
 
-  if(!input.value) return
+  if(!btn || !input || !results) return
 
-  const div = document.createElement("div")
-  div.className = "msg"
-  div.textContent = input.value
+  btn.onclick = () => {
 
-  $("messages").appendChild(div)
+    results.innerHTML = ""
 
-  input.value = ""
+    const fake = ["Alex", "Cathal", "Sarah"]
+
+    fake.forEach(name=>{
+      const div = document.createElement("div")
+
+      div.style.cssText = `
+        padding:10px;
+        margin:6px 0;
+        background:#222;
+        border-radius:10px;
+      `
+
+      div.innerHTML = `${name} <button>Add</button>`
+
+      results.appendChild(div)
+    })
+  }
 }
 
 // --------------------
-// INIT
+// INIT (FORCED SAFE)
 // --------------------
 window.addEventListener("DOMContentLoaded", ()=>{
 
   console.log("DOM READY")
 
-  $("homeBtn").onclick = ()=>show("home")
-  $("friendsBtn").onclick = ()=>show("friends")
+  // NAV FIX
+  $("homeBtn")?.addEventListener("click", ()=>show("home"))
+  $("friendsBtn")?.addEventListener("click", ()=>show("friends"))
 
-  $("generateBtn").onclick = renderAlbum
-  $("sendBtn").onclick = sendMessage
-
-  renderAlbum()
-  loadFriends()
+  // FRIENDS
+  renderFriends()
+  renderInbox()
+  setupSearch()
 })
