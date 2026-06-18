@@ -15,20 +15,26 @@ const albums = [
     image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG"
   },
   {
-    title:"Blonde",
-    artist:"Frank Ocean",
-    image:"https://upload.wikimedia.org/wikipedia/en/a/a0/Blonde_-_Frank_Ocean.jpeg"
+    title:"Dark Side of the Moon",
+    artist:"Pink Floyd",
+    image:"https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png"
   }
 ];
 
 let index = 0;
 
-/* LOGIN */
+/* LOGIN FIX */
 function login(){
-  const val = $("user").value.trim();
-  if(!val) return;
 
-  user = val;
+  const username = $("user").value.trim();
+  const password = $("pass").value.trim();
+
+  if(!username || !password){
+    alert("Please enter username + password");
+    return;
+  }
+
+  user = username;
 
   go("home");
   render();
@@ -43,13 +49,14 @@ function go(page){
 
   $(page+"Page").classList.add("active");
 
-  if(page==="friends"){
+  if(page === "friends"){
     loadFriends();
   }
 }
 
-/* HOME */
+/* RENDER HOME */
 function render(){
+
   const a = albums[index];
 
   $("albumCover").style.backgroundImage = `url(${a.image})`;
@@ -57,7 +64,7 @@ function render(){
   $("meta").textContent = a.artist;
 }
 
-/* FRIENDS (ONLY USER-ADDED) */
+/* FRIENDS (EMPTY BASE FOR NOW) */
 function loadFriends(){
 
   const box = $("friendsList");
@@ -71,38 +78,68 @@ function loadFriends(){
 
     div.innerHTML = `
       <span>${name}</span>
-      <button onclick="message('${name}')">Message</button>
+      <button>Message</button>
     `;
 
     box.appendChild(div);
   });
-
-  /* add simple input UI */
-  const input = document.createElement("input");
-  input.placeholder = "Add friend";
-
-  const btn = document.createElement("button");
-  btn.innerText = "Add";
-
-  btn.onclick = ()=>{
-    if(!input.value.trim()) return;
-
-    stored.push(input.value.trim());
-    localStorage.setItem("friends", JSON.stringify(stored));
-
-    loadFriends();
-  };
-
-  box.appendChild(input);
-  box.appendChild(btn);
 }
 
-/* MESSAGE (placeholder) */
-function message(name){
-  alert("Chat with " + name + " coming next update");
+/* CONTROLS */
+function next(){
+  index = (index + 1) % albums.length;
+  render();
+}
+
+function prev(){
+  index = (index - 1 + albums.length) % albums.length;
+  render();
+}
+
+/* DRAWER */
+let open = false;
+
+function toggleDrawer(){
+  const d = $("drawerPanel");
+  open = !open;
+  d.classList.toggle("hidden");
 }
 
 /* INIT */
 window.addEventListener("DOMContentLoaded", ()=>{
+
+  /* LOGIN BUTTON FIX */
+  $("loginBtn").onclick = login;
+
+  /* ENTER KEY FIX */
+  document.addEventListener("keydown",(e)=>{
+    if(e.key === "Enter" && $("loginPage").classList.contains("active")){
+      login();
+    }
+  });
+
+  /* NAV */
+  $("homeBtn").onclick = ()=>go("home");
+  $("friendsBtn").onclick = ()=>go("friends");
+
+  /* HOME CONTROLS */
+  $("nextBtn").onclick = next;
+  $("prevBtn").onclick = prev;
+
+  $("playBtn").onclick = ()=>{
+    const a = albums[index];
+    window.open(
+      `https://open.spotify.com/search/${encodeURIComponent(a.title+" "+a.artist)}`
+    );
+  };
+
+  $("generateBtn").onclick = ()=>{
+    index = Math.floor(Math.random()*albums.length);
+    render();
+  };
+
+  $("drawerBtn").onclick = toggleDrawer;
+  $("closeDrawer").onclick = toggleDrawer;
+
   render();
 });
