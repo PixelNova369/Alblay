@@ -5,17 +5,15 @@
 <title>Alblay</title>
 
 <style>
-body {
+body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial;
+  font-family:-apple-system;
   background:#050505;
   color:white;
-  overflow-x:hidden;
-  padding-bottom:90px;
+  padding-bottom:80px;
 }
 
-/* WRAPPED BACKGROUND */
-#bg {
+#bg{
   position:fixed;
   inset:0;
   z-index:-2;
@@ -23,83 +21,66 @@ body {
     radial-gradient(circle at 20% 20%, rgba(29,185,84,0.25), transparent 40%),
     radial-gradient(circle at 80% 10%, rgba(255,59,48,0.18), transparent 45%),
     radial-gradient(circle at 40% 90%, rgba(10,132,255,0.18), transparent 45%);
-  filter: blur(50px);
+  filter:blur(60px);
 }
 
-/* PAGES */
-.page { display:none; padding:20px; }
-.active { display:block; }
+.page{ display:none; padding:20px; }
+.active{ display:block; }
 
 /* ALBUM */
-#albumCover {
+#albumCover{
   width:320px;
   height:320px;
   margin:20px auto;
   border-radius:22px;
   background-size:cover;
-  background-position:center;
   box-shadow:0 30px 80px rgba(0,0,0,0.6);
-  transition:0.3s ease;
 }
 
 /* BUTTONS */
-button {
+button{
   background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.08);
+  border:none;
   color:white;
   padding:10px 14px;
-  border-radius:14px;
-  backdrop-filter: blur(12px);
+  border-radius:12px;
 }
 
-button:hover { transform:scale(1.05); }
-
-input {
+input{
   width:100%;
   padding:12px;
-  margin:6px 0;
   border-radius:12px;
   border:none;
   background:rgba(255,255,255,0.06);
   color:white;
 }
 
-/* DRAWER */
-#drawer {
-  position:fixed;
-  right:-340px;
-  top:0;
-  width:320px;
-  height:100%;
-  background:rgba(20,20,20,0.9);
-  backdrop-filter:blur(20px);
-  padding:20px;
-  transition:0.3s ease;
-  z-index:999;
+/* PROFILE CARD */
+.profileCard{
+  background:rgba(255,255,255,0.06);
+  padding:16px;
+  border-radius:16px;
+  text-align:center;
+  margin-top:20px;
 }
 
-#drawer.open { right:0; }
-
-/* CARDS */
-.card {
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.06);
-  padding:12px;
-  border-radius:14px;
-  margin:8px 0;
+.profilePic{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  object-fit:cover;
+  margin-bottom:10px;
 }
 
 /* NAV */
-#bottomNav {
+#bottomNav{
   position:fixed;
   bottom:0;
   width:100%;
-  background:rgba(15,15,15,0.8);
-  backdrop-filter:blur(20px);
+  background:rgba(15,15,15,0.9);
   display:flex;
   justify-content:space-around;
   padding:12px;
-  border-top:1px solid rgba(255,255,255,0.05);
 }
 </style>
 </head>
@@ -108,52 +89,24 @@ input {
 
 <div id="bg"></div>
 
-<!-- DRAWER -->
-<div id="drawer">
-  <h3>Filters</h3>
-  <button id="closeDrawer">Close</button>
-  <p>Genre</p>
-  <input placeholder="rock / pop / chill">
-</div>
-
 <!-- HOME -->
 <div id="homePage" class="page active">
-
   <div id="albumCover"></div>
 
   <h2 id="title">Loading...</h2>
   <p id="meta"></p>
 
-  <div>
-    <button id="prevBtn">◀</button>
-    <button id="playBtn">Play</button>
-    <button id="nextBtn">▶</button>
-    <button id="drawerBtn">☰</button>
-  </div>
-
-  <button id="generateBtn">Surprise Me</button>
+  <button id="generateBtn">Find Album</button>
 </div>
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
 
-  <h3>Friends</h3>
+  <h3>Messages</h3>
 
-  <input id="friendUsernameInput" placeholder="Friend username">
-  <button id="sendFriendBtn">Send Request</button>
-
-  <h4>Suggested Friends</h4>
-  <div id="suggestedFriends"></div>
-
-  <h4>Send Album</h4>
-  <input id="shareUsername" placeholder="Friend username">
-  <button id="sendAlbumBtn">Send Current Album</button>
-
-  <h4>Inbox</h4>
-  <div id="inbox"></div>
-
-  <h4>Friends</h4>
-  <div id="friendsList"></div>
+  <div class="friend">Erris <button>Message</button></div>
+  <div class="friend">Ethan <button>Message</button></div>
+  <div class="friend">Emma <button>Message</button></div>
 
 </div>
 
@@ -162,14 +115,14 @@ input {
 
   <h3>Profile</h3>
 
-  <input id="usernameInput" placeholder="Username">
-  <input id="avatarInput" placeholder="Avatar URL">
+  <p id="displayName">Guest</p>
 
-  <button id="saveProfileBtn">Save</button>
+  <!-- IMAGE PICKER (CAMERA / GALLERY) -->
+  <input id="avatarInput" type="file" accept="image/*" capture>
 
-  <div class="card">
-    <img id="avatarPreview" style="width:60px;height:60px;border-radius:50%;">
-    <h4 id="namePreview">Guest</h4>
+  <div class="profileCard">
+    <img id="avatarPreview" class="profilePic">
+    <h3 id="usernamePreview">Guest</h3>
   </div>
 
 </div>
@@ -177,10 +130,11 @@ input {
 <!-- NAV -->
 <div id="bottomNav">
   <button id="homeBtn">Home</button>
-  <button id="friendsBtn">Friends</button>
+  <button id="friendsBtn">Messages</button>
   <button id="profileBtn">Profile</button>
 </div>
 
 <script type="module" src="./app.js"></script>
+
 </body>
 </html>
