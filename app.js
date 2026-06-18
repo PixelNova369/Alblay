@@ -5,6 +5,54 @@ console.log("APP START")
 let currentChat = null
 
 // --------------------
+// AUTH CHECK
+// --------------------
+async function checkAuth(){
+
+  const { data } = await supabase.auth.getSession()
+
+  if(!data.session){
+    document.getElementById("authGate").style.display = "flex"
+    return false
+  }
+
+  document.getElementById("authGate").style.display = "none"
+  return true
+}
+
+// --------------------
+// LOGIN
+// --------------------
+async function setupAuth(){
+
+  document.getElementById("loginBtn").onclick = async () => {
+    const email = document.getElementById("email").value
+    const password = document.getElementById("password").value
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email, password
+    })
+
+    if(error) return alert(error.message)
+
+    location.reload()
+  }
+
+  document.getElementById("signupBtn").onclick = async () => {
+    const email = document.getElementById("email").value
+    const password = document.getElementById("password").value
+
+    const { error } = await supabase.auth.signUp({
+      email, password
+    })
+
+    if(error) return alert(error.message)
+
+    alert("Check email to confirm account")
+  }
+}
+
+// --------------------
 // ALBUMS
 // --------------------
 const albums = [
@@ -23,19 +71,16 @@ function renderAlbum(){
 }
 
 // --------------------
-// NAV SAFE SWITCH
+// NAV
 // --------------------
 function show(page){
-
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
-
   document.getElementById("chatPage").style.display = "none"
-
   document.getElementById(page+"Page").classList.add("active")
 }
 
 // --------------------
-// FRIENDS (SAFE FALLBACK)
+// FRIENDS UI (REAL FIX)
 // --------------------
 async function loadFriends(){
 
@@ -44,15 +89,15 @@ async function loadFriends(){
   const box = document.getElementById("friendsList")
   box.innerHTML = ""
 
-  if(!data || data.length === 0){
-    box.innerHTML = "<p>No friends yet</p>"
+  if(!data?.length){
+    box.innerHTML = "No friends yet"
     return
   }
 
   data.forEach(f=>{
 
     const row = document.createElement("div")
-    row.className = "friendRow"
+    row.className = "row"
 
     row.innerHTML = `
       <span>User ${f.friend_id.slice(0,6)}</span>
@@ -68,24 +113,21 @@ async function loadFriends(){
 }
 
 // --------------------
-// CHAT (MINIMAL BUT WORKING)
+// CHAT
 // --------------------
-async function openChat(friendId){
+async function openChat(id){
 
-  currentChat = friendId
+  currentChat = id
 
   document.getElementById("friendsPage").classList.remove("active")
   document.getElementById("chatPage").style.display = "flex"
 
   document.getElementById("chatTitle").textContent =
-    "Chat " + friendId.slice(0,6)
+    "Chat " + id.slice(0,6)
 
   loadMessages()
 }
 
-// --------------------
-// MESSAGES (FIXED SAFE)
-// --------------------
 async function loadMessages(){
 
   const { data } = await supabase
@@ -96,9 +138,7 @@ async function loadMessages(){
   const box = document.getElementById("messages")
   box.innerHTML = ""
 
-  if(!data) return
-
-  data.forEach(m=>{
+  data?.forEach(m=>{
     const div = document.createElement("div")
     div.className = "msg them"
     div.textContent = m.message_text
@@ -106,13 +146,9 @@ async function loadMessages(){
   })
 }
 
-// --------------------
-// SEND MESSAGE (SAFE)
-// --------------------
 async function send(){
 
   const input = document.getElementById("msgInput")
-  if(!input.value || !currentChat) return
 
   await supabase.from("messages").insert({
     chat_id: currentChat,
@@ -125,9 +161,14 @@ async function send(){
 }
 
 // --------------------
-// INIT (ONE ENTRY POINT FIX)
+// INIT (ONE SAFE STARTUP)
 // --------------------
-window.addEventListener("DOMContentLoaded", ()=>{
+window.addEventListener("DOMContentLoaded", async ()=>{
+
+  await setupAuth()
+
+  const ok = await checkAuth()
+  if(!ok) return
 
   document.getElementById("homeBtn").onclick=()=>show("home")
   document.getElementById("friendsBtn").onclick=()=>show("friends")
