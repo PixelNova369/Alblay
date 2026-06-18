@@ -13,9 +13,9 @@ body{
   overflow:hidden;
 }
 
-/* =========================
-   BACKGROUND (WRAPPED + IG DEPTH)
-========================= */
+/* =======================
+   BACKGROUND
+======================= */
 #bg{
   position:fixed;
   inset:0;
@@ -24,7 +24,6 @@ body{
   overflow:hidden;
 }
 
-/* NEON WAVE SYSTEM */
 .waveLayer{
   position:absolute;
   inset:-200px;
@@ -32,48 +31,31 @@ body{
     radial-gradient(circle at 20% 30%, rgba(0,255,120,0.22), transparent 45%),
     radial-gradient(circle at 70% 20%, rgba(0,255,140,0.16), transparent 55%),
     radial-gradient(circle at 50% 80%, rgba(0,255,100,0.12), transparent 60%);
-  filter: blur(80px);
-  animation: waveMove 14s ease-in-out infinite;
-}
-
-.waveLayer::after{
-  content:"";
-  position:absolute;
-  inset:-200px;
-  background:
-    radial-gradient(circle at 30% 40%, rgba(0,255,120,0.10), transparent 55%),
-    radial-gradient(circle at 80% 60%, rgba(0,255,160,0.08), transparent 60%);
-  filter: blur(100px);
-  animation: waveMove2 20s ease-in-out infinite;
-}
-
-/* IG STYLE GRID NOISE */
-#bg::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size:40px 40px;
-  opacity:0.15;
+  filter:blur(80px);
+  animation:waveMove 14s ease-in-out infinite;
 }
 
 @keyframes waveMove{
-  0%{transform:translate(0,0) scale(1);}
-  50%{transform:translate(-40px,20px) scale(1.05);}
-  100%{transform:translate(0,0) scale(1);}
+  0%{transform:translate(0,0);}
+  50%{transform:translate(-40px,20px);}
+  100%{transform:translate(0,0);}
 }
 
-@keyframes waveMove2{
-  0%{transform:translate(20px,0) scale(1);}
-  50%{transform:translate(-20px,-30px) scale(1.1);}
-  100%{transform:translate(20px,0) scale(1);}
+/* =======================
+   PAGES
+======================= */
+.page{
+  display:none;
+  padding:20px;
 }
 
-/* =========================
-   PLAYER CARD (WRAPPED STYLE)
-========================= */
+.active{
+  display:block;
+}
+
+/* =======================
+   PLAYER CARD
+======================= */
 .nowPlaying{
   width:340px;
   margin:60px auto;
@@ -86,15 +68,12 @@ body{
   backdrop-filter: blur(16px);
 
   box-shadow:
-    0 0 30px rgba(0,255,120,0.10),
+    0 0 30px rgba(0,255,120,0.12),
     0 40px 100px rgba(0,0,0,0.8);
 
   text-align:center;
 }
 
-/* =========================
-   ALBUM (STORY MODE)
-========================= */
 #albumCover{
   width:280px;
   height:280px;
@@ -102,49 +81,23 @@ body{
   border-radius:22px;
   background-size:cover;
   background-position:center;
-
-  transition:0.55s cubic-bezier(.2,.8,.2,1);
-  box-shadow:
-    0 0 25px rgba(0,255,120,0.12),
-    0 40px 100px rgba(0,0,0,0.6);
+  transition:0.5s ease;
 }
 
-/* TEXT */
-h2,p{
-  transition:0.3s ease;
-}
-
-/* =========================
-   BUTTONS (MODERN IG STYLE)
-========================= */
+/* =======================
+   BUTTONS
+======================= */
 button{
   background:rgba(255,255,255,0.06);
   border:1px solid rgba(255,255,255,0.08);
   color:white;
   padding:10px 14px;
   border-radius:14px;
-  font-size:14px;
-  backdrop-filter: blur(8px);
 }
 
-/* CONTROL ROW */
-.controls{
-  display:flex;
-  justify-content:center;
-  gap:12px;
-  margin-top:10px;
-}
-
-/* LOWER ACTIONS */
-.lowerActions{
-  display:flex;
-  justify-content:space-between;
-  margin-top:18px;
-}
-
-/* =========================
-   DRAWER (FIXED — NO OVERFLOW)
-========================= */
+/* =======================
+   DRAWER (FIXED)
+======================= */
 #drawerPanel{
   position:fixed;
   top:0;
@@ -153,19 +106,21 @@ button{
   height:100%;
   background:#0f0f0f;
   padding:20px;
+  z-index:999;
 
   transform:translateX(100%);
   transition:0.35s cubic-bezier(.2,.8,.2,1);
-  z-index:999;
 
-  border-left:1px solid rgba(0,255,120,0.15);
+  border-left:1px solid rgba(0,255,120,0.2);
 }
 
 #drawerPanel.open{
   transform:translateX(0%);
 }
 
-/* NAV */
+/* =======================
+   BOTTOM NAV (FIXED + NEON OUTLINE)
+======================= */
 #bottomNav{
   position:fixed;
   bottom:0;
@@ -173,15 +128,28 @@ button{
   display:flex;
   justify-content:space-around;
   padding:12px;
+
   background:rgba(10,10,10,0.9);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+
+  border-top:1px solid rgba(0,255,120,0.25);
+  box-shadow:0 -10px 30px rgba(0,255,120,0.08);
+}
+
+/* active tab glow */
+.navBtn{
+  position:relative;
+}
+
+.navBtn.active{
+  border:1px solid rgba(0,255,120,0.5);
+  box-shadow:0 0 12px rgba(0,255,120,0.2);
 }
 </style>
 </head>
 
 <body>
 
-<!-- BACKGROUND -->
 <div id="bg">
   <div class="waveLayer"></div>
 </div>
@@ -190,23 +158,21 @@ button{
 <div id="homePage" class="page active">
 
   <div class="nowPlaying">
-
     <div id="albumCover"></div>
 
     <h2 id="title">Loading...</h2>
     <p id="meta"></p>
 
-    <div class="controls">
+    <div>
       <button id="prevBtn">Prev</button>
       <button id="playBtn">Play</button>
       <button id="nextBtn">Next</button>
     </div>
 
-    <div class="lowerActions">
+    <div style="margin-top:12px;">
       <button id="drawerBtn">Filters</button>
       <button id="generateBtn">Generate</button>
     </div>
-
   </div>
 
 </div>
@@ -260,9 +226,9 @@ button{
 
 <!-- NAV -->
 <div id="bottomNav">
-  <button id="homeBtn">Home</button>
-  <button id="friendsBtn">Friends</button>
-  <button id="profileBtn">Profile</button>
+  <button id="homeBtn" class="navBtn active">Home</button>
+  <button id="friendsBtn" class="navBtn">Friends</button>
+  <button id="profileBtn" class="navBtn">Profile</button>
 </div>
 
 <script type="module" src="./app.js"></script>
