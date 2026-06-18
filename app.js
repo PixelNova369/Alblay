@@ -1,122 +1,131 @@
-console.log("🔥 JS IS LOADING CORRECTLY")
-alert("JS LOADED")
 console.log("🔥 APP JS RUNNING")
 
-// =====================
-// SAFE STATE (NO SUPABASE DEPENDENCY)
-// =====================
-let currentChat = null
+function $(id){
+  const el = document.getElementById(id)
+  if(!el){
+    console.warn("❌ Missing element:", id)
+  }
+  return el
+}
 
-// =====================
-// ALBUM DATA (STATIC = ALWAYS WORKS)
-// =====================
+// --------------------
+// ALBUM TEST DATA
+// --------------------
 const albums = [
   { title:"Abbey Road", artist:"Beatles", image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg" },
-  { title:"Rumours", artist:"Fleetwood Mac", image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG" },
-  { title:"Dark Side", artist:"Pink Floyd", image:"https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png" }
+  { title:"Rumours", artist:"Fleetwood Mac", image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG" }
 ]
 
-// =====================
+// --------------------
 // RENDER HOME
-// =====================
-function renderAlbum(){
+// --------------------
+function render(){
   const a = albums[Math.floor(Math.random()*albums.length)]
 
-  document.getElementById("albumCover").style.backgroundImage =
-    `url(${a.image})`
+  const cover = $("albumCover")
+  const title = $("title")
+  const meta = $("meta")
 
-  document.getElementById("title").textContent = a.title
-  document.getElementById("meta").textContent = a.artist
+  if(!cover || !title || !meta) return
+
+  cover.style.backgroundImage = `url(${a.image})`
+  title.textContent = a.title
+  meta.textContent = a.artist
 }
 
-// =====================
-// PAGE SWITCHING (FIXED)
-// =====================
-function show(page){
-
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
-
-  document.getElementById("chatPage").style.display = "none"
-
-  document.getElementById(page+"Page").classList.add("active")
-}
-
-// =====================
-// FRIENDS (ALWAYS SHOWS)
-// =====================
+// --------------------
+// FRIENDS MOCK (GUARANTEED VISUAL)
+// --------------------
 function loadFriends(){
 
-  const friends = [
-    { name:"Ethan", id:"1" },
-    { name:"Emma", id:"2" },
-    { name:"Ciaran", id:"3" }
-  ]
+  const box = $("friendsList")
+  if(!box) return
 
-  const box = document.getElementById("friendsList")
   box.innerHTML = ""
 
-  friends.forEach(f=>{
+  const friends = ["Ethan","Emma","Ciaran"]
 
+  friends.forEach(name=>{
     const row = document.createElement("div")
-    row.className = "friendRow"
-
-    row.innerHTML = `
-      <span>${f.name}</span>
-      <button>Message</button>
+    row.style.cssText = `
+      display:flex;
+      justify-content:space-between;
+      padding:12px;
+      margin:10px 0;
+      background:#1a1a1a;
+      border-radius:12px;
     `
 
-    row.querySelector("button").onclick = ()=>{
-      openChat(f)
-    }
+    row.innerHTML = `
+      <span>${name}</span>
+      <button>Message</button>
+    `
 
     box.appendChild(row)
   })
 }
 
-// =====================
-// CHAT (SIMPLE WORKING)
-// =====================
-function openChat(friend){
+// --------------------
+// PAGE SWITCH
+// --------------------
+function show(page){
 
-  currentChat = friend
+  document.querySelectorAll(".page").forEach(p=>{
+    p.classList.remove("active")
+  })
 
-  document.getElementById("friendsPage").classList.remove("active")
-  document.getElementById("chatPage").style.display = "flex"
+  const target = $(page+"Page")
+  if(target){
+    target.classList.add("active")
+  }
 
-  document.getElementById("chatTitle").textContent =
-    "Chat with " + friend.name
-
-  document.getElementById("messages").innerHTML = ""
+  const chat = $("chatPage")
+  if(chat) chat.style.display = "none"
 }
 
-function sendMessage(){
+// --------------------
+// CHAT TEST
+// --------------------
+function openChat(name){
 
-  const input = document.getElementById("msgInput")
+  const chat = $("chatPage")
+  const title = $("chatTitle")
 
-  if(!input.value) return
+  if(!chat || !title) return
 
-  const div = document.createElement("div")
-  div.className = "msg me"
-  div.textContent = input.value
-
-  document.getElementById("messages").appendChild(div)
-
-  input.value = ""
+  chat.style.display = "flex"
+  title.textContent = "Chat with " + name
 }
 
-// =====================
-// INIT (GUARANTEED RUN)
-// =====================
+// --------------------
+// INIT (FORCE SAFE)
+// --------------------
 window.addEventListener("DOMContentLoaded", ()=>{
 
   console.log("🔥 DOM READY")
 
-  document.getElementById("homeBtn").onclick = ()=>show("home")
-  document.getElementById("friendsBtn").onclick = ()=>show("friends")
+  // NAV
+  $("homeBtn")?.addEventListener("click", ()=>show("home"))
+  $("friendsBtn")?.addEventListener("click", ()=>show("friends"))
 
-  document.getElementById("generateBtn").onclick = renderAlbum
-  document.getElementById("sendBtn").onclick = sendMessage
+  // HOME BUTTON
+  $("generateBtn")?.addEventListener("click", render)
 
-  renderAlbum()
+  // SEND BUTTON (if exists)
+  $("sendBtn")?.addEventListener("click", ()=>{
+    const input = $("msgInput")
+    const box = $("messages")
+
+    if(!input || !box) return
+
+    const div = document.createElement("div")
+    div.className = "msg me"
+    div.textContent = input.value
+
+    box.appendChild(div)
+    input.value = ""
+  })
+
+  render()
   loadFriends()
 })
