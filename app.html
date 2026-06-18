@@ -12,24 +12,6 @@ body{
   color:white;
 }
 
-/* NAV */
-#bottomNav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  display:flex;
-  background:#111;
-}
-
-button{
-  flex:1;
-  padding:14px;
-  background:none;
-  border:none;
-  color:white;
-}
-
-/* PAGES */
 .page{
   display:none;
   padding:16px;
@@ -39,7 +21,6 @@ button{
   display:block;
 }
 
-/* ALBUM */
 #albumCover{
   width:300px;
   height:300px;
@@ -47,6 +28,23 @@ button{
   border-radius:18px;
   background:#222;
   background-size:cover;
+  background-position:center;
+}
+
+#nowPlaying{
+  text-align:center;
+  background:#111;
+  padding:12px;
+  border-radius:12px;
+}
+
+button{
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#1db954;
+  color:black;
+  font-weight:bold;
 }
 
 /* FRIENDS */
@@ -58,6 +56,23 @@ button{
   background:#1a1a1a;
   border-radius:10px;
 }
+
+/* NAV */
+#bottomNav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  background:#111;
+}
+
+.navBtn{
+  flex:1;
+  padding:14px;
+  background:none;
+  border:none;
+  color:white;
+}
 </style>
 </head>
 
@@ -65,11 +80,15 @@ button{
 
 <!-- HOME -->
 <div id="homePage" class="page active">
+
   <h2>Now Playing</h2>
+
   <div id="albumCover"></div>
 
-  <h3 id="title">Loading...</h3>
-  <p id="meta"></p>
+  <div id="nowPlaying">
+    <h3 id="title">Loading...</h3>
+    <p id="meta"></p>
+  </div>
 
   <button id="generateBtn">Find Album</button>
 </div>
@@ -82,8 +101,8 @@ button{
 
 <!-- NAV -->
 <div id="bottomNav">
-  <button id="homeBtn">Home</button>
-  <button id="friendsBtn">Friends</button>
+  <button id="homeBtn" class="navBtn">Home</button>
+  <button id="friendsBtn" class="navBtn">Friends</button>
 </div>
 
 <script src="./app.js"></script>
