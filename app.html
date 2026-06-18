@@ -23,55 +23,21 @@ body{
 }
 
 /* HOME */
-.homeWrap{
-  text-align:center;
-  padding:20px;
-}
-
 #albumCover{
   width:300px;
   height:300px;
   margin:20px auto;
-  border-radius:22px;
+  border-radius:20px;
+  background:#222;
   background-size:cover;
   background-position:center;
-  box-shadow:0 25px 80px rgba(0,255,120,0.15);
-  transition:all 0.4s ease;
 }
 
-.nowCard{
-  background:rgba(255,255,255,0.06);
+#nowPlaying{
+  text-align:center;
   padding:12px;
-  border-radius:14px;
-  margin-top:10px;
-  backdrop-filter:blur(10px);
-}
-
-.controls{
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  margin-top:15px;
-}
-
-.controls button{
-  width:55px;
-  height:55px;
-  border-radius:50%;
-  border:none;
-  background:#1db954;
-  color:black;
-  font-size:18px;
-}
-
-.generateBtn{
-  margin-top:15px;
-  width:80%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#1db954;
-  font-weight:bold;
+  background:#111;
+  border-radius:12px;
 }
 
 /* FRIENDS */
@@ -93,7 +59,7 @@ body{
   background:#111;
 }
 
-.navBtn{
+button{
   flex:1;
   padding:14px;
   background:none;
@@ -107,29 +73,16 @@ body{
 
 <!-- HOME -->
 <div id="homePage" class="page active">
+  <h2>Now Playing</h2>
 
-  <div class="homeWrap">
+  <div id="albumCover"></div>
 
-    <h2>Now Playing</h2>
-
-    <div id="albumCover"></div>
-
-    <div class="nowCard">
-      <h3 id="title">Loading...</h3>
-      <p id="meta"></p>
-    </div>
-
-    <div class="controls">
-      <button id="prevBtn">⟲</button>
-      <button id="playBtn">▶</button>
-      <button id="nextBtn">⟳</button>
-    </div>
-
-    <button id="generateBtn" class="generateBtn">
-      Find Album
-    </button>
-
+  <div id="nowPlaying">
+    <h3 id="title">Loading...</h3>
+    <p id="meta"></p>
   </div>
+
+  <button id="generateBtn">Find Album</button>
 </div>
 
 <!-- FRIENDS -->
@@ -140,8 +93,8 @@ body{
 
 <!-- NAV -->
 <div id="bottomNav">
-  <button id="homeBtn" class="navBtn">Home</button>
-  <button id="friendsBtn" class="navBtn">Friends</button>
+  <button id="homeBtn">Home</button>
+  <button id="friendsBtn">Friends</button>
 </div>
 
 <script src="./app.js"></script>
