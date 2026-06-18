@@ -10,82 +10,14 @@ body{
   font-family:-apple-system;
   background:#050505;
   color:white;
-  overflow:hidden;
 }
 
-/* LOGIN */
-#authGate{
-  position:fixed;
-  inset:0;
-  background:#050505;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-
-input{
-  width:80%;
-  padding:12px;
-  margin:6px;
-  border-radius:10px;
-  border:none;
-  background:#222;
-  color:white;
-}
-
-button{
-  padding:10px 14px;
-  border-radius:10px;
-  border:none;
-  background:#1db954;
-  color:black;
-  font-weight:bold;
-}
-
-/* HOME NOW PLAYING */
-#homePage{
-  display:none;
-  padding:20px;
+/* HEADER */
+h1{
   text-align:center;
 }
 
-#albumCover{
-  width:300px;
-  height:300px;
-  margin:20px auto;
-  border-radius:20px;
-  background-size:cover;
-  background-position:center;
-  box-shadow:0 20px 60px rgba(0,0,0,0.6);
-}
-
-#nowPlayingBox{
-  background:#111;
-  border-radius:16px;
-  padding:12px;
-  margin-top:10px;
-}
-
-/* NAV */
-#bottomNav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  display:flex;
-  background:#111;
-}
-
-.navBtn{
-  flex:1;
-  padding:14px;
-  background:none;
-  border:none;
-  color:white;
-}
-
-/* FRIENDS */
+/* HOME */
 .page{
   display:none;
   padding:16px;
@@ -95,6 +27,36 @@ button{
   display:block;
 }
 
+#albumCover{
+  width:300px;
+  height:300px;
+  margin:20px auto;
+  border-radius:18px;
+  background:#222;
+  background-size:cover;
+  background-position:center;
+}
+
+/* NOW PLAYING BOX */
+#nowPlaying{
+  text-align:center;
+  background:#111;
+  padding:12px;
+  border-radius:12px;
+  margin-top:10px;
+}
+
+/* BUTTONS */
+button{
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#1db954;
+  color:black;
+  font-weight:bold;
+}
+
+/* FRIENDS */
 .friendRow{
   display:flex;
   justify-content:space-between;
@@ -119,35 +81,41 @@ button{
 
 .msg{
   padding:10px;
-  border-radius:10px;
   margin:6px 0;
+  border-radius:10px;
+  background:#222;
 }
 
-.me{background:rgba(0,255,120,0.2); margin-left:auto;}
-.them{background:rgba(255,255,255,0.1);}
+/* NAV */
+#bottomNav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  background:#111;
+}
+
+.navBtn{
+  flex:1;
+  padding:14px;
+  background:none;
+  border:none;
+  color:white;
+}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="authGate">
-  <h2>Alblay Login</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button id="loginBtn">Login</button>
-  <button id="signupBtn">Sign Up</button>
-</div>
+<h1>Alblay</h1>
 
 <!-- HOME -->
-<div id="homePage">
-
-  <h2>Now Playing</h2>
+<div id="homePage" class="page active">
 
   <div id="albumCover"></div>
 
-  <div id="nowPlayingBox">
-    <h3 id="title">Loading...</h3>
+  <div id="nowPlaying">
+    <h2 id="title">Loading...</h2>
     <p id="meta"></p>
   </div>
 
