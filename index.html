@@ -10,188 +10,98 @@ body{
   font-family:-apple-system;
   background:#050505;
   color:white;
-  overflow:hidden;
 }
 
-/* ================= BACKGROUNDS ================= */
-
-#bg{
-  position:fixed;
-  inset:0;
-  z-index:-3;
+/* PAGES */
+.page{
+  display:none;
+  padding:16px;
 }
 
-.waveGreen{
-  position:absolute;
-  inset:-200px;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(0,255,120,0.22), transparent 45%),
-    radial-gradient(circle at 70% 20%, rgba(0,255,140,0.16), transparent 55%);
-  filter:blur(80px);
+.active{
+  display:block;
 }
 
-.wavePink{
-  position:absolute;
-  inset:-200px;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(255,43,214,0.22), transparent 45%),
-    radial-gradient(circle at 70% 20%, rgba(255,80,220,0.16), transparent 55%);
-  filter:blur(80px);
-}
-
-/* ================= PAGES ================= */
-
-.page{display:none;padding:16px;}
-.active{display:block;}
-
-/* ================= PLAYER ================= */
-
-.nowPlaying{
-  width:340px;
-  margin:50px auto;
-  padding:20px;
-  border-radius:26px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(0,255,120,0.2);
-  text-align:center;
-}
-
+/* HOME */
 #albumCover{
-  width:280px;
-  height:280px;
-  border-radius:22px;
-  margin:0 auto 15px;
+  width:300px;
+  height:300px;
+  margin:20px auto;
+  border-radius:20px;
+  background:#222;
   background-size:cover;
+  background-position:center;
 }
 
-/* ================= FRIENDS ================= */
-
-.chatList{
-  padding:10px;
+#nowPlaying{
+  text-align:center;
+  background:#111;
+  padding:12px;
+  border-radius:12px;
 }
 
+/* FRIENDS */
 .friendRow{
   display:flex;
   justify-content:space-between;
-  align-items:center;
   padding:12px;
-  margin:10px 0;
-  background:rgba(255,255,255,0.04);
-  border-radius:14px;
+  margin:8px 0;
+  background:#1a1a1a;
+  border-radius:10px;
 }
 
-/* ================= CHAT ================= */
-
-#chatPage{
-  display:none;
-  flex-direction:column;
-  height:100vh;
-}
-
-#messages{
-  flex:1;
-  overflow:auto;
-  padding:10px;
-}
-
-.msg{
-  padding:10px;
-  margin:6px 0;
-  border-radius:12px;
-  max-width:70%;
-}
-
-.me{background:rgba(0,255,120,0.2); margin-left:auto;}
-.them{background:rgba(255,43,214,0.2);}
-
-/* ================= INPUT ================= */
-
-#msgInputBar{
-  display:flex;
-  padding:10px;
-  gap:10px;
-}
-
-input{
-  flex:1;
-  padding:10px;
-  border-radius:12px;
-  border:none;
-  background:rgba(255,255,255,0.06);
-  color:white;
-}
-
-/* ================= NAV ================= */
-
+/* NAV */
 #bottomNav{
   position:fixed;
   bottom:0;
   width:100%;
   display:flex;
-  background:rgba(10,10,10,0.9);
-  border-top:1px solid rgba(0,255,120,0.2);
+  background:#111;
 }
 
-.navBtn{
+button{
   flex:1;
-  padding:12px;
-  background:none;
+  padding:14px;
   border:none;
+  background:none;
   color:white;
 }
-
 </style>
 </head>
 
 <body>
 
-<div id="bg">
-  <div class="waveGreen"></div>
-</div>
-
 <!-- HOME -->
 <div id="homePage" class="page active">
 
-  <div class="nowPlaying">
-    <div id="albumCover"></div>
-    <h2 id="title">Loading...</h2>
-    <p id="meta"></p>
+  <h2>Now Playing</h2>
 
-    <button id="generateBtn">Find Album</button>
+  <div id="albumCover"></div>
+
+  <div id="nowPlaying">
+    <h3 id="title">Loading...</h3>
+    <p id="meta"></p>
   </div>
+
+  <button id="generateBtn">Find Album</button>
 
 </div>
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
 
-  <h3>Inbox</h3>
+  <h2>Friends</h2>
   <div id="friendsList"></div>
-
-</div>
-
-<!-- CHAT -->
-<div id="chatPage">
-
-  <h3 id="chatTitle"></h3>
-
-  <div id="messages"></div>
-
-  <div id="msgInputBar">
-    <input id="msgInput" placeholder="Message...">
-    <button id="sendMsgBtn">Send</button>
-  </div>
 
 </div>
 
 <!-- NAV -->
 <div id="bottomNav">
-  <button id="homeBtn" class="navBtn">Home</button>
-  <button id="friendsBtn" class="navBtn">Friends</button>
-  <button id="profileBtn" class="navBtn">Profile</button>
+  <button id="homeBtn">Home</button>
+  <button id="friendsBtn">Friends</button>
 </div>
 
-<script type="module" src="./app.js"></script>
+<script src="./app.js"></script>
 
 </body>
 </html>
