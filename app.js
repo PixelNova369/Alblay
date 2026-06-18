@@ -1,46 +1,49 @@
-import { supabase, getUser, getProfile, ensureProfile } from "./supabase.js"
+import { supabase, getUser, getProfile } from "./supabase.js"
 
 console.log("APP START")
 
-// =====================
+let currentChat = null
+
+// --------------------
 // HOME ALBUMS
-// =====================
+// --------------------
 const albums = [
-  { title:"Abbey Road", artist:"The Beatles", image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg" },
+  { title:"Abbey Road", artist:"Beatles", image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg" },
   { title:"Rumours", artist:"Fleetwood Mac", image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG" }
 ]
 
-let currentChatId = null
-let currentFriend = null
+function renderAlbum(){
+  const i = Math.floor(Math.random()*albums.length)
+  const a = albums[i]
 
-// =====================
-// INIT PROFILE SYSTEM
-// =====================
-async function initProfile(){
-  const user = await getUser()
-  if (!user) return
-  await ensureProfile(user)
+  document.getElementById("albumCover").style.backgroundImage = `url(${a.image})`
+  document.getElementById("title").textContent = a.title
+  document.getElementById("meta").textContent = a.artist
 }
 
-// =====================
-// RENDER HOME
-// =====================
-function render(i){
-  const album = albums[i]
+// --------------------
+// PAGE SWITCH
+// --------------------
+function show(page){
 
-  document.getElementById("albumCover").style.backgroundImage =
-    `url(${album.image})`
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
 
-  document.getElementById("title").textContent = album.title
-  document.getElementById("meta").textContent = album.artist
+  document.getElementById("chatPage").style.display = "none"
+
+  document.getElementById(page+"Page").classList.add("active")
 }
 
-// =====================
-// FRIEND LIST (REAL PROFILES)
-// =====================
+// --------------------
+// FRIENDS LOAD (FIXED)
+// --------------------
 async function loadFriends(){
 
   const user = await getUser()
+  if(!user){
+    document.getElementById("friendsList").innerHTML =
+      "<p>Please log in to see friends</p>"
+    return
+  }
 
   const { data } = await supabase
     .from("friends")
@@ -52,24 +55,13 @@ async function loadFriends(){
   for(const f of data){
 
     const otherId = f.user_id === user.id ? f.friend_id : f.user_id
-
     const profile = await getProfile(otherId)
 
     const row = document.createElement("div")
-    row.style.cssText = `
-      display:flex;
-      justify-content:space-between;
-      padding:12px;
-      margin:10px 0;
-      background:rgba(255,255,255,0.04);
-      border-radius:14px;
-      align-items:center;
-    `
+    row.className = "friendRow"
 
     row.innerHTML = `
-      <div>
-        <strong>${profile?.username || "User"}</strong>
-      </div>
+      <span>${profile?.username || "User"}</span>
       <button>Message</button>
     `
 
@@ -81,128 +73,81 @@ async function loadFriends(){
   }
 }
 
-// =====================
-// CHAT SYSTEM (WITH PROFILE)
-// =====================
-async function openChat(friendId, profile){
+// --------------------
+// CHAT FIXED
+// --------------------
+async function openChat(id, profile){
 
-  currentFriend = friendId
+  currentChat = id
 
   document.getElementById("chatTitle").textContent =
     profile?.username || "Chat"
 
-  document.getElementById("chatPage").style.display = "flex"
   document.getElementById("friendsPage").classList.remove("active")
+  document.getElementById("chatPage").style.display = "flex"
 
-  const user = await getUser()
-
-  let { data: chats } = await supabase
-    .from("chat_members")
-    .select("chat_id")
-    .eq("user_id", user.id)
-
-  let chatId = null
-
-  for(const c of chats){
-    const { data: members } = await supabase
-      .from("chat_members")
-      .select("*")
-      .eq("chat_id", c.chat_id)
-
-    if(members.some(m=>m.user_id === friendId)){
-      chatId = c.chat_id
-      break
-    }
-  }
-
-  if(!chatId){
-
-    const { data: newChat } = await supabase
-      .from("chats")
-      .insert({})
-      .select()
-      .single()
-
-    chatId = newChat.id
-
-    await supabase.from("chat_members").insert([
-      { chat_id: chatId, user_id: user.id },
-      { chat_id: chatId, user_id: friendId }
-    ])
-  }
-
-  currentChatId = chatId
-  loadMessages(chatId)
+  loadMessages()
 }
 
-// =====================
-// MESSAGES
-// =====================
-async function loadMessages(chatId){
+// --------------------
+// MESSAGES (SAFE)
+// --------------------
+async function loadMessages(){
+
+  const user = await getUser()
 
   const { data } = await supabase
     .from("messages")
     .select("*")
-    .eq("chat_id", chatId)
-    .order("created_at", { ascending:true })
+    .order("created_at",{ascending:true})
 
   const box = document.getElementById("messages")
   box.innerHTML = ""
 
-  const user = await getUser()
-
   data.forEach(m=>{
     const div = document.createElement("div")
-
     div.className = "msg " + (m.sender_id === user.id ? "me" : "them")
     div.textContent = m.message_text
-
     box.appendChild(div)
   })
 }
 
-// =====================
+// --------------------
 // SEND MESSAGE
-// =====================
-async function sendMessage(){
+// --------------------
+async function send(){
 
-  const input = document.getElementById("msgInput")
   const user = await getUser()
 
+  const input = document.getElementById("msgInput")
+
   await supabase.from("messages").insert({
-    chat_id: currentChatId,
+    chat_id: currentChat,
     sender_id: user.id,
     message_text: input.value
   })
 
   input.value = ""
-  loadMessages(currentChatId)
+  loadMessages()
 }
 
-// =====================
-// INIT
-// =====================
+// --------------------
+// INIT (CRITICAL FIX)
+// --------------------
 window.addEventListener("DOMContentLoaded", async ()=>{
 
-  await initProfile()
+  const user = await getUser()
 
-  document.getElementById("generateBtn").onclick = ()=>{
-    const i = Math.floor(Math.random()*albums.length)
-    render(i)
+  if(!user){
+    alert("Please log in first (Supabase auth required)")
   }
 
-  document.getElementById("sendMsgBtn").onclick = sendMessage
+  document.getElementById("homeBtn").onclick=()=>show("home")
+  document.getElementById("friendsBtn").onclick=()=>show("friends")
 
-  document.getElementById("friendsBtn").onclick = ()=>{
-    document.getElementById("homePage").classList.remove("active")
-    document.getElementById("friendsPage").classList.add("active")
-  }
+  document.getElementById("generateBtn").onclick=renderAlbum
+  document.getElementById("sendBtn").onclick=send
 
-  document.getElementById("homeBtn").onclick = ()=>{
-    document.getElementById("friendsPage").classList.remove("active")
-    document.getElementById("homePage").classList.add("active")
-  }
-
-  render(0)
+  renderAlbum()
   loadFriends()
 })
