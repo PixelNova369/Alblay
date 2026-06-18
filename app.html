@@ -24,15 +24,6 @@ button{
   border-radius:12px;
 }
 
-input{
-  width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  background:rgba(255,255,255,0.06);
-  color:white;
-}
-
 /* ALBUM */
 #albumCover{
   width:320px;
@@ -40,6 +31,29 @@ input{
   margin:20px auto;
   border-radius:22px;
   background-size:cover;
+}
+
+/* DRAWER */
+#drawer{
+  position:fixed;
+  top:0;
+  right:-300px;
+  width:300px;
+  height:100%;
+  background:#111;
+  padding:20px;
+  transition:0.3s;
+}
+
+/* INBOX DROPDOWN */
+#inbox{
+  position:absolute;
+  top:50px;
+  right:10px;
+  background:#111;
+  width:220px;
+  padding:10px;
+  display:none;
 }
 
 /* NAV */
@@ -54,10 +68,10 @@ input{
 }
 
 /* CHAT */
-#chatMessages{
+#chatBox{
   height:55vh;
   overflow-y:auto;
-  background:rgba(255,255,255,0.04);
+  background:#111;
   padding:10px;
   border-radius:12px;
 }
@@ -68,29 +82,37 @@ input{
 
 <!-- HOME -->
 <div id="homePage" class="page active">
+
+  <!-- DRAWER -->
+  <div id="drawer">
+    <h3>Filters</h3>
+    <button onclick="toggleDrawer()">Close</button>
+  </div>
+
+  <button onclick="toggleDrawer()">☰</button>
+
+  <!-- INBOX -->
+  <button id="inboxBtn">📥 Inbox</button>
+  <div id="inbox"></div>
+
   <div id="albumCover"></div>
-  <h2 id="title">Loading...</h2>
+
+  <h2 id="title"></h2>
   <p id="meta"></p>
 
+  <!-- CONTROLS -->
+  <button id="prevBtn">⏮</button>
+  <button id="playBtn">▶</button>
+  <button id="nextBtn">⏭</button>
+
   <button id="generateBtn">Find Album</button>
+
 </div>
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
 
-  <h3>Find Friend (Email)</h3>
-  <input id="friendEmail" placeholder="Enter email">
-  <button id="sendRequestBtn">Send Request</button>
-
-  <hr>
-
-  <h3>Inbox</h3>
-  <button id="inboxBtn">Open Inbox</button>
-  <div id="inboxBox"></div>
-
-  <hr>
-
-  <h3>Your Friends</h3>
+  <h3>Friends</h3>
   <div id="friendsList"></div>
 
 </div>
@@ -100,29 +122,20 @@ input{
 
   <button id="backBtn">← Back</button>
 
-  <h3 id="chatTitle">Chat</h3>
+  <h3 id="chatTitle"></h3>
 
-  <div id="chatMessages"></div>
+  <div id="chatBox"></div>
 
-  <input id="chatInput" placeholder="Message">
-  <button id="sendMsgBtn">Send</button>
+  <input id="msgInput" placeholder="Message">
+  <button id="sendMsg">Send</button>
 
-  <button id="sendAlbumBtn">🎧 Send Album</button>
+  <button id="sendAlbum">🎧 Send Album</button>
 
 </div>
 
 <!-- PROFILE -->
 <div id="profilePage" class="page">
-
   <h3>Profile</h3>
-
-  <input id="avatarInput" type="file" accept="image/*">
-
-  <div>
-    <img id="avatarPreview" style="width:80px;height:80px;border-radius:50%;">
-    <h3 id="usernamePreview">Guest</h3>
-  </div>
-
 </div>
 
 <!-- NAV -->
