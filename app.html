@@ -10,39 +10,52 @@ body{
   font-family:-apple-system;
   background:#050505;
   color:white;
-  padding-bottom:80px;
+  overflow-x:hidden;
 }
 
-/* NAV */
-#bottomNav{
+/* WRAPPED BACKGROUND */
+#bg{
   position:fixed;
-  bottom:0;
-  width:100%;
-  background:#111;
-  display:flex;
-  justify-content:space-around;
-  padding:12px;
+  inset:0;
+  z-index:-2;
+  transition:0.6s ease;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(29,185,84,0.18), transparent 40%),
+    radial-gradient(circle at 80% 10%, rgba(255,59,48,0.14), transparent 45%),
+    radial-gradient(circle at 40% 90%, rgba(10,132,255,0.14), transparent 45%);
 }
 
+/* PAGES */
 .page{ display:none; padding:20px; }
 .active{ display:block; }
 
-/* NOW PLAYING */
+/* WRAPPED PLAYER */
 .nowPlaying{
+  max-width:360px;
+  margin:40px auto;
+  padding:20px;
   background:rgba(255,255,255,0.05);
-  padding:18px;
-  border-radius:18px;
+  border-radius:24px;
   text-align:center;
-  margin-top:20px;
 }
 
+/* ALBUM */
 #albumCover{
   width:280px;
   height:280px;
   margin:0 auto 15px;
-  border-radius:18px;
+  border-radius:20px;
   background-size:cover;
   background-position:center;
+  transition:0.5s cubic-bezier(.2,.8,.2,1);
+  transform:scale(1);
+  opacity:1;
+  box-shadow:0 30px 80px rgba(0,0,0,0.6);
+}
+
+/* TEXT */
+h2,p{
+  transition:0.3s ease;
 }
 
 /* BUTTONS */
@@ -51,90 +64,84 @@ button{
   border:none;
   color:white;
   padding:10px 14px;
-  border-radius:12px;
-}
-
-/* FRIEND UI */
-.section{
-  margin-top:20px;
-  padding:12px;
-  background:rgba(255,255,255,0.04);
   border-radius:14px;
+  font-size:14px;
 }
 
-.friendRow{
+/* CONTROL ROW */
+.controls{
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px;
-  background:rgba(255,255,255,0.05);
-  border-radius:12px;
+  justify-content:center;
+  gap:12px;
   margin-top:10px;
 }
 
-input{
+/* LOWER ACTIONS */
+.lowerActions{
+  display:flex;
+  justify-content:space-between;
+  margin-top:16px;
+}
+
+/* DRAWER */
+#drawerPanel{
+  position:fixed;
+  right:-300px;
+  top:0;
+  width:300px;
+  height:100%;
+  background:#111;
+  padding:20px;
+  transition:0.3s ease;
+}
+
+/* NAV */
+#bottomNav{
+  position:fixed;
+  bottom:0;
   width:100%;
+  display:flex;
+  justify-content:space-around;
   padding:12px;
-  border-radius:12px;
-  border:none;
-  background:rgba(255,255,255,0.06);
-  color:white;
+  background:#111;
 }
 </style>
 </head>
 
 <body>
 
+<div id="bg"></div>
+
 <!-- HOME -->
 <div id="homePage" class="page active">
 
   <div class="nowPlaying">
+
     <div id="albumCover"></div>
+
     <h2 id="title">Loading...</h2>
     <p id="meta"></p>
 
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">
-      <button id="prevBtn">⏮</button>
-      <button id="playBtn">▶</button>
-      <button id="nextBtn">⏭</button>
+    <div class="controls">
+      <button id="prevBtn">Prev</button>
+      <button id="playBtn">Play</button>
+      <button id="nextBtn">Next</button>
     </div>
 
-    <button id="generateBtn" style="margin-top:10px;">Find Album</button>
-  </div>
+    <div class="lowerActions">
+      <button id="drawerBtn">Filters</button>
+      <button id="generateBtn">Generate</button>
+    </div>
 
+  </div>
 </div>
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
-
-  <!-- INBOX -->
-  <div class="section">
-    <h3>Inbox (Friend Requests)</h3>
-    <div id="inboxBox"></div>
-  </div>
-
-  <!-- FRIENDS LIST -->
-  <div class="section">
-    <h3>Friends</h3>
-    <div id="friendsList"></div>
-  </div>
-
-  <!-- FIND FRIENDS -->
-  <div class="section">
-    <h3>Find Friends</h3>
-
-    <input id="friendEmail" placeholder="Search by email">
-    <button id="sendRequestBtn">Send Request</button>
-
-    <div style="margin-top:10px;">
-      <small>Mutuals will appear here</small>
-      <div id="mutuals"></div>
-    </div>
-  </div>
-
+  <h3>Friends</h3>
 </div>
 
-<!-- PROFILE (unchanged placeholder) -->
+<!-- PROFILE -->
 <div id="profilePage" class="page">
   <h3>Profile</h3>
 </div>
@@ -144,6 +151,16 @@ input{
   <button id="homeBtn">Home</button>
   <button id="friendsBtn">Friends</button>
   <button id="profileBtn">Profile</button>
+</div>
+
+<!-- DRAWER -->
+<div id="drawerPanel">
+  <h3>Filters</h3>
+  <select id="genreFilter">
+    <option>Any</option>
+    <option>rock</option>
+    <option>pop</option>
+  </select>
 </div>
 
 <script type="module" src="./app.js"></script>
