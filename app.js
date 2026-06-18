@@ -1,131 +1,107 @@
-console.log("🔥 APP JS RUNNING")
+console.log("🔥 APP.JS LOADED");
+
+const albums = [
+  {
+    title: "Abbey Road",
+    artist: "The Beatles",
+    image: "https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg"
+  },
+  {
+    title: "Rumours",
+    artist: "Fleetwood Mac",
+    image: "https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG"
+  },
+  {
+    title: "The Dark Side of the Moon",
+    artist: "Pink Floyd",
+    image: "https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png"
+  }
+];
 
 function $(id){
-  const el = document.getElementById(id)
-  if(!el){
-    console.warn("❌ Missing element:", id)
+  return document.getElementById(id);
+}
+
+function showPage(pageId){
+  document.querySelectorAll(".page").forEach(page=>{
+    page.classList.remove("active");
+  });
+
+  const page = $(pageId);
+  if(page){
+    page.classList.add("active");
   }
-  return el
 }
 
-// --------------------
-// ALBUM TEST DATA
-// --------------------
-const albums = [
-  { title:"Abbey Road", artist:"Beatles", image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg" },
-  { title:"Rumours", artist:"Fleetwood Mac", image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG" }
-]
+function renderAlbum(){
+  const album = albums[Math.floor(Math.random() * albums.length)];
 
-// --------------------
-// RENDER HOME
-// --------------------
-function render(){
-  const a = albums[Math.floor(Math.random()*albums.length)]
+  if ($("albumCover")) {
+    $("albumCover").style.backgroundImage = `url(${album.image})`;
+  }
 
-  const cover = $("albumCover")
-  const title = $("title")
-  const meta = $("meta")
+  if ($("title")) {
+    $("title").textContent = album.title;
+  }
 
-  if(!cover || !title || !meta) return
-
-  cover.style.backgroundImage = `url(${a.image})`
-  title.textContent = a.title
-  meta.textContent = a.artist
+  if ($("meta")) {
+    $("meta").textContent = album.artist;
+  }
 }
 
-// --------------------
-// FRIENDS MOCK (GUARANTEED VISUAL)
-// --------------------
 function loadFriends(){
 
-  const box = $("friendsList")
-  if(!box) return
+  const friendsList = $("friendsList");
 
-  box.innerHTML = ""
+  if(!friendsList) return;
 
-  const friends = ["Ethan","Emma","Ciaran"]
+  friendsList.innerHTML = "";
 
-  friends.forEach(name=>{
-    const row = document.createElement("div")
-    row.style.cssText = `
-      display:flex;
-      justify-content:space-between;
-      padding:12px;
-      margin:10px 0;
-      background:#1a1a1a;
-      border-radius:12px;
-    `
+  const friends = [
+    "Ethan",
+    "Emma",
+    "Ciaran"
+  ];
+
+  friends.forEach(name => {
+
+    const row = document.createElement("div");
+
+    row.className = "friendRow";
 
     row.innerHTML = `
       <span>${name}</span>
-      <button>Message</button>
-    `
+      <button class="messageBtn">Message</button>
+    `;
 
-    box.appendChild(row)
-  })
+    row.querySelector(".messageBtn").onclick = () => {
+      alert("Chat with " + name + " coming next");
+    };
+
+    friendsList.appendChild(row);
+  });
 }
 
-// --------------------
-// PAGE SWITCH
-// --------------------
-function show(page){
+window.addEventListener("DOMContentLoaded", () => {
 
-  document.querySelectorAll(".page").forEach(p=>{
-    p.classList.remove("active")
-  })
+  console.log("✅ DOM READY");
 
-  const target = $(page+"Page")
-  if(target){
-    target.classList.add("active")
+  if ($("homeBtn")) {
+    $("homeBtn").onclick = () => showPage("homePage");
   }
 
-  const chat = $("chatPage")
-  if(chat) chat.style.display = "none"
-}
+  if ($("friendsBtn")) {
+    $("friendsBtn").onclick = () => showPage("friendsPage");
+  }
 
-// --------------------
-// CHAT TEST
-// --------------------
-function openChat(name){
+  if ($("profileBtn")) {
+    $("profileBtn").onclick = () => showPage("profilePage");
+  }
 
-  const chat = $("chatPage")
-  const title = $("chatTitle")
+  if ($("generateBtn")) {
+    $("generateBtn").onclick = renderAlbum;
+  }
 
-  if(!chat || !title) return
-
-  chat.style.display = "flex"
-  title.textContent = "Chat with " + name
-}
-
-// --------------------
-// INIT (FORCE SAFE)
-// --------------------
-window.addEventListener("DOMContentLoaded", ()=>{
-
-  console.log("🔥 DOM READY")
-
-  // NAV
-  $("homeBtn")?.addEventListener("click", ()=>show("home"))
-  $("friendsBtn")?.addEventListener("click", ()=>show("friends"))
-
-  // HOME BUTTON
-  $("generateBtn")?.addEventListener("click", render)
-
-  // SEND BUTTON (if exists)
-  $("sendBtn")?.addEventListener("click", ()=>{
-    const input = $("msgInput")
-    const box = $("messages")
-
-    if(!input || !box) return
-
-    const div = document.createElement("div")
-    div.className = "msg me"
-    div.textContent = input.value
-
-    box.appendChild(div)
-    input.value = ""
-  })
-
-  render()
-  loadFriends()
-})
+  renderAlbum();
+  loadFriends();
+});
