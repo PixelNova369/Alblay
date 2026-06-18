@@ -23,12 +23,17 @@ body{
     radial-gradient(circle at 80% 15%, rgba(0,255,140,0.25), transparent 50%),
     radial-gradient(circle at 50% 85%, rgba(0,160,90,0.22), transparent 55%);
 
-  filter: blur(75px);
+  filter: blur(80px);
 }
 
-/* PAGES */
-.page{ display:none; height:100vh; }
-.active{ display:block; }
+/* PAGE SYSTEM */
+.page{
+  display:none;
+  height:100vh;
+}
+.active{
+  display:block;
+}
 
 /* LOGIN */
 #loginPage{
@@ -67,11 +72,20 @@ button{
   margin:18px auto;
   border-radius:26px;
   background-size:cover;
+  background-position:center;
 }
 
 /* FRIENDS */
 #friendsPage{
   padding:16px;
+}
+
+/* FRIEND BOX */
+.friendBox{
+  padding:12px;
+  margin:8px 0;
+  background:rgba(255,255,255,0.06);
+  border-radius:12px;
 }
 
 /* NAV */
@@ -99,17 +113,13 @@ button{
 
 <!-- LOGIN -->
 <div id="loginPage" class="page active">
-
-  <h2>Alblay</h2>
+  <h2>Login</h2>
 
   <input id="user" placeholder="Username">
   <input id="pass" type="password" placeholder="Password">
 
-  <div style="display:flex;gap:10px;">
-    <button id="loginBtn">Login</button>
-    <button id="signupBtn">Sign Up</button>
-  </div>
-
+  <button id="loginBtn">Login</button>
+  <button id="signupBtn">Sign Up</button>
 </div>
 
 <!-- HOME -->
@@ -127,6 +137,10 @@ button{
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
   <h2>Friends</h2>
+
+  <input id="addFriend" placeholder="Add friend">
+  <button id="addBtn">Add</button>
+
   <div id="friendsList"></div>
 </div>
 
