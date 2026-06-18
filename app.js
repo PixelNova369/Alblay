@@ -1,4 +1,4 @@
-console.log("APP START SAFE MODE")
+console.log("APP START - STABLE MODE")
 
 const $ = (id)=>document.getElementById(id)
 
@@ -24,31 +24,40 @@ const albums = [
 /* ---------------- NAV ---------------- */
 function show(page){
 
-  document.querySelectorAll(".page")
-    .forEach(p=>p.classList.remove("active"))
+  document.querySelectorAll(".page").forEach(p=>{
+    p.classList.remove("active")
+  })
 
-  $(page+"Page").classList.add("active")
+  const target = $(page + "Page")
+  if(target) target.classList.add("active")
 }
 
 /* ---------------- ALBUM ---------------- */
-function render(){
+function renderAlbum(){
 
   const a = albums[Math.floor(Math.random()*albums.length)]
 
-  $("albumCover").style.backgroundImage = `url(${a.image})`
-  $("title").textContent = a.title
-  $("meta").textContent = a.artist
+  const cover = $("albumCover")
+  const title = $("title")
+  const meta = $("meta")
+
+  if(cover){
+    cover.style.backgroundImage = `url(${a.image})`
+  }
+
+  if(title) title.textContent = a.title
+  if(meta) meta.textContent = a.artist
 }
 
-/* ---------------- FRIENDS (STATIC SAFE) ---------------- */
+/* ---------------- FRIENDS ---------------- */
 function loadFriends(){
 
   const box = $("friendsList")
   if(!box) return
 
-  box.innerHTML = ""
-
   const friends = ["Ethan","Emma","Ciaran"]
+
+  box.innerHTML = ""
 
   friends.forEach(name=>{
 
@@ -64,21 +73,21 @@ function loadFriends(){
   })
 }
 
-/* ---------------- INIT (CRASH PROTECTED) ---------------- */
+/* ---------------- INIT SAFE ---------------- */
 window.addEventListener("DOMContentLoaded", ()=>{
 
   try{
 
-    $("homeBtn").onclick = ()=>show("home")
-    $("friendsBtn").onclick = ()=>show("friends")
+    if($("homeBtn")) $("homeBtn").onclick = ()=>show("home")
+    if($("friendsBtn")) $("friendsBtn").onclick = ()=>show("friends")
 
-    $("generateBtn").onclick = render
+    if($("generateBtn")) $("generateBtn").onclick = renderAlbum
 
-    render()
+    renderAlbum()
     loadFriends()
 
-  }catch(err){
-    console.log("CRASH BLOCKED:", err)
+  }catch(e){
+    console.log("ERROR BLOCKED:", e)
   }
 
 })
