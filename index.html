@@ -1,107 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alblay</title>
-
-<style>
-body{
-  margin:0;
-  font-family:-apple-system;
-  background:#050505;
-  color:white;
-}
-
-/* PAGES */
-.page{
-  display:none;
-  padding:16px;
-}
-
-.active{
-  display:block;
-}
-
-/* HOME */
-#albumCover{
-  width:300px;
-  height:300px;
-  margin:20px auto;
-  border-radius:20px;
-  background:#222;
-  background-size:cover;
-  background-position:center;
-}
-
-#nowPlaying{
-  text-align:center;
-  background:#111;
-  padding:12px;
-  border-radius:12px;
-}
-
-/* FRIENDS */
-.friendRow{
-  display:flex;
-  justify-content:space-between;
-  padding:12px;
-  margin:8px 0;
-  background:#1a1a1a;
-  border-radius:10px;
-}
-
-/* NAV */
-#bottomNav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  display:flex;
-  background:#111;
-}
-
-button{
-  flex:1;
-  padding:14px;
-  border:none;
-  background:none;
-  color:white;
-}
-</style>
-</head>
-
-<body>
-
 <!-- HOME -->
 <div id="homePage" class="page active">
 
-  <h2>Now Playing</h2>
+  <div class="homeWrap">
 
-  <div id="albumCover"></div>
+    <h2 style="text-align:center;">Now Playing</h2>
 
-  <div id="nowPlaying">
-    <h3 id="title">Loading...</h3>
-    <p id="meta"></p>
+    <div id="albumCover"></div>
+
+    <div id="nowPlaying">
+      <h3 id="title">Loading...</h3>
+      <p id="meta"></p>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+
+      <button id="prevBtn">⟲</button>
+
+      <button id="playBtn">▶</button>
+
+      <button id="nextBtn">⟳</button>
+
+    </div>
+
+    <!-- DRAWER + GENERATE -->
+    <div class="bottomControls">
+
+      <button id="drawerBtn">☰ Drawer</button>
+
+      <button id="generateBtn">Find Album</button>
+
+    </div>
+
+    <!-- DRAWER PANEL -->
+    <div id="drawerPanel" class="drawer hidden">
+
+      <h3>Filters</h3>
+
+      <input id="genre" placeholder="Genre">
+      <input id="era" placeholder="Era">
+      <input id="length" placeholder="Length">
+
+      <button id="applyFilters">Apply</button>
+
+      <button id="closeDrawer">Back</button>
+
+    </div>
+
   </div>
-
-  <button id="generateBtn">Find Album</button>
-
 </div>
-
-<!-- FRIENDS -->
-<div id="friendsPage" class="page">
-
-  <h2>Friends</h2>
-  <div id="friendsList"></div>
-
-</div>
-
-<!-- NAV -->
-<div id="bottomNav">
-  <button id="homeBtn">Home</button>
-  <button id="friendsBtn">Friends</button>
-</div>
-
-<script src="./app.js"></script>
-
-</body>
-</html>
