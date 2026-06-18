@@ -10,6 +10,62 @@ body{
   font-family:-apple-system;
   background:#050505;
   color:white;
+  overflow:hidden;
+}
+
+/* LOGIN */
+#authGate{
+  position:fixed;
+  inset:0;
+  background:#050505;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+input{
+  width:80%;
+  padding:12px;
+  margin:6px;
+  border-radius:10px;
+  border:none;
+  background:#222;
+  color:white;
+}
+
+button{
+  padding:10px 14px;
+  border-radius:10px;
+  border:none;
+  background:#1db954;
+  color:black;
+  font-weight:bold;
+}
+
+/* HOME NOW PLAYING */
+#homePage{
+  display:none;
+  padding:20px;
+  text-align:center;
+}
+
+#albumCover{
+  width:300px;
+  height:300px;
+  margin:20px auto;
+  border-radius:20px;
+  background-size:cover;
+  background-position:center;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+
+#nowPlayingBox{
+  background:#111;
+  border-radius:16px;
+  padding:12px;
+  margin-top:10px;
 }
 
 /* NAV */
@@ -19,7 +75,6 @@ body{
   width:100%;
   display:flex;
   background:#111;
-  border-top:1px solid rgba(0,255,120,0.2);
 }
 
 .navBtn{
@@ -30,21 +85,16 @@ body{
   color:white;
 }
 
-/* PAGES */
-.page{display:none;padding:16px;}
-.active{display:block;}
-
-/* HOME */
-#albumCover{
-  width:280px;
-  height:280px;
-  margin:20px auto;
-  border-radius:18px;
-  background:#222;
-  background-size:cover;
+/* FRIENDS */
+.page{
+  display:none;
+  padding:16px;
 }
 
-/* FRIENDS */
+.active{
+  display:block;
+}
+
 .friendRow{
   display:flex;
   justify-content:space-between;
@@ -67,70 +117,56 @@ body{
   padding:10px;
 }
 
-.msg.me{
-  background:rgba(0,255,120,0.2);
-  margin-left:auto;
+.msg{
   padding:10px;
   border-radius:10px;
+  margin:6px 0;
 }
 
-.msg.them{
-  background:rgba(255,43,214,0.2);
-  padding:10px;
-  border-radius:10px;
-}
-
-#msgBar{
-  display:flex;
-  gap:10px;
-  padding:10px;
-}
-
-input{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  margin:5px 0;
-}
-
-button{
-  padding:10px 14px;
-  border:none;
-  border-radius:10px;
-  background:#222;
-  color:white;
-}
+.me{background:rgba(0,255,120,0.2); margin-left:auto;}
+.them{background:rgba(255,255,255,0.1);}
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
+<div id="authGate">
+  <h2>Alblay Login</h2>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button id="loginBtn">Login</button>
+  <button id="signupBtn">Sign Up</button>
+</div>
+
 <!-- HOME -->
-<div id="homePage" class="page active">
+<div id="homePage">
+
+  <h2>Now Playing</h2>
+
   <div id="albumCover"></div>
-  <h2 id="title">Loading...</h2>
-  <p id="meta"></p>
+
+  <div id="nowPlayingBox">
+    <h3 id="title">Loading...</h3>
+    <p id="meta"></p>
+  </div>
 
   <button id="generateBtn">Find Album</button>
 </div>
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
-  <h3>Friends</h3>
-  <div id="friendsList">Loading...</div>
+  <h2>Friends</h2>
+  <div id="friendsList"></div>
 </div>
 
 <!-- CHAT -->
 <div id="chatPage">
-  <h3 id="chatTitle">Chat</h3>
-
+  <h3 id="chatTitle"></h3>
   <div id="messages"></div>
 
-  <div id="msgBar">
-    <input id="msgInput" placeholder="Message">
-    <button id="sendBtn">Send</button>
-  </div>
+  <input id="msgInput" placeholder="Message">
+  <button id="sendBtn">Send</button>
 </div>
 
 <!-- NAV -->
