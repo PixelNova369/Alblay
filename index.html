@@ -13,51 +13,52 @@ body{
   overflow:hidden;
 }
 
-/* 🌿 GREEN SPOTIFY STYLE BACKGROUND */
+/* 🌿 CLEAN SPOTIFY GREEN BACKGROUND */
 #bg{
   position:fixed;
   inset:0;
   z-index:-3;
 
   background:
-    radial-gradient(circle at 20% 30%, rgba(29,185,84,0.55), transparent 45%),
-    radial-gradient(circle at 80% 20%, rgba(0,255,120,0.30), transparent 50%),
-    radial-gradient(circle at 50% 80%, rgba(0,180,90,0.25), transparent 55%);
+    radial-gradient(circle at 20% 25%, rgba(29,185,84,0.50), transparent 45%),
+    radial-gradient(circle at 80% 15%, rgba(0,255,140,0.25), transparent 50%),
+    radial-gradient(circle at 50% 85%, rgba(0,160,90,0.22), transparent 55%);
 
-  filter: blur(85px) saturate(140%);
-  animation: floatBg 10s ease-in-out infinite alternate;
+  filter: blur(75px) saturate(140%);
+  animation: floatBg 11s ease-in-out infinite alternate;
 }
 
 @keyframes floatBg{
-  0%{ transform:scale(1) translateY(0); }
-  100%{ transform:scale(1.15) translateY(-25px); }
+  0%{transform:scale(1) translateY(0);}
+  100%{transform:scale(1.12) translateY(-22px);}
 }
 
 /* PAGES */
 .page{
   display:none;
-  padding:16px;
+  padding:14px;
 }
 .active{ display:block; }
 
 /* HOME */
 .homeWrap{
   text-align:center;
-  padding:20px;
+  padding:16px;
 }
 
-/* ALBUM */
+/* 🎧 SMALLER ALBUM (FIXED SPACING ISSUE) */
 #albumCover{
-  width:320px;
-  height:320px;
-  margin:24px auto;
-  border-radius:28px;
+  width:280px;
+  height:280px;
+  margin:18px auto;
+  border-radius:26px;
+
   background-size:cover;
   background-position:center;
 
   box-shadow:
-    0 30px 120px rgba(0,0,0,0.6),
-    0 0 60px rgba(29,185,84,0.35);
+    0 25px 90px rgba(0,0,0,0.55),
+    0 0 45px rgba(29,185,84,0.30);
 
   transition:0.4s ease;
 }
@@ -67,32 +68,30 @@ body{
   background:rgba(255,255,255,0.06);
   border:1px solid rgba(255,255,255,0.08);
 
-  padding:16px;
-  border-radius:18px;
-  backdrop-filter:blur(18px);
-  box-shadow:0 25px 80px rgba(0,0,0,0.5);
+  padding:14px;
+  border-radius:16px;
+  backdrop-filter:blur(16px);
 }
 
 /* 🎛 CONTROLS */
 .controls{
   display:flex;
   justify-content:center;
-  gap:16px;
-  margin-top:16px;
+  gap:14px;
+  margin-top:14px;
 }
 
 .controls button{
-  width:66px;
-  height:52px;
+  width:60px;
+  height:48px;
 
-  border-radius:16px;
+  border-radius:14px;
   border:1px solid rgba(255,255,255,0.08);
 
   background:rgba(255,255,255,0.06);
   color:white;
 
-  backdrop-filter:blur(14px);
-  box-shadow:0 10px 35px rgba(0,0,0,0.4);
+  backdrop-filter:blur(12px);
 
   display:flex;
   align-items:center;
@@ -101,32 +100,33 @@ body{
   padding:0;
 }
 
-/* BOTTOM CONTROLS */
+/* BOTTOM BUTTONS */
 .bottomControls{
   display:flex;
   gap:10px;
-  margin-top:16px;
+  margin-top:14px;
 }
 
 .bottomControls button{
   flex:1;
-  padding:12px;
+  padding:11px;
   border:none;
   border-radius:12px;
   background:rgba(255,255,255,0.06);
   color:white;
-  backdrop-filter:blur(10px);
 }
 
 /* ☰ DRAWER */
 .drawer{
   position:fixed;
-  bottom:80px;
+  bottom:78px;
   left:0;
   right:0;
+
   background:#111;
-  padding:16px;
+  padding:14px;
   border-radius:18px 18px 0 0;
+
   transition:0.3s;
   box-shadow:0 -10px 40px rgba(0,0,0,0.6);
 }
@@ -145,22 +145,22 @@ body{
   border-radius:12px;
 }
 
-/* 🧭 BOTTOM NAV (COMPLEMENTARY BLUE) */
+/* 🧭 BOTTOM NAV (BETTER GREEN-BLUE BLEND) */
 #bottomNav{
   position:fixed;
   bottom:0;
   width:100%;
   display:flex;
 
-  background:rgba(40,60,140,0.25);
-  backdrop-filter:blur(20px);
+  background:rgba(25,70,55,0.45);
+  backdrop-filter:blur(18px);
 
   border-top:1px solid rgba(255,255,255,0.08);
 }
 
 #bottomNav button{
   flex:1;
-  padding:16px;
+  padding:15px;
   border:none;
   background:none;
   color:rgba(255,255,255,0.9);
@@ -197,7 +197,6 @@ body{
       <button id="generateBtn">Find Album</button>
     </div>
 
-    <!-- DRAWER -->
     <div id="drawerPanel" class="drawer hidden">
       <h3>Filters</h3>
 
