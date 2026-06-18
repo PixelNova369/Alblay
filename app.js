@@ -1,8 +1,7 @@
-console.log("ALBLAY FULL SYSTEM LOADED");
+console.log("VIRAL UI LOADED");
 
 const $ = (id)=>document.getElementById(id);
 
-/* ---------------- ALBUMS ---------------- */
 const albums = [
   {
     title:"Abbey Road",
@@ -23,31 +22,30 @@ const albums = [
 
 let index = 0;
 
-/* ---------------- NAV ---------------- */
+/* NAV */
 function show(page){
-  document.querySelectorAll(".page").forEach(p=>{
-    p.classList.remove("active");
-  });
-
-  const target = $(page+"Page");
-  if(target) target.classList.add("active");
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $(page+"Page").classList.add("active");
 }
 
-/* ---------------- ALBUM ---------------- */
+/* RENDER */
 function render(i){
   const a = albums[i];
 
   const cover = $("albumCover");
-
   if(cover){
-    cover.style.backgroundImage = `url(${a.image})`;
+    cover.style.opacity = 0;
+    setTimeout(()=>{
+      cover.style.backgroundImage = `url(${a.image})`;
+      cover.style.opacity = 1;
+    },150);
   }
 
   $("title").textContent = a.title;
   $("meta").textContent = a.artist;
 }
 
-/* ---------------- FRIENDS ---------------- */
+/* FRIENDS */
 function loadFriends(){
   const box = $("friendsList");
   if(!box) return;
@@ -69,7 +67,7 @@ function loadFriends(){
   });
 }
 
-/* ---------------- CONTROLS ---------------- */
+/* CONTROLS */
 function next(){
   index = (index + 1) % albums.length;
   render(index);
@@ -80,32 +78,21 @@ function prev(){
   render(index);
 }
 
-/* ---------------- DRAWER ---------------- */
-let drawerOpen = false;
+/* DRAWER */
+let open = false;
 
 function toggleDrawer(){
   const d = $("drawerPanel");
-  if(!d) return;
-
-  drawerOpen = !drawerOpen;
-
-  if(drawerOpen){
-    d.classList.remove("hidden");
-  } else {
-    d.classList.add("hidden");
-  }
+  open = !open;
+  d.classList.toggle("hidden");
 }
 
-/* ---------------- INIT ---------------- */
+/* INIT */
 window.addEventListener("DOMContentLoaded", ()=>{
 
-  console.log("DOM READY");
-
-  /* NAV */
   $("homeBtn").onclick = ()=>show("home");
   $("friendsBtn").onclick = ()=>show("friends");
 
-  /* HOME */
   $("generateBtn").onclick = ()=>{
     index = Math.floor(Math.random()*albums.length);
     render(index);
@@ -117,16 +104,13 @@ window.addEventListener("DOMContentLoaded", ()=>{
   $("playBtn").onclick = ()=>{
     const a = albums[index];
     window.open(
-      `https://open.spotify.com/search/${encodeURIComponent(a.title + " " + a.artist)}`,
-      "_blank"
+      `https://open.spotify.com/search/${encodeURIComponent(a.title+" "+a.artist)}`
     );
   };
 
-  /* DRAWER */
   $("drawerBtn").onclick = toggleDrawer;
   $("closeDrawer").onclick = toggleDrawer;
 
-  /* INIT */
   render(index);
   loadFriends();
 });
