@@ -1,9 +1,77 @@
 const $ = (id)=>document.getElementById(id);
 
-let loggedIn = false;
-let active = null;
+let currentUser = null;
 
-/* ALBUMS */
+/* USERS DB (localStorage) */
+function getUsers(){
+  return JSON.parse(localStorage.getItem("users") || "{}");
+}
+
+function saveUsers(u){
+  localStorage.setItem("users", JSON.stringify(u));
+}
+
+/* SIGN UP */
+function signup(){
+
+  const u = $("user").value.trim();
+  const p = $("pass").value.trim();
+
+  if(!u || !p){
+    alert("Fill in all fields");
+    return;
+  }
+
+  let users = getUsers();
+
+  if(users[u]){
+    alert("User already exists");
+    return;
+  }
+
+  users[u] = { password:p };
+
+  saveUsers(users);
+
+  alert("Account created — now log in");
+}
+
+/* LOGIN */
+function login(){
+
+  const u = $("user").value.trim();
+  const p = $("pass").value.trim();
+
+  let users = getUsers();
+
+  if(!users[u] || users[u].password !== p){
+    alert("Invalid login");
+    return;
+  }
+
+  currentUser = u;
+
+  go("home");
+  render();
+}
+
+/* NAV */
+function go(page){
+
+  if(!currentUser) return;
+
+  document.querySelectorAll(".page").forEach(p=>{
+    p.classList.remove("active");
+  });
+
+  $(page+"Page").classList.add("active");
+
+  if(page === "friends"){
+    loadFriends();
+  }
+}
+
+/* HOME */
 const albums = [
   {
     title:"Abbey Road",
@@ -19,145 +87,46 @@ const albums = [
 
 let index = 0;
 
-/* CHAT STORAGE */
-function getChats(){
-  return JSON.parse(localStorage.getItem("dm") || "{}");
-}
-
-function saveChats(data){
-  localStorage.setItem("dm", JSON.stringify(data));
-}
-
-/* LOGIN */
-function login(){
-
-  const u = $("user").value.trim();
-  const p = $("pass").value.trim();
-
-  if(!u || !p) return;
-
-  loggedIn = true;
-  go("home");
-  render();
-}
-
-/* NAV */
-function go(page){
-
-  if(!loggedIn) return;
-
-  document.querySelectorAll(".page").forEach(p=>{
-    p.classList.remove("active");
-  });
-
-  $(page+"Page").classList.add("active");
-
-  if(page === "friends"){
-    loadInbox();
-  }
-}
-
-/* HOME */
 function render(){
-
   const a = albums[index];
-
   $("albumCover").style.backgroundImage = `url(${a.image})`;
   $("title").textContent = a.title;
   $("meta").textContent = a.artist;
 }
 
-/* INBOX (NO PRE-NAMES) */
-function loadInbox(){
+/* FRIENDS (EMPTY ONLY USER ADDED) */
+function loadFriends(){
 
-  const box = $("inbox");
+  const box = $("friendsList");
   box.innerHTML = "";
 
-  let chats = getChats();
+  let list = JSON.parse(localStorage.getItem("friends") || "[]");
 
-  let names = Object.keys(chats);
-
-  if(names.length === 0){
-    box.innerHTML = "<p style='padding:10px'>No chats yet</p>";
+  if(list.length === 0){
+    box.innerHTML = "<p>No friends added</p>";
     return;
   }
 
-  names.forEach(name=>{
+  list.forEach(name=>{
     const div = document.createElement("div");
-    div.className = "thread";
-    div.innerText = name;
-
-    div.onclick = ()=>openChat(name);
+    div.textContent = name;
+    div.style.padding = "10px";
+    div.style.margin = "6px 0";
+    div.style.background = "rgba(255,255,255,0.06)";
+    div.style.borderRadius = "10px";
 
     box.appendChild(div);
   });
-}
-
-/* OPEN CHAT */
-function openChat(name){
-  active = name;
-  $("chatHeader").innerText = name;
-  renderMessages();
-}
-
-/* RENDER MESSAGES */
-function renderMessages(){
-
-  const box = $("messages");
-  box.innerHTML = "";
-
-  if(!active) return;
-
-  const chats = getChats();
-  const msgs = chats[active] || [];
-
-  msgs.forEach(m=>{
-    const div = document.createElement("div");
-    div.className = "msg " + (m.from === "me" ? "me" : "");
-    div.innerText = m.text;
-    box.appendChild(div);
-  });
-
-  box.scrollTop = box.scrollHeight;
-}
-
-/* SEND */
-function send(){
-
-  const input = $("text");
-  const text = input.value.trim();
-
-  if(!text || !active) return;
-
-  const chats = getChats();
-
-  if(!chats[active]) chats[active] = [];
-
-  chats[active].push({
-    from:"me",
-    text
-  });
-
-  saveChats(chats);
-
-  input.value = "";
-
-  renderMessages();
 }
 
 /* INIT */
 window.addEventListener("DOMContentLoaded", ()=>{
 
   $("loginBtn").onclick = login;
+  $("signupBtn").onclick = signup;
 
   $("homeBtn").onclick = ()=>go("home");
   $("friendsBtn").onclick = ()=>go("friends");
-
-  $("send").onclick = send;
-
-  $("text").addEventListener("keydown",(e)=>{
-    if(e.key==="Enter") send();
-  });
 
   render();
 });
