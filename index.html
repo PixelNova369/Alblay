@@ -2,111 +2,97 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alblay DM</title>
+<title>Alblay</title>
 
 <style>
 body{
   margin:0;
   font-family:-apple-system;
-  background:#0b0b0f;
   color:white;
   overflow:hidden;
 }
 
-/* BACKGROUND */
-#bg{
+/* PAGES */
+.page{
+  display:none;
+  height:100vh;
+}
+.active{ display:block; }
+
+/* LOGIN */
+#loginPage{
+  background:#0b0b0f;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+}
+
+input{
+  padding:12px;
+  margin:6px;
+  border-radius:10px;
+  border:none;
+}
+
+/* HOME BACKGROUND (GREEN) */
+#homeBg{
   position:fixed;
   inset:0;
   z-index:-2;
-
   background:
-    radial-gradient(circle at 20% 20%, rgba(29,185,84,0.4), transparent 45%),
-    radial-gradient(circle at 80% 10%, rgba(120,80,255,0.25), transparent 50%),
-    radial-gradient(circle at 50% 80%, rgba(0,200,120,0.18), transparent 55%);
-
+    radial-gradient(circle at 20% 20%, rgba(29,185,84,0.5), transparent 45%),
+    radial-gradient(circle at 80% 20%, rgba(0,255,120,0.25), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(0,160,90,0.2), transparent 55%);
   filter:blur(80px);
 }
 
-/* MAIN DM LAYOUT */
-#dmContainer{
+/* FRIENDS BACKGROUND (PINK) */
+#friendsBg{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,60,160,0.5), transparent 45%),
+    radial-gradient(circle at 80% 30%, rgba(255,0,120,0.25), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(255,120,180,0.2), transparent 55%);
+  filter:blur(80px);
+}
+
+/* HOME */
+#albumCover{
+  width:280px;
+  height:280px;
+  margin:20px auto;
+  border-radius:24px;
+  background-size:cover;
+}
+
+/* FRIENDS */
+.friendRow{
   display:flex;
-  height:100vh;
-}
-
-/* FRIEND LIST */
-#friendsPanel{
-  width:35%;
-  background:rgba(255,255,255,0.04);
-  backdrop-filter:blur(18px);
-  padding:10px;
-  overflow-y:auto;
-}
-
-.friendItem{
+  justify-content:space-between;
   padding:12px;
-  margin:6px 0;
+  margin:8px;
+  background:rgba(255,255,255,0.08);
   border-radius:12px;
-  background:rgba(255,255,255,0.06);
-  cursor:pointer;
 }
 
-/* CHAT AREA */
-#chatPanel{
-  flex:1;
+/* NAV */
+#nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
   display:flex;
-  flex-direction:column;
-}
-
-/* CHAT HEADER */
-#chatHeader{
-  padding:12px;
-  background:rgba(255,255,255,0.05);
+  background:rgba(0,0,0,0.4);
   backdrop-filter:blur(10px);
 }
 
-/* MESSAGES */
-#messages{
+#nav button{
   flex:1;
-  padding:12px;
-  overflow-y:auto;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.msg{
-  padding:10px 12px;
-  border-radius:12px;
-  max-width:70%;
-  background:rgba(255,255,255,0.08);
-}
-
-.me{
-  align-self:flex-end;
-  background:rgba(29,185,84,0.25);
-}
-
-/* INPUT BAR */
-#inputBar{
-  display:flex;
-  padding:10px;
-  gap:8px;
-  background:rgba(255,255,255,0.05);
-}
-
-#textInput{
-  flex:1;
-  padding:10px;
+  padding:14px;
   border:none;
-  border-radius:10px;
-  outline:none;
-}
-
-button{
-  border:none;
-  border-radius:10px;
-  padding:10px;
-  background:rgba(255,255,255,0.1);
+  background:none;
   color:white;
 }
 </style>
@@ -114,28 +100,36 @@ button{
 
 <body>
 
-<div id="bg"></div>
+<!-- LOGIN -->
+<div id="loginPage" class="page active">
+  <h2>Login</h2>
+  <input id="user" placeholder="Username">
+  <button onclick="login()">Enter</button>
+</div>
 
-<div id="dmContainer">
+<!-- HOME -->
+<div id="homePage" class="page">
+  <div id="homeBg"></div>
 
-  <!-- FRIENDS -->
-  <div id="friendsPanel"></div>
+  <h2>Now Playing</h2>
+  <div id="albumCover"></div>
 
-  <!-- CHAT -->
-  <div id="chatPanel">
+  <h3 id="title"></h3>
+  <p id="meta"></p>
+</div>
 
-    <div id="chatHeader">Select a friend</div>
+<!-- FRIENDS -->
+<div id="friendsPage" class="page">
+  <div id="friendsBg"></div>
 
-    <div id="messages"></div>
+  <h2>Friends</h2>
+  <div id="friendsList"></div>
+</div>
 
-    <div id="inputBar">
-      <input id="textInput" placeholder="Message...">
-      <button id="sendBtn">Send</button>
-      <button id="albumBtn">🎧</button>
-    </div>
-
-  </div>
-
+<!-- NAV -->
+<div id="nav">
+  <button onclick="go('home')">Home</button>
+  <button onclick="go('friends')">Friends</button>
 </div>
 
 <script src="./app.js"></script>
