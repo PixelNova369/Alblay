@@ -2,7 +2,7 @@ const $ = (id)=>document.getElementById(id);
 
 let currentUser = null;
 
-/* USERS DB (localStorage) */
+/* USERS DB */
 function getUsers(){
   return JSON.parse(localStorage.getItem("users") || "{}");
 }
@@ -11,14 +11,49 @@ function saveUsers(u){
   localStorage.setItem("users", JSON.stringify(u));
 }
 
-/* SIGN UP */
+/* PAGE SYSTEM (FIXED — NO BREAKS) */
+function showPage(page){
+
+  document.querySelectorAll(".page").forEach(p=>{
+    p.classList.remove("active");
+  });
+
+  const target = document.getElementById(page + "Page");
+
+  if(target){
+    target.classList.add("active");
+  }
+}
+
+/* LOGIN */
+function login(){
+
+  const u = $("user").value.trim();
+  const p = $("pass").value.trim();
+
+  const users = getUsers();
+
+  if(!users[u] || users[u].password !== p){
+    alert("Invalid login");
+    return;
+  }
+
+  currentUser = u;
+
+  // 🔥 GUARANTEED TRANSITION FIX
+  showPage("home");
+
+  render();
+}
+
+/* SIGNUP */
 function signup(){
 
   const u = $("user").value.trim();
   const p = $("pass").value.trim();
 
   if(!u || !p){
-    alert("Fill in all fields");
+    alert("Fill all fields");
     return;
   }
 
@@ -36,35 +71,12 @@ function signup(){
   alert("Account created — now log in");
 }
 
-/* LOGIN */
-function login(){
-
-  const u = $("user").value.trim();
-  const p = $("pass").value.trim();
-
-  let users = getUsers();
-
-  if(!users[u] || users[u].password !== p){
-    alert("Invalid login");
-    return;
-  }
-
-  currentUser = u;
-
-  go("home");
-  render();
-}
-
-/* NAV */
+/* NAVIGATION */
 function go(page){
 
   if(!currentUser) return;
 
-  document.querySelectorAll(".page").forEach(p=>{
-    p.classList.remove("active");
-  });
-
-  $(page+"Page").classList.add("active");
+  showPage(page);
 
   if(page === "friends"){
     loadFriends();
@@ -82,6 +94,11 @@ const albums = [
     title:"Rumours",
     artist:"Fleetwood Mac",
     image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG"
+  },
+  {
+    title:"Blonde",
+    artist:"Frank Ocean",
+    image:"https://upload.wikimedia.org/wikipedia/en/a/a0/Blonde_-_Frank_Ocean.jpeg"
   }
 ];
 
@@ -89,12 +106,13 @@ let index = 0;
 
 function render(){
   const a = albums[index];
+
   $("albumCover").style.backgroundImage = `url(${a.image})`;
   $("title").textContent = a.title;
   $("meta").textContent = a.artist;
 }
 
-/* FRIENDS (EMPTY ONLY USER ADDED) */
+/* FRIENDS (USER ONLY) */
 function loadFriends(){
 
   const box = $("friendsList");
@@ -103,20 +121,35 @@ function loadFriends(){
   let list = JSON.parse(localStorage.getItem("friends") || "[]");
 
   if(list.length === 0){
-    box.innerHTML = "<p>No friends added</p>";
+    box.innerHTML = "<p>No friends added yet</p>";
     return;
   }
 
   list.forEach(name=>{
     const div = document.createElement("div");
+    div.className = "friendBox";
     div.textContent = name;
-    div.style.padding = "10px";
-    div.style.margin = "6px 0";
-    div.style.background = "rgba(255,255,255,0.06)";
-    div.style.borderRadius = "10px";
-
     box.appendChild(div);
   });
+}
+
+/* ADD FRIEND */
+function addFriend(){
+
+  const input = $("addFriend");
+  const name = input.value.trim();
+
+  if(!name) return;
+
+  let list = JSON.parse(localStorage.getItem("friends") || "[]");
+
+  list.push(name);
+
+  localStorage.setItem("friends", JSON.stringify(list));
+
+  input.value = "";
+
+  loadFriends();
 }
 
 /* INIT */
@@ -127,6 +160,8 @@ window.addEventListener("DOMContentLoaded", ()=>{
 
   $("homeBtn").onclick = ()=>go("home");
   $("friendsBtn").onclick = ()=>go("friends");
+
+  $("addBtn").onclick = addFriend;
 
   render();
 });
