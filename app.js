@@ -1,142 +1,119 @@
 const $ = (id)=>document.getElementById(id);
 
-/* ALBUMS */
-const albums = [
-  {
-    title:"Abbey Road",
-    artist:"The Beatles",
-    image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg"
-  },
-  {
-    title:"Rumours",
-    artist:"Fleetwood Mac",
-    image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG"
-  },
-  {
-    title:"Dark Side of the Moon",
-    artist:"Pink Floyd",
-    image:"https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png"
-  },
-  {
-    title:"Blonde",
-    artist:"Frank Ocean",
-    image:"https://upload.wikimedia.org/wikipedia/en/a/a0/Blonde_-_Frank_Ocean.jpeg"
-  }
-];
+const friends = ["Ethan","Emma","Ciaran","Alex","Jamie"];
 
-let index = 0;
+let activeFriend = null;
 
-/* NAV */
-function show(page){
-  document.querySelectorAll(".page").forEach(p=>{
-    p.classList.remove("active");
-  });
-
-  $(page+"Page").classList.add("active");
+/* STORAGE */
+function getChats(){
+  return JSON.parse(localStorage.getItem("chats") || "{}");
 }
 
-/* RENDER */
-function render(i){
-  const a = albums[i];
-
-  const cover = $("albumCover");
-  if(cover){
-    cover.style.backgroundImage = `url(${a.image})`;
-  }
-
-  $("title").textContent = a.title;
-  $("meta").textContent = a.artist;
+function saveChats(data){
+  localStorage.setItem("chats", JSON.stringify(data));
 }
 
-/* FRIENDS SYSTEM (FIXED) */
+/* LOAD FRIENDS */
 function loadFriends(){
-
-  const friendsBox = $("friendsList");
-  const inboxBox = $("inboxList");
-
-  if(!friendsBox || !inboxBox) return;
-
-  const friends = ["Ethan","Emma","Ciaran"];
-  const requests = ["Alex","Jamie"];
-
-  /* INBOX */
-  inboxBox.innerHTML = "";
-
-  requests.forEach(name=>{
-    const div = document.createElement("div");
-    div.className = "friendRow";
-
-    div.innerHTML = `
-      <span>${name}</span>
-      <button>Accept</button>
-    `;
-
-    inboxBox.appendChild(div);
-  });
-
-  /* FRIENDS */
-  friendsBox.innerHTML = "";
+  const panel = $("friendsPanel");
+  panel.innerHTML = "";
 
   friends.forEach(name=>{
     const div = document.createElement("div");
-    div.className = "friendRow";
+    div.className = "friendItem";
+    div.innerText = name;
 
-    div.innerHTML = `
-      <span>${name}</span>
-      <div>
-        <button>Message</button>
-        <button>Send Album</button>
-      </div>
-    `;
+    div.onclick = ()=>openChat(name);
 
-    friendsBox.appendChild(div);
+    panel.appendChild(div);
   });
 }
 
-/* CONTROLS */
-function next(){
-  index = (index + 1) % albums.length;
-  render(index);
+/* OPEN CHAT */
+function openChat(name){
+  activeFriend = name;
+
+  $("chatHeader").innerText = name;
+
+  renderMessages();
 }
 
-function prev(){
-  index = (index - 1 + albums.length) % albums.length;
-  render(index);
+/* RENDER MESSAGES */
+function renderMessages(){
+
+  const box = $("messages");
+  box.innerHTML = "";
+
+  if(!activeFriend) return;
+
+  const chats = getChats();
+
+  const msgs = chats[activeFriend] || [];
+
+  msgs.forEach(m=>{
+    const div = document.createElement("div");
+    div.className = "msg " + (m.from === "me" ? "me" : "");
+    div.innerText = m.text;
+    box.appendChild(div);
+  });
+
+  box.scrollTop = box.scrollHeight;
 }
 
-/* DRAWER */
-let open = false;
+/* SEND MESSAGE */
+function sendMessage(){
 
-function toggleDrawer(){
-  const d = $("drawerPanel");
-  open = !open;
-  d.classList.toggle("hidden");
+  const input = $("textInput");
+  const text = input.value.trim();
+
+  if(!text || !activeFriend) return;
+
+  const chats = getChats();
+
+  if(!chats[activeFriend]) chats[activeFriend] = [];
+
+  chats[activeFriend].push({
+    from:"me",
+    text
+  });
+
+  saveChats(chats);
+
+  input.value = "";
+
+  renderMessages();
+}
+
+/* ALBUM SEND (placeholder) */
+function sendAlbum(){
+
+  if(!activeFriend) return;
+
+  const chats = getChats();
+
+  if(!chats[activeFriend]) chats[activeFriend] = [];
+
+  chats[activeFriend].push({
+    from:"me",
+    text:"🎧 Sent you an album (feature coming soon)"
+  });
+
+  saveChats(chats);
+
+  renderMessages();
 }
 
 /* INIT */
 window.addEventListener("DOMContentLoaded", ()=>{
 
-  $("homeBtn").onclick = ()=>show("home");
-  $("friendsBtn").onclick = ()=>show("friends");
-
-  $("generateBtn").onclick = ()=>{
-    index = Math.floor(Math.random()*albums.length);
-    render(index);
-  };
-
-  $("nextBtn").onclick = next;
-  $("prevBtn").onclick = prev;
-
-  $("playBtn").onclick = ()=>{
-    const a = albums[index];
-    window.open(
-      `https://open.spotify.com/search/${encodeURIComponent(a.title+" "+a.artist)}`
-    );
-  };
-
-  $("drawerBtn").onclick = toggleDrawer;
-  $("closeDrawer").onclick = toggleDrawer;
-
-  render(index);
   loadFriends();
+
+  $("sendBtn").onclick = sendMessage;
+
+  $("albumBtn").onclick = sendAlbum;
+
+  $("textInput").addEventListener("keypress",(e)=>{
+    if(e.key === "Enter") sendMessage();
+  });
+
 });
