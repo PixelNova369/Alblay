@@ -1,81 +1,100 @@
-import { supabase } from "./supabase.js"
+import { supabase, getUser, getProfile, ensureProfile } from "./supabase.js"
 
 console.log("APP START")
 
-// ================= HOME ALBUMS =================
+// =====================
+// HOME ALBUMS
+// =====================
 const albums = [
-  { title:"Abbey Road", artist:"Beatles", image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg" },
+  { title:"Abbey Road", artist:"The Beatles", image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg" },
   { title:"Rumours", artist:"Fleetwood Mac", image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG" }
 ]
 
-let current = albums[0]
 let currentChatId = null
+let currentFriend = null
 
+// =====================
+// INIT PROFILE SYSTEM
+// =====================
+async function initProfile(){
+  const user = await getUser()
+  if (!user) return
+  await ensureProfile(user)
+}
+
+// =====================
+// RENDER HOME
+// =====================
 function render(i){
-  current = albums[i]
+  const album = albums[i]
 
-  const cover = document.getElementById("albumCover")
-  const title = document.getElementById("title")
-  const meta = document.getElementById("meta")
+  document.getElementById("albumCover").style.backgroundImage =
+    `url(${album.image})`
 
-  cover.style.backgroundImage = `url(${current.image})`
-  title.textContent = current.title
-  meta.textContent = current.artist
+  document.getElementById("title").textContent = album.title
+  document.getElementById("meta").textContent = album.artist
 }
 
-// ================= NAV =================
-function show(page){
-
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
-
-  if(page === "chat"){
-    document.getElementById("chatPage").style.display = "flex"
-    document.getElementById("friendsPage").classList.remove("active")
-    document.getElementById("homePage").classList.remove("active")
-    return
-  }
-
-  document.getElementById(page+"Page").classList.add("active")
-  document.getElementById("chatPage").style.display = "none"
-}
-
-// ================= FRIEND LIST =================
+// =====================
+// FRIEND LIST (REAL PROFILES)
+// =====================
 async function loadFriends(){
 
-  const { data: userData } = await supabase.auth.getUser()
-  const user = userData.user
+  const user = await getUser()
 
   const { data } = await supabase
     .from("friends")
     .select("*")
-    .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
 
   const list = document.getElementById("friendsList")
   list.innerHTML = ""
 
-  data.forEach(f=>{
+  for(const f of data){
 
-    const other = f.user_id === user.id ? f.friend_id : f.user_id
+    const otherId = f.user_id === user.id ? f.friend_id : f.user_id
+
+    const profile = await getProfile(otherId)
 
     const row = document.createElement("div")
-    row.className = "friendRow"
-
-    row.innerHTML = `
-      <span>${other}</span>
-      <button data-id="${other}">Message</button>
+    row.style.cssText = `
+      display:flex;
+      justify-content:space-between;
+      padding:12px;
+      margin:10px 0;
+      background:rgba(255,255,255,0.04);
+      border-radius:14px;
+      align-items:center;
     `
 
-    row.querySelector("button").onclick = ()=>openChat(other)
+    row.innerHTML = `
+      <div>
+        <strong>${profile?.username || "User"}</strong>
+      </div>
+      <button>Message</button>
+    `
+
+    row.querySelector("button").onclick = ()=>{
+      openChat(otherId, profile)
+    }
 
     list.appendChild(row)
-  })
+  }
 }
 
-// ================= CHAT SYSTEM =================
-async function openChat(friendId){
+// =====================
+// CHAT SYSTEM (WITH PROFILE)
+// =====================
+async function openChat(friendId, profile){
 
-  const { data: userData } = await supabase.auth.getUser()
-  const user = userData.user
+  currentFriend = friendId
+
+  document.getElementById("chatTitle").textContent =
+    profile?.username || "Chat"
+
+  document.getElementById("chatPage").style.display = "flex"
+  document.getElementById("friendsPage").classList.remove("active")
+
+  const user = await getUser()
 
   let { data: chats } = await supabase
     .from("chat_members")
@@ -113,15 +132,12 @@ async function openChat(friendId){
   }
 
   currentChatId = chatId
-
-  document.getElementById("chatTitle").textContent = friendId
-
-  show("chat")
   loadMessages(chatId)
-  listenMessages(chatId)
 }
 
-// ================= MESSAGES =================
+// =====================
+// MESSAGES
+// =====================
 async function loadMessages(chatId){
 
   const { data } = await supabase
@@ -130,65 +146,61 @@ async function loadMessages(chatId){
     .eq("chat_id", chatId)
     .order("created_at", { ascending:true })
 
-  renderMessages(data)
-}
-
-function renderMessages(msgs){
-
   const box = document.getElementById("messages")
   box.innerHTML = ""
 
-  msgs.forEach(m=>{
+  const user = await getUser()
 
+  data.forEach(m=>{
     const div = document.createElement("div")
-    div.className = "msg " + (m.sender_id === "me" ? "me" : "them")
 
+    div.className = "msg " + (m.sender_id === user.id ? "me" : "them")
     div.textContent = m.message_text
+
     box.appendChild(div)
   })
 }
 
-// realtime
-function listenMessages(chatId){
-
-  supabase
-    .channel("chat_"+chatId)
-    .on("postgres_changes",{
-      event:"INSERT",
-      schema:"public",
-      table:"messages",
-      filter:`chat_id=eq.${chatId}`
-    },payload=>{
-      loadMessages(chatId)
-    })
-    .subscribe()
-}
-
-// send message
+// =====================
+// SEND MESSAGE
+// =====================
 async function sendMessage(){
 
   const input = document.getElementById("msgInput")
+  const user = await getUser()
 
   await supabase.from("messages").insert({
     chat_id: currentChatId,
-    sender_id: (await supabase.auth.getUser()).data.user.id,
+    sender_id: user.id,
     message_text: input.value
   })
 
   input.value = ""
+  loadMessages(currentChatId)
 }
 
-// ================= INIT =================
-window.addEventListener("DOMContentLoaded",()=>{
+// =====================
+// INIT
+// =====================
+window.addEventListener("DOMContentLoaded", async ()=>{
 
-  document.getElementById("homeBtn").onclick=()=>show("home")
-  document.getElementById("friendsBtn").onclick=()=>show("friends")
+  await initProfile()
 
-  document.getElementById("sendMsgBtn").onclick=sendMessage
-
-  document.getElementById("generateBtn").onclick=()=>{
+  document.getElementById("generateBtn").onclick = ()=>{
     const i = Math.floor(Math.random()*albums.length)
     render(i)
+  }
+
+  document.getElementById("sendMsgBtn").onclick = sendMessage
+
+  document.getElementById("friendsBtn").onclick = ()=>{
+    document.getElementById("homePage").classList.remove("active")
+    document.getElementById("friendsPage").classList.add("active")
+  }
+
+  document.getElementById("homeBtn").onclick = ()=>{
+    document.getElementById("friendsPage").classList.remove("active")
+    document.getElementById("homePage").classList.add("active")
   }
 
   render(0)
