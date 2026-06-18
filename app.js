@@ -1,3 +1,5 @@
+console.log("🔥 JS IS LOADING CORRECTLY")
+alert("JS LOADED")
 console.log("🔥 APP JS RUNNING")
 
 // =====================
