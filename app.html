@@ -13,31 +13,9 @@ body{
   padding-bottom:80px;
 }
 
-#bg{
-  position:fixed;
-  inset:0;
-  z-index:-2;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(29,185,84,0.25), transparent 40%),
-    radial-gradient(circle at 80% 10%, rgba(255,59,48,0.18), transparent 45%),
-    radial-gradient(circle at 40% 90%, rgba(10,132,255,0.18), transparent 45%);
-  filter:blur(60px);
-}
-
 .page{ display:none; padding:20px; }
 .active{ display:block; }
 
-/* ALBUM */
-#albumCover{
-  width:320px;
-  height:320px;
-  margin:20px auto;
-  border-radius:22px;
-  background-size:cover;
-  box-shadow:0 30px 80px rgba(0,0,0,0.6);
-}
-
-/* BUTTONS */
 button{
   background:rgba(255,255,255,0.06);
   border:none;
@@ -55,21 +33,13 @@ input{
   color:white;
 }
 
-/* PROFILE CARD */
-.profileCard{
-  background:rgba(255,255,255,0.06);
-  padding:16px;
-  border-radius:16px;
-  text-align:center;
-  margin-top:20px;
-}
-
-.profilePic{
-  width:80px;
-  height:80px;
-  border-radius:50%;
-  object-fit:cover;
-  margin-bottom:10px;
+/* ALBUM */
+#albumCover{
+  width:320px;
+  height:320px;
+  margin:20px auto;
+  border-radius:22px;
+  background-size:cover;
 }
 
 /* NAV */
@@ -77,22 +47,28 @@ input{
   position:fixed;
   bottom:0;
   width:100%;
-  background:rgba(15,15,15,0.9);
+  background:#111;
   display:flex;
   justify-content:space-around;
   padding:12px;
+}
+
+/* CHAT */
+#chatMessages{
+  height:55vh;
+  overflow-y:auto;
+  background:rgba(255,255,255,0.04);
+  padding:10px;
+  border-radius:12px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="bg"></div>
-
 <!-- HOME -->
 <div id="homePage" class="page active">
   <div id="albumCover"></div>
-
   <h2 id="title">Loading...</h2>
   <p id="meta"></p>
 
@@ -102,22 +78,37 @@ input{
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
 
-  <h3>Messages</h3>
+  <h3>Find Friend (Email)</h3>
+  <input id="friendEmail" placeholder="Enter email">
+  <button id="sendRequestBtn">Send Request</button>
 
-<h3>Find Friend</h3>
+  <hr>
 
-<input id="friendEmail" placeholder="Enter email">
-<button id="sendRequestBtn">Send Request</button>
+  <h3>Inbox</h3>
+  <button id="inboxBtn">Open Inbox</button>
+  <div id="inboxBox"></div>
 
-<hr>
+  <hr>
 
-<h3>Friend Requests</h3>
-<div id="friendRequests"></div>
+  <h3>Your Friends</h3>
+  <div id="friendsList"></div>
 
-<hr>
+</div>
 
-<h3>Your Friends</h3>
-<div id="friendsList"></div>
+<!-- CHAT -->
+<div id="chatPage" class="page">
+
+  <button id="backBtn">← Back</button>
+
+  <h3 id="chatTitle">Chat</h3>
+
+  <div id="chatMessages"></div>
+
+  <input id="chatInput" placeholder="Message">
+  <button id="sendMsgBtn">Send</button>
+
+  <button id="sendAlbumBtn">🎧 Send Album</button>
+
 </div>
 
 <!-- PROFILE -->
@@ -125,13 +116,10 @@ input{
 
   <h3>Profile</h3>
 
-  <p id="displayName">Guest</p>
+  <input id="avatarInput" type="file" accept="image/*">
 
-  <!-- IMAGE PICKER (CAMERA / GALLERY) -->
-  <input id="avatarInput" type="file" accept="image/*" capture>
-
-  <div class="profileCard">
-    <img id="avatarPreview" class="profilePic">
+  <div>
+    <img id="avatarPreview" style="width:80px;height:80px;border-radius:50%;">
     <h3 id="usernamePreview">Guest</h3>
   </div>
 
@@ -140,7 +128,7 @@ input{
 <!-- NAV -->
 <div id="bottomNav">
   <button id="homeBtn">Home</button>
-  <button id="friendsBtn">Messages</button>
+  <button id="friendsBtn">Friends</button>
   <button id="profileBtn">Profile</button>
 </div>
 
