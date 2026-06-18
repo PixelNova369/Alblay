@@ -1,6 +1,6 @@
 const $ = (id)=>document.getElementById(id);
 
-/* 🎧 MORE ALBUMS ADDED */
+/* ALBUMS */
 const albums = [
   {
     title:"Abbey Road",
@@ -21,16 +21,6 @@ const albums = [
     title:"Blonde",
     artist:"Frank Ocean",
     image:"https://upload.wikimedia.org/wikipedia/en/a/a0/Blonde_-_Frank_Ocean.jpeg"
-  },
-  {
-    title:"After Hours",
-    artist:"The Weeknd",
-    image:"https://upload.wikimedia.org/wikipedia/en/c/c1/The_Weeknd_-_After_Hours.png"
-  },
-  {
-    title:"In Rainbows",
-    artist:"Radiohead",
-    image:"https://upload.wikimedia.org/wikipedia/en/1/14/Inrainbowscover.png"
   }
 ];
 
@@ -38,7 +28,10 @@ let index = 0;
 
 /* NAV */
 function show(page){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".page").forEach(p=>{
+    p.classList.remove("active");
+  });
+
   $(page+"Page").classList.add("active");
 }
 
@@ -55,14 +48,34 @@ function render(i){
   $("meta").textContent = a.artist;
 }
 
-/* FRIENDS */
+/* FRIENDS SYSTEM (FIXED) */
 function loadFriends(){
-  const box = $("friendsList");
-  if(!box) return;
+
+  const friendsBox = $("friendsList");
+  const inboxBox = $("inboxList");
+
+  if(!friendsBox || !inboxBox) return;
 
   const friends = ["Ethan","Emma","Ciaran"];
+  const requests = ["Alex","Jamie"];
 
-  box.innerHTML = "";
+  /* INBOX */
+  inboxBox.innerHTML = "";
+
+  requests.forEach(name=>{
+    const div = document.createElement("div");
+    div.className = "friendRow";
+
+    div.innerHTML = `
+      <span>${name}</span>
+      <button>Accept</button>
+    `;
+
+    inboxBox.appendChild(div);
+  });
+
+  /* FRIENDS */
+  friendsBox.innerHTML = "";
 
   friends.forEach(name=>{
     const div = document.createElement("div");
@@ -70,10 +83,13 @@ function loadFriends(){
 
     div.innerHTML = `
       <span>${name}</span>
-      <button>Message</button>
+      <div>
+        <button>Message</button>
+        <button>Send Album</button>
+      </div>
     `;
 
-    box.appendChild(div);
+    friendsBox.appendChild(div);
   });
 }
 
