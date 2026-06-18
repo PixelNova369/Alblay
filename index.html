@@ -2,180 +2,111 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alblay</title>
+<title>Alblay DM</title>
 
 <style>
 body{
   margin:0;
   font-family:-apple-system;
+  background:#0b0b0f;
   color:white;
-  background:#050505;
   overflow:hidden;
 }
 
-/* 🌿 BACKGROUND */
+/* BACKGROUND */
 #bg{
   position:fixed;
   inset:0;
-  z-index:-3;
+  z-index:-2;
 
   background:
-    radial-gradient(circle at 20% 25%, rgba(29,185,84,0.55), transparent 45%),
-    radial-gradient(circle at 80% 15%, rgba(0,255,140,0.25), transparent 50%),
-    radial-gradient(circle at 50% 85%, rgba(0,160,90,0.22), transparent 55%);
+    radial-gradient(circle at 20% 20%, rgba(29,185,84,0.4), transparent 45%),
+    radial-gradient(circle at 80% 10%, rgba(120,80,255,0.25), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(0,200,120,0.18), transparent 55%);
 
-  filter: blur(75px) saturate(140%);
-  animation: floatBg 11s ease-in-out infinite alternate;
+  filter:blur(80px);
 }
 
-@keyframes floatBg{
-  0%{ transform:scale(1) translateY(0); }
-  100%{ transform:scale(1.12) translateY(-22px); }
-}
-
-/* PAGES */
-.page{
-  display:none;
-  padding:14px;
-}
-.active{ display:block; }
-
-/* HOME */
-.homeWrap{
-  text-align:center;
-  padding:16px;
-}
-
-/* ALBUM */
-#albumCover{
-  width:280px;
-  height:280px;
-  margin:18px auto;
-  border-radius:26px;
-
-  background-size:cover;
-  background-position:center;
-
-  box-shadow:
-    0 25px 90px rgba(0,0,0,0.55),
-    0 0 45px rgba(29,185,84,0.30);
-
-  transition:0.4s ease;
-}
-
-/* NOW PLAYING */
-#nowPlaying{
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.08);
-
-  padding:14px;
-  border-radius:16px;
-  backdrop-filter:blur(16px);
-}
-
-/* CONTROLS */
-.controls{
+/* MAIN DM LAYOUT */
+#dmContainer{
   display:flex;
-  justify-content:center;
-  gap:14px;
-  margin-top:14px;
+  height:100vh;
 }
 
-.controls button{
-  width:60px;
-  height:48px;
-
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,0.08);
-
-  background:rgba(255,255,255,0.06);
-  color:white;
-
-  backdrop-filter:blur(12px);
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  padding:0;
-}
-
-/* BOTTOM */
-.bottomControls{
-  display:flex;
-  gap:10px;
-  margin-top:14px;
-}
-
-.bottomControls button{
-  flex:1;
-  padding:11px;
-  border:none;
-  border-radius:12px;
-  background:rgba(255,255,255,0.06);
-  color:white;
-}
-
-/* DRAWER */
-.drawer{
-  position:fixed;
-  bottom:78px;
-  left:0;
-  right:0;
-
-  background:#111;
-  padding:14px;
-  border-radius:18px 18px 0 0;
-
-  transition:0.3s;
-  box-shadow:0 -10px 40px rgba(0,0,0,0.6);
-}
-
-.hidden{
-  transform:translateY(120%);
-}
-
-/* FRIENDS */
-.friendRow{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-
-  padding:12px;
-  margin:8px 0;
-
-  background:rgba(255,255,255,0.06);
-  border-radius:12px;
-}
-
-/* FRIEND BUTTONS */
-.friendRow button{
-  border:none;
-  background:rgba(255,255,255,0.08);
-  color:white;
-  padding:6px 10px;
-  border-radius:10px;
-  font-size:12px;
-}
-
-/* NAV */
-#bottomNav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  display:flex;
-
-  background:rgba(25,70,55,0.45);
+/* FRIEND LIST */
+#friendsPanel{
+  width:35%;
+  background:rgba(255,255,255,0.04);
   backdrop-filter:blur(18px);
-
-  border-top:1px solid rgba(255,255,255,0.08);
+  padding:10px;
+  overflow-y:auto;
 }
 
-#bottomNav button{
+.friendItem{
+  padding:12px;
+  margin:6px 0;
+  border-radius:12px;
+  background:rgba(255,255,255,0.06);
+  cursor:pointer;
+}
+
+/* CHAT AREA */
+#chatPanel{
   flex:1;
-  padding:15px;
+  display:flex;
+  flex-direction:column;
+}
+
+/* CHAT HEADER */
+#chatHeader{
+  padding:12px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(10px);
+}
+
+/* MESSAGES */
+#messages{
+  flex:1;
+  padding:12px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.msg{
+  padding:10px 12px;
+  border-radius:12px;
+  max-width:70%;
+  background:rgba(255,255,255,0.08);
+}
+
+.me{
+  align-self:flex-end;
+  background:rgba(29,185,84,0.25);
+}
+
+/* INPUT BAR */
+#inputBar{
+  display:flex;
+  padding:10px;
+  gap:8px;
+  background:rgba(255,255,255,0.05);
+}
+
+#textInput{
+  flex:1;
+  padding:10px;
   border:none;
-  background:none;
+  border-radius:10px;
+  outline:none;
+}
+
+button{
+  border:none;
+  border-radius:10px;
+  padding:10px;
+  background:rgba(255,255,255,0.1);
   color:white;
 }
 </style>
@@ -185,61 +116,26 @@ body{
 
 <div id="bg"></div>
 
-<!-- HOME -->
-<div id="homePage" class="page active">
+<div id="dmContainer">
 
-  <div class="homeWrap">
+  <!-- FRIENDS -->
+  <div id="friendsPanel"></div>
 
-    <h2>Now Playing</h2>
+  <!-- CHAT -->
+  <div id="chatPanel">
 
-    <div id="albumCover"></div>
+    <div id="chatHeader">Select a friend</div>
 
-    <div id="nowPlaying">
-      <h3 id="title">Loading...</h3>
-      <p id="meta"></p>
-    </div>
+    <div id="messages"></div>
 
-    <div class="controls">
-      <button id="prevBtn">⟲</button>
-      <button id="playBtn">▶</button>
-      <button id="nextBtn">⟳</button>
-    </div>
-
-    <div class="bottomControls">
-      <button id="drawerBtn">☰ Drawer</button>
-      <button id="generateBtn">Find Album</button>
-    </div>
-
-    <div id="drawerPanel" class="drawer hidden">
-      <h3>Filters</h3>
-
-      <input id="genre" placeholder="Genre">
-      <input id="era" placeholder="Era">
-      <input id="length" placeholder="Length">
-
-      <button id="closeDrawer">Back</button>
+    <div id="inputBar">
+      <input id="textInput" placeholder="Message...">
+      <button id="sendBtn">Send</button>
+      <button id="albumBtn">🎧</button>
     </div>
 
   </div>
-</div>
 
-<!-- FRIENDS -->
-<div id="friendsPage" class="page">
-
-  <h2>Friends</h2>
-
-  <h3>📨 Inbox</h3>
-  <div id="inboxList"></div>
-
-  <h3>👥 Friends</h3>
-  <div id="friendsList"></div>
-
-</div>
-
-<!-- NAV -->
-<div id="bottomNav">
-  <button id="homeBtn">Home</button>
-  <button id="friendsBtn">Friends</button>
 </div>
 
 <script src="./app.js"></script>
