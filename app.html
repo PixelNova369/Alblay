@@ -45,7 +45,7 @@ body{
 }
 
 button{
-  padding:10px;
+  padding:10px 14px;
   border:none;
   border-radius:10px;
   background:#222;
@@ -65,8 +65,8 @@ button{
 /* CHAT */
 #chatPage{
   display:none;
-  height:100vh;
   flex-direction:column;
+  height:100vh;
 }
 
 #messages{
@@ -75,8 +75,18 @@ button{
   padding:10px;
 }
 
-.msg.me{background:rgba(0,255,120,0.2);margin-left:auto;padding:10px;border-radius:10px;}
-.msg.them{background:rgba(255,43,214,0.2);padding:10px;border-radius:10px;}
+.msg.me{
+  background:rgba(0,255,120,0.2);
+  margin-left:auto;
+  padding:10px;
+  border-radius:10px;
+}
+
+.msg.them{
+  background:rgba(255,43,214,0.2);
+  padding:10px;
+  border-radius:10px;
+}
 
 #msgBar{
   display:flex;
@@ -108,13 +118,16 @@ input{
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
+
   <h3>Friends</h3>
-  <div id="friendsList"></div>
+  <div id="friendsList">Loading friends...</div>
+
 </div>
 
 <!-- CHAT -->
 <div id="chatPage">
-  <h3 id="chatTitle"></h3>
+
+  <h3 id="chatTitle">Chat</h3>
 
   <div id="messages"></div>
 
@@ -131,5 +144,6 @@ input{
 </div>
 
 <script type="module" src="./app.js"></script>
+
 </body>
 </html>
