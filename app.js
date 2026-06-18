@@ -1,200 +1,130 @@
-import { supabase } from "./supabase.js"
+console.log("APP LOADED SUCCESSFULLY")
 
-console.log("APP START")
-
-let currentChat = null
-
-// ----------------------
-// AUTH
-// ----------------------
-async function checkAuth(){
-
-  const { data } = await supabase.auth.getSession()
-
-  if(!data.session){
-    document.getElementById("authGate").style.display = "flex"
-    document.getElementById("homePage").style.display = "none"
-    return false
-  }
-
-  document.getElementById("authGate").style.display = "none"
-  document.getElementById("homePage").style.display = "block"
-  return true
-}
-
-function setupAuth(){
-
-  document.getElementById("loginBtn").onclick = async () => {
-
-    const email = document.getElementById("email").value
-    const password = document.getElementById("password").value
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
-
-    if(error) return alert(error.message)
-
-    location.reload()
-  }
-
-  document.getElementById("signupBtn").onclick = async () => {
-
-    const email = document.getElementById("email").value
-    const password = document.getElementById("password").value
-
-    const { error } = await supabase.auth.signUp({
-      email,
-      password
-    })
-
-    if(error) return alert(error.message)
-
-    alert("Check email to confirm login")
-  }
-}
-
-// ----------------------
-// ALBUM SYSTEM (NOW PLAYING)
-// ----------------------
+// --------------------
+// ALBUM DATA
+// --------------------
 const albums = [
   {
-    title:"Abbey Road",
-    artist:"The Beatles",
-    image:"https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg"
+    title: "Abbey Road",
+    artist: "The Beatles",
+    image: "https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg"
   },
   {
-    title:"Rumours",
-    artist:"Fleetwood Mac",
-    image:"https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG"
+    title: "Rumours",
+    artist: "Fleetwood Mac",
+    image: "https://upload.wikimedia.org/wikipedia/en/f/fb/FMacRumours.PNG"
   },
   {
-    title:"Dark Side of the Moon",
-    artist:"Pink Floyd",
-    image:"https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png"
+    title: "Dark Side of the Moon",
+    artist: "Pink Floyd",
+    image: "https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png"
   }
 ]
 
-function renderAlbum(){
+let currentFriend = null
 
-  const a = albums[Math.floor(Math.random()*albums.length)]
+// --------------------
+// HELPERS
+// --------------------
+const $ = (id) => document.getElementById(id)
 
-  document.getElementById("albumCover").style.backgroundImage =
-    `url(${a.image})`
-
-  document.getElementById("title").textContent = a.title
-  document.getElementById("meta").textContent = a.artist
-}
-
-// ----------------------
-// NAV
-// ----------------------
+// --------------------
+// PAGE SWITCH
+// --------------------
 function show(page){
 
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
+  document.querySelectorAll(".page").forEach(p=>{
+    p.classList.remove("active")
+  })
 
-  document.getElementById(page+"Page").classList.add("active")
+  $(page + "Page").classList.add("active")
 }
 
-// ----------------------
-// FRIENDS
-// ----------------------
-async function loadFriends(){
+// --------------------
+// ALBUM GENERATOR
+// --------------------
+function renderAlbum(){
 
-  const { data } = await supabase.from("friends").select("*")
+  const a = albums[Math.floor(Math.random() * albums.length)]
 
-  const box = document.getElementById("friendsList")
+  $("albumCover").style.backgroundImage = `url(${a.image})`
+  $("title").textContent = a.title
+  $("meta").textContent = a.artist
+}
+
+// --------------------
+// FRIENDS (STATIC TEST FIRST)
+// --------------------
+function loadFriends(){
+
+  const friends = ["Ethan", "Emma", "Ciaran"]
+
+  const box = $("friendsList")
   box.innerHTML = ""
 
-  if(!data?.length){
-    box.innerHTML = "No friends yet"
-    return
-  }
+  friends.forEach(name=>{
 
-  data.forEach(f=>{
+    const row = document.createElement("div")
+    row.className = "friendRow"
 
-    const div = document.createElement("div")
-    div.className = "friendRow"
-
-    div.innerHTML = `
-      <span>${f.friend_id.slice(0,6)}</span>
+    row.innerHTML = `
+      <span>${name}</span>
       <button>Message</button>
     `
 
-    div.querySelector("button").onclick = ()=>{
-      openChat(f.friend_id)
+    row.querySelector("button").onclick = ()=>{
+      openChat(name)
     }
 
-    box.appendChild(div)
+    box.appendChild(row)
   })
 }
 
-// ----------------------
+// --------------------
 // CHAT
-// ----------------------
-async function openChat(id){
+// --------------------
+function openChat(name){
 
-  currentChat = id
+  currentFriend = name
 
-  document.getElementById("friendsPage").classList.remove("active")
-  document.getElementById("chatPage").style.display = "flex"
+  $("friendsPage").classList.remove("active")
+  $("chatPage").style.display = "flex"
 
-  document.getElementById("chatTitle").textContent =
-    "Chat " + id.slice(0,6)
+  $("chatTitle").textContent = "Chat with " + name
 
-  loadMessages()
+  $("messages").innerHTML = ""
 }
 
-async function loadMessages(){
+// --------------------
+// SEND MESSAGE
+// --------------------
+function sendMessage(){
 
-  const { data } = await supabase
-    .from("messages")
-    .select("*")
-    .order("created_at",{ascending:true})
+  const input = $("msgInput")
 
-  const box = document.getElementById("messages")
-  box.innerHTML = ""
+  if(!input.value) return
 
-  data?.forEach(m=>{
+  const div = document.createElement("div")
+  div.className = "msg"
+  div.textContent = input.value
 
-    const div = document.createElement("div")
-    div.className = "msg them"
-    div.textContent = m.message_text
-
-    box.appendChild(div)
-  })
-}
-
-async function sendMessage(){
-
-  const input = document.getElementById("msgInput")
-
-  await supabase.from("messages").insert({
-    sender_id: "temp",
-    receiver_id: currentChat,
-    message_text: input.value
-  })
+  $("messages").appendChild(div)
 
   input.value = ""
-  loadMessages()
 }
 
-// ----------------------
+// --------------------
 // INIT
-// ----------------------
-window.addEventListener("DOMContentLoaded", async ()=>{
+// --------------------
+window.addEventListener("DOMContentLoaded", ()=>{
 
-  setupAuth()
+  console.log("DOM READY")
 
-  const ok = await checkAuth()
-  if(!ok) return
+  $("homeBtn").onclick = ()=>show("home")
+  $("friendsBtn").onclick = ()=>show("friends")
 
-  document.getElementById("homeBtn").onclick = ()=>show("home")
-  document.getElementById("friendsBtn").onclick = ()=>show("friends")
-
-  document.getElementById("generateBtn").onclick = renderAlbum
-  document.getElementById("sendBtn").onclick = sendMessage
+  $("generateBtn").onclick = renderAlbum
+  $("sendBtn").onclick = sendMessage
 
   renderAlbum()
   loadFriends()
