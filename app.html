@@ -13,18 +13,14 @@ body{
   overflow:hidden;
 }
 
-/* =======================
-   BACKGROUND
-======================= */
+/* ================= BACKGROUND ================= */
 #bg{
   position:fixed;
   inset:0;
   z-index:-3;
-  background:#050505;
-  overflow:hidden;
 }
 
-.waveLayer{
+.waveGreen{
   position:absolute;
   inset:-200px;
   background:
@@ -32,61 +28,98 @@ body{
     radial-gradient(circle at 70% 20%, rgba(0,255,140,0.16), transparent 55%),
     radial-gradient(circle at 50% 80%, rgba(0,255,100,0.12), transparent 60%);
   filter:blur(80px);
-  animation:waveMove 14s ease-in-out infinite;
 }
 
-@keyframes waveMove{
-  0%{transform:translate(0,0);}
-  50%{transform:translate(-40px,20px);}
-  100%{transform:translate(0,0);}
-}
-
-/* =======================
-   PAGES
-======================= */
+/* ================= PAGES ================= */
 .page{
   display:none;
-  padding:20px;
+  padding:16px;
 }
 
 .active{
   display:block;
 }
 
-/* =======================
-   PLAYER CARD
-======================= */
+/* ================= HOME PLAYER ================= */
 .nowPlaying{
   width:340px;
-  margin:60px auto;
+  margin:50px auto;
   padding:20px;
-  border-radius:28px;
+  border-radius:26px;
 
   background:rgba(255,255,255,0.04);
-  border:1px solid rgba(0,255,120,0.25);
-
-  backdrop-filter: blur(16px);
-
-  box-shadow:
-    0 0 30px rgba(0,255,120,0.12),
-    0 40px 100px rgba(0,0,0,0.8);
-
+  border:1px solid rgba(0,255,120,0.2);
   text-align:center;
 }
 
 #albumCover{
   width:280px;
   height:280px;
-  margin:0 auto 15px;
   border-radius:22px;
+  margin:0 auto 15px;
   background-size:cover;
-  background-position:center;
-  transition:0.5s ease;
 }
 
-/* =======================
-   BUTTONS
-======================= */
+/* ================= FRIEND LIST ================= */
+.friendRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:12px;
+  margin:10px 0;
+
+  background:rgba(255,255,255,0.04);
+  border-radius:14px;
+}
+
+/* ================= CHAT ================= */
+#chatPage{
+  display:none;
+  flex-direction:column;
+  height:100vh;
+}
+
+#messages{
+  flex:1;
+  overflow:auto;
+  padding:10px;
+}
+
+.msg{
+  padding:10px;
+  margin:6px 0;
+  border-radius:12px;
+  max-width:70%;
+  word-wrap:break-word;
+}
+
+.me{
+  background:rgba(0,255,120,0.2);
+  margin-left:auto;
+}
+
+.them{
+  background:rgba(255,43,214,0.2);
+}
+
+/* INPUT BAR */
+#msgInputBar{
+  display:flex;
+  gap:10px;
+  padding:10px;
+}
+
+input{
+  flex:1;
+  padding:10px;
+  border-radius:12px;
+  border:none;
+  background:rgba(255,255,255,0.06);
+  color:white;
+}
+
+/* ================= BUTTONS ================= */
 button{
   background:rgba(255,255,255,0.06);
   border:1px solid rgba(255,255,255,0.08);
@@ -95,138 +128,75 @@ button{
   border-radius:14px;
 }
 
-/* =======================
-   DRAWER (FIXED)
-======================= */
-#drawerPanel{
-  position:fixed;
-  top:0;
-  right:0;
-  width:320px;
-  height:100%;
-  background:#0f0f0f;
-  padding:20px;
-  z-index:999;
-
-  transform:translateX(100%);
-  transition:0.35s cubic-bezier(.2,.8,.2,1);
-
-  border-left:1px solid rgba(0,255,120,0.2);
-}
-
-#drawerPanel.open{
-  transform:translateX(0%);
-}
-
-/* =======================
-   BOTTOM NAV (FIXED + NEON OUTLINE)
-======================= */
+/* ================= NAV ================= */
 #bottomNav{
   position:fixed;
   bottom:0;
   width:100%;
   display:flex;
-  justify-content:space-around;
-  padding:12px;
-
   background:rgba(10,10,10,0.9);
-  backdrop-filter: blur(12px);
-
-  border-top:1px solid rgba(0,255,120,0.25);
-  box-shadow:0 -10px 30px rgba(0,255,120,0.08);
+  border-top:1px solid rgba(0,255,120,0.2);
 }
 
-/* active tab glow */
 .navBtn{
-  position:relative;
-}
-
-.navBtn.active{
-  border:1px solid rgba(0,255,120,0.5);
-  box-shadow:0 0 12px rgba(0,255,120,0.2);
+  flex:1;
+  padding:12px;
+  background:none;
+  border:none;
+  color:white;
 }
 </style>
 </head>
 
 <body>
 
+<!-- BACKGROUND -->
 <div id="bg">
-  <div class="waveLayer"></div>
+  <div class="waveGreen"></div>
 </div>
 
 <!-- HOME -->
 <div id="homePage" class="page active">
 
   <div class="nowPlaying">
+
     <div id="albumCover"></div>
 
     <h2 id="title">Loading...</h2>
     <p id="meta"></p>
 
-    <div>
-      <button id="prevBtn">Prev</button>
-      <button id="playBtn">Play</button>
-      <button id="nextBtn">Next</button>
-    </div>
+    <button id="generateBtn">Find Album</button>
 
-    <div style="margin-top:12px;">
-      <button id="drawerBtn">Filters</button>
-      <button id="generateBtn">Generate</button>
-    </div>
   </div>
 
 </div>
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
-  <h3>Friends</h3>
+
+  <h3>Inbox</h3>
+
+  <div id="friendsList"></div>
+
 </div>
 
-<!-- PROFILE -->
-<div id="profilePage" class="page">
-  <h3>Profile</h3>
-</div>
+<!-- CHAT SCREEN -->
+<div id="chatPage">
 
-<!-- DRAWER -->
-<div id="drawerPanel">
+  <h3 id="chatTitle"></h3>
 
-  <h3>Filters</h3>
+  <div id="messages"></div>
 
-  <h4>Genre</h4>
-  <select id="genreFilter">
-    <option>Any</option>
-    <option>rock</option>
-    <option>pop</option>
-    <option>electronic</option>
-  </select>
-
-  <h4>Era</h4>
-  <select id="eraFilter">
-    <option>Any</option>
-    <option>60s</option>
-    <option>70s</option>
-    <option>80s</option>
-    <option>90s</option>
-    <option>2000s+</option>
-  </select>
-
-  <h4>Length</h4>
-  <select id="lengthFilter">
-    <option>Any</option>
-    <option>Short</option>
-    <option>Medium</option>
-    <option>Long</option>
-  </select>
-
-  <button id="closeDrawerBtn" style="margin-top:20px;width:100%;">
-    Back
-  </button>
+  <div id="msgInputBar">
+    <input id="msgInput" placeholder="Message...">
+    <button id="sendMsgBtn">Send</button>
+  </div>
 
 </div>
 
 <!-- NAV -->
 <div id="bottomNav">
-  <button id="homeBtn" class="navBtn active">Home</button>
+  <button id="homeBtn" class="navBtn">Home</button>
   <button id="friendsBtn" class="navBtn">Friends</button>
   <button id="profileBtn" class="navBtn">Profile</button>
 </div>
