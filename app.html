@@ -57,14 +57,21 @@ button{
 }
 
 /* FRIENDS */
-.friendRow{
-  display:flex;
-  justify-content:space-between;
-  padding:12px;
-  margin:10px 0;
-  background:#1a1a1a;
-  border-radius:12px;
-}
+<!-- FRIENDS -->
+<div id="friendsPage" class="page">
+  <h2>Friends</h2>
+
+  <h3>Inbox</h3>
+  <div id="requestsBox">No requests</div>
+
+  <h3 style="margin-top:20px;">Friends</h3>
+  <div id="friendsList"></div>
+
+  <h3 style="margin-top:20px;">Find Friends</h3>
+  <input id="searchFriend" placeholder="Search username">
+  <button id="searchBtn">Search</button>
+  <div id="searchResults"></div>
+</div>
 
 /* CHAT */
 #chatPage{
