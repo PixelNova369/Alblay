@@ -13,14 +13,14 @@ body{
   overflow:hidden;
 }
 
-/* 🌿 CLEAN SPOTIFY GREEN BACKGROUND */
+/* 🌿 BACKGROUND */
 #bg{
   position:fixed;
   inset:0;
   z-index:-3;
 
   background:
-    radial-gradient(circle at 20% 25%, rgba(29,185,84,0.50), transparent 45%),
+    radial-gradient(circle at 20% 25%, rgba(29,185,84,0.55), transparent 45%),
     radial-gradient(circle at 80% 15%, rgba(0,255,140,0.25), transparent 50%),
     radial-gradient(circle at 50% 85%, rgba(0,160,90,0.22), transparent 55%);
 
@@ -29,8 +29,8 @@ body{
 }
 
 @keyframes floatBg{
-  0%{transform:scale(1) translateY(0);}
-  100%{transform:scale(1.12) translateY(-22px);}
+  0%{ transform:scale(1) translateY(0); }
+  100%{ transform:scale(1.12) translateY(-22px); }
 }
 
 /* PAGES */
@@ -46,7 +46,7 @@ body{
   padding:16px;
 }
 
-/* 🎧 SMALLER ALBUM (FIXED SPACING ISSUE) */
+/* ALBUM */
 #albumCover{
   width:280px;
   height:280px;
@@ -73,7 +73,7 @@ body{
   backdrop-filter:blur(16px);
 }
 
-/* 🎛 CONTROLS */
+/* CONTROLS */
 .controls{
   display:flex;
   justify-content:center;
@@ -100,7 +100,7 @@ body{
   padding:0;
 }
 
-/* BOTTOM BUTTONS */
+/* BOTTOM */
 .bottomControls{
   display:flex;
   gap:10px;
@@ -116,7 +116,7 @@ body{
   color:white;
 }
 
-/* ☰ DRAWER */
+/* DRAWER */
 .drawer{
   position:fixed;
   bottom:78px;
@@ -139,13 +139,26 @@ body{
 .friendRow{
   display:flex;
   justify-content:space-between;
+  align-items:center;
+
   padding:12px;
   margin:8px 0;
+
   background:rgba(255,255,255,0.06);
   border-radius:12px;
 }
 
-/* 🧭 BOTTOM NAV (BETTER GREEN-BLUE BLEND) */
+/* FRIEND BUTTONS */
+.friendRow button{
+  border:none;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  padding:6px 10px;
+  border-radius:10px;
+  font-size:12px;
+}
+
+/* NAV */
 #bottomNav{
   position:fixed;
   bottom:0;
@@ -163,7 +176,7 @@ body{
   padding:15px;
   border:none;
   background:none;
-  color:rgba(255,255,255,0.9);
+  color:white;
 }
 </style>
 </head>
@@ -212,8 +225,15 @@ body{
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
+
   <h2>Friends</h2>
+
+  <h3>📨 Inbox</h3>
+  <div id="inboxList"></div>
+
+  <h3>👥 Friends</h3>
   <div id="friendsList"></div>
+
 </div>
 
 <!-- NAV -->
