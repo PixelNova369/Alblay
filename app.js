@@ -1,5 +1,6 @@
 const $ = (id)=>document.getElementById(id);
 
+/* 🎧 MORE ALBUMS ADDED */
 const albums = [
   {
     title:"Abbey Road",
@@ -15,6 +16,21 @@ const albums = [
     title:"Dark Side of the Moon",
     artist:"Pink Floyd",
     image:"https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png"
+  },
+  {
+    title:"Blonde",
+    artist:"Frank Ocean",
+    image:"https://upload.wikimedia.org/wikipedia/en/a/a0/Blonde_-_Frank_Ocean.jpeg"
+  },
+  {
+    title:"After Hours",
+    artist:"The Weeknd",
+    image:"https://upload.wikimedia.org/wikipedia/en/c/c1/The_Weeknd_-_After_Hours.png"
+  },
+  {
+    title:"In Rainbows",
+    artist:"Radiohead",
+    image:"https://upload.wikimedia.org/wikipedia/en/1/14/Inrainbowscover.png"
   }
 ];
 
