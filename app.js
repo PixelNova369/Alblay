@@ -1,5 +1,3 @@
-console.log("ALBLAY WRAPPED UI ACTIVE");
-
 const $ = (id)=>document.getElementById(id);
 
 const albums = [
@@ -33,7 +31,6 @@ function render(i){
   const a = albums[i];
 
   const cover = $("albumCover");
-
   if(cover){
     cover.style.backgroundImage = `url(${a.image})`;
   }
