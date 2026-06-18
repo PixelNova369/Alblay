@@ -12,6 +12,18 @@ body{
   color:white;
 }
 
+/* LOGIN */
+#authGate{
+  position:fixed;
+  inset:0;
+  background:#050505;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
 /* NAV */
 #bottomNav{
   position:fixed;
@@ -44,22 +56,19 @@ body{
   background-size:cover;
 }
 
-button{
-  padding:10px 14px;
-  border:none;
-  border-radius:10px;
-  background:#222;
-  color:white;
+/* FRIENDS UI (FIXED) */
+.sectionBox{
+  background:#121212;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:12px;
 }
 
-/* FRIENDS */
-.friendRow{
+.row{
   display:flex;
   justify-content:space-between;
-  padding:12px;
-  margin:10px 0;
-  background:#1a1a1a;
-  border-radius:12px;
+  padding:10px;
+  border-bottom:1px solid #222;
 }
 
 /* CHAT */
@@ -95,40 +104,69 @@ button{
 }
 
 input{
-  flex:1;
+  width:100%;
   padding:10px;
   border-radius:10px;
   border:none;
+  margin:5px 0;
+}
+button{
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#222;
+  color:white;
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
+<div id="authGate">
+  <h2>Alblay Login</h2>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button id="loginBtn">Login</button>
+  <button id="signupBtn">Sign Up</button>
+</div>
+
 <!-- HOME -->
 <div id="homePage" class="page active">
-
   <div id="albumCover"></div>
-
   <h2 id="title">Loading...</h2>
   <p id="meta"></p>
-
   <button id="generateBtn">Find Album</button>
 </div>
 
 <!-- FRIENDS -->
 <div id="friendsPage" class="page">
 
-  <h3>Friends</h3>
-  <div id="friendsList">Loading friends...</div>
+  <!-- INBOX -->
+  <div class="sectionBox">
+    <h3>Inbox</h3>
+    <div id="inbox">No requests</div>
+  </div>
+
+  <!-- FRIENDS LIST -->
+  <div class="sectionBox">
+    <h3>Friends</h3>
+    <div id="friendsList">Loading...</div>
+  </div>
+
+  <!-- FIND FRIENDS -->
+  <div class="sectionBox">
+    <h3>Find Friends</h3>
+    <input id="searchUser" placeholder="Search username">
+    <button id="searchBtn">Search</button>
+    <div id="searchResults"></div>
+  </div>
 
 </div>
 
 <!-- CHAT -->
 <div id="chatPage">
-
-  <h3 id="chatTitle">Chat</h3>
-
+  <h3 id="chatTitle"></h3>
   <div id="messages"></div>
 
   <div id="msgBar">
