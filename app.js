@@ -1,4 +1,4 @@
-console.log("VIRAL UI LOADED");
+console.log("ALBLAY FINAL UI LOADED");
 
 const $ = (id)=>document.getElementById(id);
 
@@ -24,7 +24,10 @@ let index = 0;
 
 /* NAV */
 function show(page){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".page").forEach(p=>{
+    p.classList.remove("active");
+  });
+
   $(page+"Page").classList.add("active");
 }
 
@@ -33,12 +36,9 @@ function render(i){
   const a = albums[i];
 
   const cover = $("albumCover");
+
   if(cover){
-    cover.style.opacity = 0;
-    setTimeout(()=>{
-      cover.style.backgroundImage = `url(${a.image})`;
-      cover.style.opacity = 1;
-    },150);
+    cover.style.backgroundImage = `url(${a.image})`;
   }
 
   $("title").textContent = a.title;
