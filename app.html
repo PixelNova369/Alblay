@@ -12,87 +12,6 @@ body{
   color:white;
 }
 
-/* HEADER */
-h1{
-  text-align:center;
-}
-
-/* HOME */
-.page{
-  display:none;
-  padding:16px;
-}
-
-.active{
-  display:block;
-}
-
-#albumCover{
-  width:300px;
-  height:300px;
-  margin:20px auto;
-  border-radius:18px;
-  background:#222;
-  background-size:cover;
-  background-position:center;
-}
-
-/* NOW PLAYING BOX */
-#nowPlaying{
-  text-align:center;
-  background:#111;
-  padding:12px;
-  border-radius:12px;
-  margin-top:10px;
-}
-
-/* BUTTONS */
-button{
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#1db954;
-  color:black;
-  font-weight:bold;
-}
-
-/* FRIENDS */
-<!-- FRIENDS -->
-<div id="friendsPage" class="page">
-  <h2>Friends</h2>
-
-  <h3>Inbox</h3>
-  <div id="requestsBox">No requests</div>
-
-  <h3 style="margin-top:20px;">Friends</h3>
-  <div id="friendsList"></div>
-
-  <h3 style="margin-top:20px;">Find Friends</h3>
-  <input id="searchFriend" placeholder="Search username">
-  <button id="searchBtn">Search</button>
-  <div id="searchResults"></div>
-</div>
-
-/* CHAT */
-#chatPage{
-  display:none;
-  flex-direction:column;
-  height:100vh;
-}
-
-#messages{
-  flex:1;
-  overflow:auto;
-  padding:10px;
-}
-
-.msg{
-  padding:10px;
-  margin:6px 0;
-  border-radius:10px;
-  background:#222;
-}
-
 /* NAV */
 #bottomNav{
   position:fixed;
@@ -102,29 +21,55 @@ button{
   background:#111;
 }
 
-.navBtn{
+button{
   flex:1;
   padding:14px;
   background:none;
   border:none;
   color:white;
 }
+
+/* PAGES */
+.page{
+  display:none;
+  padding:16px;
+}
+
+.active{
+  display:block;
+}
+
+/* ALBUM */
+#albumCover{
+  width:300px;
+  height:300px;
+  margin:20px auto;
+  border-radius:18px;
+  background:#222;
+  background-size:cover;
+}
+
+/* FRIENDS */
+.friendRow{
+  display:flex;
+  justify-content:space-between;
+  padding:12px;
+  margin:8px 0;
+  background:#1a1a1a;
+  border-radius:10px;
+}
 </style>
 </head>
 
 <body>
 
-<h1>Alblay</h1>
-
 <!-- HOME -->
 <div id="homePage" class="page active">
-
+  <h2>Now Playing</h2>
   <div id="albumCover"></div>
 
-  <div id="nowPlaying">
-    <h2 id="title">Loading...</h2>
-    <p id="meta"></p>
-  </div>
+  <h3 id="title">Loading...</h3>
+  <p id="meta"></p>
 
   <button id="generateBtn">Find Album</button>
 </div>
@@ -135,22 +80,13 @@ button{
   <div id="friendsList"></div>
 </div>
 
-<!-- CHAT -->
-<div id="chatPage">
-  <h3 id="chatTitle"></h3>
-  <div id="messages"></div>
-
-  <input id="msgInput" placeholder="Message">
-  <button id="sendBtn">Send</button>
-</div>
-
 <!-- NAV -->
 <div id="bottomNav">
-  <button id="homeBtn" class="navBtn">Home</button>
-  <button id="friendsBtn" class="navBtn">Friends</button>
+  <button id="homeBtn">Home</button>
+  <button id="friendsBtn">Friends</button>
 </div>
 
-<script type="module" src="./app.js"></script>
+<script src="./app.js"></script>
 
 </body>
 </html>
