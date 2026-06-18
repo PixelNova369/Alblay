@@ -1,77 +1,78 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+import { supabase } from "./supabase.js"
 
-const supabase = createClient(
-  "https://imsevturnvlegnmszuyx.supabase.co",
-  "YOUR_ANON_KEY"
-)
-
-// USER LOOKUP
-export const getUserByUsername = async (username) => {
+// ==========================
+// FIND USER BY EMAIL
+// ==========================
+export async function findUserByEmail(email) {
   const { data } = await supabase
     .from("profiles")
     .select("*")
-    .eq("username", username)
+    .eq("email", email)
     .single()
 
   return data
 }
 
-// FRIEND REQUEST
-export const sendFriendRequest = async (username) => {
-  const friend = await getUserByUsername(username)
-  if (!friend) return
+// ==========================
+// SEND FRIEND REQUEST
+// ==========================
+export async function sendFriendRequest(email) {
+  const friend = await findUserByEmail(email)
+  if (!friend) {
+    alert("User not found")
+    return
+  }
 
-  const user = await supabase.auth.getUser()
+  const { data: userData } = await supabase.auth.getUser()
 
   return supabase.from("friend_requests").insert({
-    sender_id: user.data.user.id,
+    sender_id: userData.user.id,
     receiver_id: friend.id,
     status: "pending"
   })
 }
 
-// SEND ALBUM
-export const sendAlbumToFriend = async (friend_id, album) => {
-  const user = await supabase.auth.getUser()
-
-  return supabase.from("shared_albums").insert({
-    sender_id: user.data.user.id,
-    receiver_id: friend_id,
-    title: album.title,
-    artist: album.artist,
-    image_url: album.image
-  })
-}
-
-// SUGGESTIONS (simple version)
-export const getSuggestedFriends = async () => {
-  const { data } = await supabase.from("profiles").select("*")
-  return (data || []).map(u => ({
-    id: u.id,
-    mutualCount: Math.floor(Math.random()*5)
-  }))
-}
-
-// INBOX
-export const getSharedAlbums = async () => {
-  const user = await supabase.auth.getUser()
+// ==========================
+// LOAD REQUESTS
+// ==========================
+export async function loadFriendRequests() {
+  const { data: userData } = await supabase.auth.getUser()
 
   const { data } = await supabase
-    .from("shared_albums")
+    .from("friend_requests")
     .select("*")
-    .eq("receiver_id", user.data.user.id)
+    .eq("receiver_id", userData.user.id)
 
   return data || []
 }
 
-// FRIENDS
-export const getFriends = async () => {
-  const user = await supabase.auth.getUser()
+// ==========================
+// ACCEPT REQUEST
+// ==========================
+export async function acceptRequest(requestId, senderId) {
+  const { data: userData } = await supabase.auth.getUser()
+
+  await supabase.from("friend_requests")
+    .update({ status: "accepted" })
+    .eq("id", requestId)
+
+  // create mutual friendship
+  await supabase.from("friends").insert([
+    { user_id: userData.user.id, friend_id: senderId },
+    { user_id: senderId, friend_id: userData.user.id }
+  ])
+}
+
+// ==========================
+// LOAD FRIENDS
+// ==========================
+export async function loadFriends() {
+  const { data: userData } = await supabase.auth.getUser()
 
   const { data } = await supabase
     .from("friends")
     .select("*")
-    .or(`user_id.eq.${user.data.user.id},friend_id.eq.${user.data.user.id}`)
+    .or(`user_id.eq.${userData.user.id},friend_id.eq.${userData.user.id}`)
 
   return data || []
 }
